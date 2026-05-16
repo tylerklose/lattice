@@ -21,12 +21,14 @@ Reach for Lattice when the combinations are easy to describe but annoying or ris
 
 ## Install For Agents
 
-Start with [docs/install.md](docs/install.md) when you want a coding agent to adopt Lattice.
+Start with [docs/install.md](docs/install.md) when you want any coding agent or harness to adopt Lattice.
 
 That page covers:
 
 - installing the `lattice` CLI with `pipx`, `uvx`, or `pip`
-- installing or recreating the `lattice-workflow` Codex and Claude Code skills with `lattice agent bootstrap`
+- printing universal instructions with `lattice agent instructions`
+- installing a generic `lattice-workflow` skill into any harness directory with `lattice agent install-skill <target>`
+- installing Codex and Claude Code convenience skills with `lattice agent bootstrap`
 - adding an agent memory for when to reach for Lattice
 - running a smoke test over stdin
 
@@ -38,7 +40,7 @@ Lattice is split into three small modules on purpose:
 - `constraints.py`: deterministic feasibility and constraint reasoning
 - `ipog.py`: covering-array generation and coverage accounting
 
-That keeps the math isolated from any Claude Code, Codex, or other harness wrapper.
+That keeps the math isolated from OpenClaw, Hermes, Codex, xAI-backed agents, Claude Code, or any other harness wrapper.
 
 ## CLI
 
@@ -114,18 +116,19 @@ cat schema.json | lattice validate
 cat schema.json | lattice generate
 ```
 
-If you want Codex or another coding agent to use the same workflow in another repo, start with [docs/install.md](docs/install.md), then see [docs/using-in-other-projects.md](docs/using-in-other-projects.md).
+If you want an agent such as OpenClaw, Hermes, Codex, an xAI-backed harness, Claude Code, or a custom local agent to use the same workflow in another repo, start with [docs/install.md](docs/install.md), then see [docs/using-in-other-projects.md](docs/using-in-other-projects.md).
 
 Scope each schema to the thing being worked on: the feature, service, workflow, component, rendering surface, template family, config matrix, or behavior slice under active design or test work.
 
 The shortest agent adoption path after install is:
 
 ```bash
+lattice agent instructions
 lattice agent bootstrap
 lattice agent doctor
 ```
 
-`bootstrap` only installs skills for harnesses detected on the machine.
+`instructions` works for any agent. `bootstrap` installs convenience skills only for known harnesses detected on the machine.
 
 ## Harness Contract
 
@@ -137,13 +140,13 @@ Lattice is intentionally narrow. A harness owns extraction and interpretation; L
 - evaluator coverage: harness extracts a config or sandbox matrix, Lattice generates rows, harness runs each row through the relevant evaluator
 
 See [docs/agent-handoff.md](docs/agent-handoff.md) for the repository-level handoff shape.
-See [docs/workflows.md](docs/workflows.md) for concrete Codex/Claude usage patterns.
+See [docs/workflows.md](docs/workflows.md) for concrete agent usage patterns.
 See [docs/using-in-other-projects.md](docs/using-in-other-projects.md) for portable installation and adoption.
 See [docs/lattice-on-lattice.md](docs/lattice-on-lattice.md) for a worked example of Lattice testing its own agent bootstrap surface.
 
 ## Skill
 
-This repo includes a repo-local Codex skill at `.codex/skills/lattice-workflow/`.
+This repo includes a repo-local Codex skill at `.codex/skills/lattice-workflow/`, bundled Codex and Claude Code skill resources, and a generic skill resource for any harness that accepts a `SKILL.md` directory.
 
 Use it when you want a coding harness to:
 

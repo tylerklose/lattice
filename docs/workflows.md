@@ -1,6 +1,6 @@
 # Workflows
 
-This file makes the harness-to-Lattice boundary explicit. Lattice is one deterministic step inside a larger agent workflow.
+This file makes the harness-to-Lattice boundary explicit. Lattice is one deterministic step inside a larger agent workflow. The contract is the same for OpenClaw, Hermes, Codex, xAI-backed agents, Claude Code, or any custom harness.
 
 ## Core Contract
 

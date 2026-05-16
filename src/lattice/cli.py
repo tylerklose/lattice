@@ -10,6 +10,7 @@ from typing import Any
 from lattice.agent import (
     AgentSetup,
     DEFAULT_PROMPT,
+    GENERIC_AGENT_INSTRUCTIONS,
     MEMORY_SNIPPET,
     claude_code_available,
     claude_skill_installed,
@@ -19,6 +20,7 @@ from lattice.agent import (
     default_codex_skill_path,
     install_claude_skill,
     install_codex_skill,
+    install_generic_skill,
 )
 from lattice.constraints import ConstraintEngine, ConstraintError
 from lattice.formatters import render_output
@@ -84,7 +86,10 @@ def _build_parser() -> argparse.ArgumentParser:
     agent = subparsers.add_parser("agent", help="Install and describe coding-agent integrations.")
     agent_subparsers = agent.add_subparsers(dest="agent_command", required=True)
 
-    bootstrap = agent_subparsers.add_parser("bootstrap", help="Install skills for detected agent harnesses and print the agent memory.")
+    bootstrap = agent_subparsers.add_parser(
+        "bootstrap",
+        help="Install skills for detected known harnesses and print universal agent guidance.",
+    )
     bootstrap.add_argument("--target", help="Codex skill directory. Defaults to $CODEX_HOME or ~/.codex.")
     bootstrap.add_argument("--claude-target", help="Claude Code skill directory. Defaults to ~/.claude/skills.")
     bootstrap.add_argument("--force-codex", action="store_true", help="Install the Codex skill even if Codex is not detected.")
@@ -97,6 +102,13 @@ def _build_parser() -> argparse.ArgumentParser:
     install_skill.add_argument("--target", help="Destination skill directory. Defaults to $CODEX_HOME or ~/.codex.")
     install_skill.add_argument("--format", default=DEFAULT_AGENT_FORMAT, choices=("text", "json"))
 
+    install_generic = agent_subparsers.add_parser(
+        "install-skill",
+        help="Install the bundled generic skill into any harness-specific skill directory.",
+    )
+    install_generic.add_argument("target", help="Destination skill directory for the target harness.")
+    install_generic.add_argument("--format", default=DEFAULT_AGENT_FORMAT, choices=("text", "json"))
+
     install_claude = agent_subparsers.add_parser("install-claude-skill", help="Install the bundled Claude Code skill.")
     install_claude.add_argument("--target", help="Destination skill directory. Defaults to ~/.claude/skills.")
     install_claude.add_argument("--force", action="store_true", help="Install even if Claude Code is not detected.")
@@ -104,6 +116,12 @@ def _build_parser() -> argparse.ArgumentParser:
 
     memory = agent_subparsers.add_parser("memory", help="Print the persistent memory snippet for agents.")
     memory.add_argument("--format", default=DEFAULT_AGENT_FORMAT, choices=("text", "json"))
+
+    instructions = agent_subparsers.add_parser(
+        "instructions",
+        help="Print harness-agnostic instructions for any coding agent.",
+    )
+    instructions.add_argument("--format", default=DEFAULT_AGENT_FORMAT, choices=("text", "json"))
 
     doctor = agent_subparsers.add_parser("doctor", help="Check whether agent skills are installed.")
     doctor.add_argument("--target", help="Codex skill directory to check. Defaults to $CODEX_HOME or ~/.codex.")
@@ -197,6 +215,8 @@ def _run_agent_command(args: argparse.Namespace) -> int:
                 ),
                 "memory": MEMORY_SNIPPET,
                 "default_prompt": DEFAULT_PROMPT,
+                "instructions_command": "lattice agent instructions",
+                "generic_skill_command": "lattice agent install-skill <target>",
             }
             print(json.dumps(payload, indent=2))
             return 0
@@ -209,11 +229,18 @@ def _run_agent_command(args: argparse.Namespace) -> int:
         print("")
         print("Default prompt:")
         print(DEFAULT_PROMPT)
+        print("")
+        print("Any other harness:")
+        print("Run `lattice agent instructions`, or `lattice agent install-skill <target>` if the harness accepts a SKILL.md directory.")
         return 0
 
     if args.agent_command == "install-codex-skill":
         setup = install_codex_skill(args.target)
         return _emit_agent_setup(setup, "Codex", args.format)
+
+    if args.agent_command == "install-skill":
+        setup = install_generic_skill(args.target)
+        return _emit_agent_setup(setup, "generic", args.format)
 
     if args.agent_command == "install-claude-skill":
         try:
@@ -239,6 +266,22 @@ def _run_agent_command(args: argparse.Namespace) -> int:
             print(MEMORY_SNIPPET)
         return 0
 
+    if args.agent_command == "instructions":
+        if args.format == "json":
+            print(
+                json.dumps(
+                    {
+                        "instructions": GENERIC_AGENT_INSTRUCTIONS,
+                        "memory": MEMORY_SNIPPET,
+                        "default_prompt": DEFAULT_PROMPT,
+                    },
+                    indent=2,
+                )
+            )
+        else:
+            print(GENERIC_AGENT_INSTRUCTIONS)
+        return 0
+
     if args.agent_command == "doctor":
         codex_path = default_codex_skill_path() if args.target is None else args.target
         claude_path = default_claude_skill_path() if args.claude_target is None else args.claude_target
@@ -246,10 +289,13 @@ def _run_agent_command(args: argparse.Namespace) -> int:
         codex_installed = codex_skill_installed(args.target)
         claude_available = claude_code_available()
         claude_installed = claude_skill_installed(args.claude_target)
-        detected = codex_detected or claude_available
-        ok = detected and (not codex_detected or codex_installed) and (not claude_available or claude_installed)
+        known_harness_detected = codex_detected or claude_available
+        known_skills_ok = (not codex_detected or codex_installed) and (not claude_available or claude_installed)
+        ok = known_skills_ok
         payload = {
             "status": "ok" if ok else "missing",
+            "generic_instructions_available": True,
+            "known_harness_detected": known_harness_detected,
             "codex_available": codex_detected,
             "codex_skill_installed": codex_installed,
             "codex_skill_path": str(codex_path),
@@ -262,6 +308,7 @@ def _run_agent_command(args: argparse.Namespace) -> int:
         else:
             print("Lattice agent setup")
             print("cli: ok")
+            print("generic instructions: available (`lattice agent instructions`)")
             print(f"codex: {'available' if codex_detected else 'not detected'}")
             print(f"codex skill: {'installed' if codex_installed else 'missing'}")
             print(f"codex path: {codex_path}")

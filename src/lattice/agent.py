@@ -25,6 +25,31 @@ DEFAULT_PROMPT = (
     "rows; and use the rows to strengthen the plan, tests, fixtures, or visual review."
 )
 
+GENERIC_AGENT_INSTRUCTIONS = f"""# Lattice Agent Instructions
+
+Lattice is harness-agnostic. Use these instructions in OpenClaw, Hermes, Codex, xAI-backed agents, Claude Code, or any agent that can run shell commands.
+
+Memory:
+{MEMORY_SNIPPET}
+
+Default prompt:
+{DEFAULT_PROMPT}
+
+Workflow:
+1. Check whether `lattice --help` works.
+2. Extract one coherent schema with parameters, values, and true constraints.
+3. Run `lattice validate` before generation.
+4. Run `lattice generate` and treat the generated rows as the source of truth.
+5. Map rows to the active evaluator: plan review, tests, fixtures, rendered variants, screenshots, visual diffs, sandbox calls, or another harness-specific action.
+
+Prefer JSON or YAML on stdin:
+
+```bash
+cat schema.json | lattice validate
+cat schema.json | lattice generate
+```
+"""
+
 
 @dataclass(frozen=True)
 class AgentSetup:
@@ -71,6 +96,18 @@ def install_codex_skill(target: str | None = None) -> AgentSetup:
     _copy_bundled_skill("codex", destination)
     return AgentSetup(
         surface="codex",
+        skill_name=SKILL_NAME,
+        skill_path=destination,
+        memory=MEMORY_SNIPPET,
+        default_prompt=DEFAULT_PROMPT,
+    )
+
+
+def install_generic_skill(target: str) -> AgentSetup:
+    destination = Path(target).expanduser()
+    _copy_bundled_skill("generic", destination)
+    return AgentSetup(
+        surface="generic",
         skill_name=SKILL_NAME,
         skill_path=destination,
         memory=MEMORY_SNIPPET,

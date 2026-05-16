@@ -10,7 +10,7 @@ The behavior surface was:
 lattice agent bootstrap
 ```
 
-This command detects available agent harnesses and installs the matching Lattice skill integrations. The interesting behavior is not one branch at a time; it is the interaction between:
+This command detects available known agent harnesses and installs the matching Lattice skill integrations. Generic agents use `lattice agent instructions` or `lattice agent install-skill <target>`. The interesting bootstrap behavior is not one branch at a time; it is the interaction between:
 
 - which harnesses are detected
 - which harnesses are forced or skipped
@@ -125,8 +125,8 @@ Finally, it asserts the expected behavior:
 - default installs only when the harness is detected
 - force installs even when not detected
 - skip never installs
-- JSON output reports availability, installed status, skill paths, memory, and default prompt
-- text output includes install or skipped status plus memory and default prompt
+- JSON output reports availability, installed status, skill paths, memory, default prompt, and generic instruction commands
+- text output includes install or skipped status plus memory, default prompt, and the generic fallback path
 
 ## Why This Is Useful
 

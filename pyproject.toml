@@ -64,4 +64,6 @@ lattice = [
   "resources/codex/lattice-workflow/references/*.md",
   "resources/claude/lattice-workflow/SKILL.md",
   "resources/claude/lattice-workflow/references/*.md",
+  "resources/generic/lattice-workflow/SKILL.md",
+  "resources/generic/lattice-workflow/references/*.md",
 ]

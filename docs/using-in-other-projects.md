@@ -25,7 +25,7 @@ pipx install lattice-cover
 For one-shot use from an agent, run the package-provided command through `uvx`:
 
 ```bash
-uvx --from lattice-cover lattice agent bootstrap
+uvx --from lattice-cover lattice agent instructions
 ```
 
 Plain `pip` is still fine when the target harness owns the Python environment:
@@ -67,14 +67,26 @@ Use files only when they help with debugging, auditing, or repeatability.
 
 For the full agent setup path, including the skill and memory snippet, see [install.md](install.md).
 
-After the CLI is installed, use:
+After the CLI is installed, every harness can use:
+
+```bash
+lattice agent instructions
+```
+
+If the harness accepts a skill directory, use:
+
+```bash
+lattice agent install-skill /path/to/harness/skills/lattice-workflow
+```
+
+For Codex and Claude Code convenience installs, use:
 
 ```bash
 lattice agent bootstrap
 lattice agent doctor
 ```
 
-This detects available harnesses and installs matching skills. Codex is detected from the `codex` command, `$CODEX_HOME`, or `~/.codex`; Claude Code is detected from the `claude` command or `~/.claude`.
+This detects available known harnesses and installs matching skills. Codex is detected from the `codex` command, `$CODEX_HOME`, or `~/.codex`; Claude Code is detected from the `claude` command or `~/.claude`.
 
 If the CLI installer is unavailable and you have the source checkout, copy the bundled Codex skill into a user's skill directory:
 
@@ -90,6 +102,14 @@ Copy the bundled Claude Code skill into the user's Claude Code skills directory:
 install_dir="$HOME/.claude/skills/lattice-workflow"
 mkdir -p "$(dirname "$install_dir")"
 rsync -a --delete /path/to/lattice/src/lattice/resources/claude/lattice-workflow/ "$install_dir/"
+```
+
+For any other harness with a skill folder, copy the generic skill:
+
+```bash
+install_dir="/path/to/harness/skills/lattice-workflow"
+mkdir -p "$(dirname "$install_dir")"
+rsync -a --delete /path/to/lattice/src/lattice/resources/generic/lattice-workflow/ "$install_dir/"
 ```
 
 Keep the skill examples on the installed `lattice` command. Retain the repo-local `PYTHONPATH=src python3 -m lattice` form only as a fallback for this repository itself.

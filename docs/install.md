@@ -1,6 +1,6 @@
-# Install Lattice For Coding Agents
+# Install Lattice For Agents
 
-This page is the agent-friendly setup path. After it is complete, a coding agent should know two things:
+This page is the agent-friendly setup path. After it is complete, any coding agent should know two things:
 
 1. how to run the `lattice` CLI
 2. when to reach for Lattice instead of hand-enumerating combinations
@@ -31,7 +31,7 @@ lattice --help
 For a one-shot agent setup without a persistent install, use `uvx`:
 
 ```bash
-uvx --from lattice-cover lattice agent bootstrap
+uvx --from lattice-cover lattice agent instructions
 ```
 
 If neither `pipx` nor `uvx` is available, plain `pip` still works:
@@ -41,15 +41,37 @@ python3 -m pip install lattice-cover
 lattice --help
 ```
 
-## 2. Install Agent Skills
+## 2. Universal Agent Setup
 
-The package includes ready-to-use skills for Codex and Claude Code. Detect available harnesses, install the matching skills, and print the agent memory snippet with:
+Every harness can use Lattice if it can run shell commands and keep a short instruction. This applies to OpenClaw, Hermes, Codex, xAI-backed agents, Claude Code, or a custom local harness.
+
+Print the portable instruction block with:
+
+```bash
+lattice agent instructions
+```
+
+If the harness accepts skill folders, install a generic `SKILL.md` directory wherever that harness expects skills:
+
+```bash
+lattice agent install-skill /path/to/harness/skills/lattice-workflow
+```
+
+If the harness has persistent memory, also save:
+
+```bash
+lattice agent memory
+```
+
+## 3. Install Known Convenience Skills
+
+The package also includes ready-to-use convenience skills for Codex and Claude Code. Detect available known harnesses, install the matching skills, and print the same portable guidance with:
 
 ```bash
 lattice agent bootstrap
 ```
 
-`bootstrap` installs only for detected harnesses by default:
+`bootstrap` installs only for detected known harnesses by default:
 
 - Codex is detected from the `codex` command, `$CODEX_HOME`, or an existing `~/.codex` directory.
 - Claude Code is detected from the `claude` command or an existing `~/.claude` directory.
@@ -87,6 +109,7 @@ The source checkout also includes the same skills at:
 ```text
 .codex/skills/lattice-workflow/
 src/lattice/resources/claude/lattice-workflow/
+src/lattice/resources/generic/lattice-workflow/
 ```
 
 If the CLI installer is not available, copy the Codex skill into the user's Codex skills directory manually:
@@ -105,13 +128,21 @@ mkdir -p "$(dirname "$install_dir")"
 rsync -a --delete /path/to/lattice/src/lattice/resources/claude/lattice-workflow/ "$install_dir/"
 ```
 
-Then ask Codex to use it:
+For any other harness that accepts a skill folder, copy the generic skill:
+
+```bash
+install_dir="/path/to/harness/skills/lattice-workflow"
+mkdir -p "$(dirname "$install_dir")"
+rsync -a --delete /path/to/lattice/src/lattice/resources/generic/lattice-workflow/ "$install_dir/"
+```
+
+Then ask the agent to use it:
 
 ```text
 Use $lattice-workflow. Inspect this feature, test surface, component variant space, template, or config matrix; extract a Lattice schema; validate it; generate pairwise rows; and use the rows to strengthen the plan, tests, fixtures, or visual review.
 ```
 
-## 3. If The Skill Cannot Be Downloaded
+## 4. If The Skill Cannot Be Downloaded
 
 If an agent cannot copy the bundled skill, ask it to create a skill named `lattice-workflow` with this minimum `SKILL.md`:
 
@@ -143,7 +174,7 @@ cat schema.json | lattice generate
 Do not manually add, remove, or reshuffle generated rows.
 ````
 
-## 4. Add Agent Memory
+## 5. Add Agent Memory
 
 If the environment supports persistent memories, add this memory:
 
@@ -151,7 +182,7 @@ If the environment supports persistent memories, add this memory:
 Reach for Lattice when planning, testing, or reviewing a finite constrained surface with interacting states such as roles, permissions, feature flags, modes, providers, optional fields, component props, rendering branches, template variants, config matrices, lifecycle states, or cross-product edge cases. Extract a schema with parameters, values, and true constraints; run `lattice validate`; then run `lattice generate`; use the generated rows as the source of truth for plan review, rendered variants, fixtures, or missing tests instead of hand-enumerating pairwise combinations.
 ```
 
-## 5. One-Shot Setup Prompt
+## 6. One-Shot Setup Prompt
 
 Use this prompt with a coding agent in a target repo:
 
@@ -160,12 +191,13 @@ Set up Lattice for this repo.
 
 1. Check whether `lattice --help` works.
 2. If it does not, install the CLI from the local Lattice checkout or from the configured package index.
-3. Run `lattice agent bootstrap` to detect available harnesses, install matching skills, and print the memory snippet.
-4. If memory is available, save the memory snippet printed by the command.
-5. Verify by validating and generating scenarios from a small schema over stdin.
+3. Run `lattice agent instructions` and save the output in this harness's instruction mechanism.
+4. If this harness has a skill directory, run `lattice agent install-skill <target-skill-dir>`.
+5. Run `lattice agent bootstrap` only if Codex or Claude Code convenience skills are useful on this machine.
+6. Verify by validating and generating scenarios from a small schema over stdin.
 ```
 
-## 6. Smoke Test
+## 7. Smoke Test
 
 After install, this should produce JSON output with at least one scenario:
 

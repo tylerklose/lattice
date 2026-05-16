@@ -1,6 +1,8 @@
 # Agent Handoff
 
-Lattice is designed to be one deterministic step inside a larger coding-agent workflow.
+Lattice is designed to be one deterministic step inside a larger coding-agent workflow, regardless of which agent or model is driving the work.
+
+OpenClaw, Hermes, Codex, xAI-backed agents, Claude Code, and custom local harnesses all have the same contract: the agent extracts and interprets; Lattice validates and generates rows.
 
 ## Contract
 
@@ -18,7 +20,7 @@ The schema is first-class. The schema file is optional transport.
 
 ## Recommended Prompt Shape
 
-When using Lattice from Codex, Claude Code, or a similar agent:
+When using Lattice from any agent:
 
 - ask the agent to identify parameters, value partitions, and known invalid combinations
 - require the agent to emit a structured schema

@@ -74,6 +74,34 @@ class CliTests(unittest.TestCase):
         self.assertIn("Reach for Lattice", result.stdout)
         self.assertIn("lattice validate", result.stdout)
 
+    def test_agent_instructions_are_harness_agnostic(self) -> None:
+        result = self.run_cli("agent", "instructions", "--format", "json")
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+        parsed = json.loads(result.stdout)
+        self.assertIn("OpenClaw", parsed["instructions"])
+        self.assertIn("Hermes", parsed["instructions"])
+        self.assertIn("xAI-backed agents", parsed["instructions"])
+        self.assertIn("lattice generate", parsed["instructions"])
+        self.assertIn("Reach for Lattice", parsed["memory"])
+
+    def test_agent_installs_generic_skill(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            target = Path(temp_dir) / "lattice-workflow"
+            result = self.run_cli(
+                "agent",
+                "install-skill",
+                str(target),
+                "--format",
+                "json",
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            parsed = json.loads(result.stdout)
+            self.assertEqual(parsed["status"], "ok")
+            self.assertEqual(parsed["surface"], "generic")
+            self.assertTrue((target / "SKILL.md").is_file())
+            self.assertTrue((target / "references" / "modeling-rules.md").is_file())
+
     def test_agent_installs_bundled_codex_skill(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             target = Path(temp_dir) / "lattice-workflow"
@@ -114,6 +142,26 @@ class CliTests(unittest.TestCase):
             self.assertEqual(parsed["skill_name"], "lattice-workflow")
             self.assertTrue((target / "SKILL.md").is_file())
             self.assertTrue((target / "references" / "modeling-rules.md").is_file())
+
+    def test_agent_doctor_succeeds_without_known_harnesses(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            result = self.run_cli(
+                "agent",
+                "doctor",
+                "--format",
+                "json",
+                env_overrides={
+                    "CODEX_HOME": "",
+                    "HOME": str(Path(temp_dir) / "home"),
+                    "PATH": str(Path(temp_dir) / "bin"),
+                },
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            parsed = json.loads(result.stdout)
+            self.assertEqual(parsed["status"], "ok")
+            self.assertTrue(parsed["generic_instructions_available"])
+            self.assertFalse(parsed["known_harness_detected"])
 
     def test_agent_doctor_checks_codex_skill_install(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
