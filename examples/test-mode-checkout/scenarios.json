@@ -1,0 +1,159 @@
+{
+  "meta": {
+    "model_name": "payments",
+    "strength": 2,
+    "test_count": 9,
+    "exhaustive_count": 288,
+    "reduction": "32x",
+    "coverage": "100.0%",
+    "seed": 42
+  },
+  "coverage_curve": [
+    {
+      "scenario": 1,
+      "cumulative_pct": 21.6
+    },
+    {
+      "scenario": 2,
+      "cumulative_pct": 43.3
+    },
+    {
+      "scenario": 3,
+      "cumulative_pct": 60.8
+    },
+    {
+      "scenario": 4,
+      "cumulative_pct": 73.2
+    },
+    {
+      "scenario": 5,
+      "cumulative_pct": 83.5
+    },
+    {
+      "scenario": 6,
+      "cumulative_pct": 91.8
+    },
+    {
+      "scenario": 7,
+      "cumulative_pct": 93.8
+    },
+    {
+      "scenario": 8,
+      "cumulative_pct": 94.8
+    },
+    {
+      "scenario": 9,
+      "cumulative_pct": 100.0
+    }
+  ],
+  "scenarios": [
+    {
+      "id": 1,
+      "values": {
+        "payment_method": "apple_pay",
+        "region": "US",
+        "currency": "USD",
+        "os": "macos",
+        "browser": "safari",
+        "loyalty": "none",
+        "card_type": "N/A"
+      }
+    },
+    {
+      "id": 2,
+      "values": {
+        "payment_method": "credit_card",
+        "region": "US",
+        "currency": "GBP",
+        "os": "windows",
+        "browser": "chrome",
+        "loyalty": "gold",
+        "card_type": "visa"
+      }
+    },
+    {
+      "id": 3,
+      "values": {
+        "payment_method": "credit_card",
+        "region": "UK",
+        "currency": "USD",
+        "os": "macos",
+        "browser": "safari",
+        "loyalty": "gold",
+        "card_type": "mastercard"
+      }
+    },
+    {
+      "id": 4,
+      "values": {
+        "payment_method": "credit_card",
+        "region": "UK",
+        "currency": "GBP",
+        "os": "windows",
+        "browser": "chrome",
+        "loyalty": "none",
+        "card_type": "mastercard"
+      }
+    },
+    {
+      "id": 5,
+      "values": {
+        "payment_method": "paypal",
+        "region": "US",
+        "currency": "USD",
+        "os": "windows",
+        "browser": "chrome",
+        "loyalty": "none",
+        "card_type": "N/A"
+      }
+    },
+    {
+      "id": 6,
+      "values": {
+        "payment_method": "paypal",
+        "region": "UK",
+        "currency": "GBP",
+        "os": "macos",
+        "browser": "safari",
+        "loyalty": "none",
+        "card_type": "N/A"
+      }
+    },
+    {
+      "id": 7,
+      "values": {
+        "payment_method": "apple_pay",
+        "region": "UK",
+        "currency": "GBP",
+        "os": "macos",
+        "browser": "safari",
+        "loyalty": "none",
+        "card_type": "N/A"
+      }
+    },
+    {
+      "id": 8,
+      "values": {
+        "payment_method": "credit_card",
+        "region": "US",
+        "currency": "USD",
+        "os": "windows",
+        "browser": "chrome",
+        "loyalty": "none",
+        "card_type": "mastercard"
+      }
+    },
+    {
+      "id": 9,
+      "values": {
+        "payment_method": "credit_card",
+        "region": "UK",
+        "currency": "USD",
+        "os": "macos",
+        "browser": "safari",
+        "loyalty": "none",
+        "card_type": "visa"
+      }
+    }
+  ]
+}

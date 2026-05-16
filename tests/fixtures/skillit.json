@@ -1,0 +1,41 @@
+{
+  "model_name": "saved_search_slugs",
+  "parameters": [
+    {
+      "name": "trade",
+      "values": ["electrician", "plumber", "carpenter", "laborer"]
+    },
+    {
+      "name": "location_mode",
+      "values": ["local", "statewide", "nationwide"]
+    },
+    {
+      "name": "per_diem",
+      "values": ["true", "false"]
+    },
+    {
+      "name": "relocation",
+      "values": ["true", "false"]
+    },
+    {
+      "name": "union",
+      "values": ["union", "open_shop", "all"]
+    },
+    {
+      "name": "pay_range",
+      "values": ["present", "absent"]
+    },
+    {
+      "name": "skills",
+      "values": ["zero", "one", "two_plus"]
+    }
+  ],
+  "constraints": [
+    {
+      "type": "invalid_pair",
+      "if": {"parameter": "location_mode", "value": "nationwide"},
+      "then_not": {"parameter": "relocation", "value": "true"}
+    }
+  ],
+  "strength": 2
+}

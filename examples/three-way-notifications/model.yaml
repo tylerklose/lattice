@@ -1,0 +1,20 @@
+model_name: notifications_matrix
+parameters:
+  channel: [email, sms, push]
+  audience: [new_user, active_user, dormant_user]
+  locale: [en, fr]
+  quiet_hours: [enabled, disabled]
+  template_family: [welcome, promo]
+constraints:
+  - type: forward_dep
+    source: { parameter: template_family, value: welcome }
+    target: { parameter: audience, value: new_user }
+  - type: invalid_pair
+    if: { parameter: channel, value: sms }
+    then_not: { parameter: template_family, value: welcome }
+  - type: higher_order
+    if_all:
+      - { parameter: channel, value: push }
+      - { parameter: audience, value: dormant_user }
+    then_not: { parameter: quiet_hours, value: disabled }
+strength: 3

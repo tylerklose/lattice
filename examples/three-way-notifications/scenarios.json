@@ -1,0 +1,295 @@
+{
+  "meta": {
+    "model_name": "notifications_matrix",
+    "strength": 3,
+    "test_count": 20,
+    "exhaustive_count": 72,
+    "reduction": "3.6x",
+    "coverage": "100.0%",
+    "seed": 42
+  },
+  "coverage_curve": [
+    {
+      "scenario": 1,
+      "cumulative_pct": 9.2
+    },
+    {
+      "scenario": 2,
+      "cumulative_pct": 18.3
+    },
+    {
+      "scenario": 3,
+      "cumulative_pct": 26.6
+    },
+    {
+      "scenario": 4,
+      "cumulative_pct": 31.2
+    },
+    {
+      "scenario": 5,
+      "cumulative_pct": 35.8
+    },
+    {
+      "scenario": 6,
+      "cumulative_pct": 41.3
+    },
+    {
+      "scenario": 7,
+      "cumulative_pct": 45.9
+    },
+    {
+      "scenario": 8,
+      "cumulative_pct": 50.5
+    },
+    {
+      "scenario": 9,
+      "cumulative_pct": 56.0
+    },
+    {
+      "scenario": 10,
+      "cumulative_pct": 61.5
+    },
+    {
+      "scenario": 11,
+      "cumulative_pct": 66.1
+    },
+    {
+      "scenario": 12,
+      "cumulative_pct": 69.7
+    },
+    {
+      "scenario": 13,
+      "cumulative_pct": 77.1
+    },
+    {
+      "scenario": 14,
+      "cumulative_pct": 83.5
+    },
+    {
+      "scenario": 15,
+      "cumulative_pct": 89.0
+    },
+    {
+      "scenario": 16,
+      "cumulative_pct": 92.7
+    },
+    {
+      "scenario": 17,
+      "cumulative_pct": 95.4
+    },
+    {
+      "scenario": 18,
+      "cumulative_pct": 98.2
+    },
+    {
+      "scenario": 19,
+      "cumulative_pct": 99.1
+    },
+    {
+      "scenario": 20,
+      "cumulative_pct": 100.0
+    }
+  ],
+  "scenarios": [
+    {
+      "id": 1,
+      "values": {
+        "channel": "email",
+        "audience": "new_user",
+        "locale": "en",
+        "quiet_hours": "enabled",
+        "template_family": "welcome"
+      }
+    },
+    {
+      "id": 2,
+      "values": {
+        "channel": "email",
+        "audience": "new_user",
+        "locale": "fr",
+        "quiet_hours": "disabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 3,
+      "values": {
+        "channel": "email",
+        "audience": "active_user",
+        "locale": "en",
+        "quiet_hours": "enabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 4,
+      "values": {
+        "channel": "email",
+        "audience": "active_user",
+        "locale": "fr",
+        "quiet_hours": "enabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 5,
+      "values": {
+        "channel": "email",
+        "audience": "active_user",
+        "locale": "en",
+        "quiet_hours": "disabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 6,
+      "values": {
+        "channel": "email",
+        "audience": "dormant_user",
+        "locale": "en",
+        "quiet_hours": "enabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 7,
+      "values": {
+        "channel": "email",
+        "audience": "dormant_user",
+        "locale": "fr",
+        "quiet_hours": "disabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 8,
+      "values": {
+        "channel": "email",
+        "audience": "new_user",
+        "locale": "fr",
+        "quiet_hours": "disabled",
+        "template_family": "welcome"
+      }
+    },
+    {
+      "id": 9,
+      "values": {
+        "channel": "sms",
+        "audience": "active_user",
+        "locale": "en",
+        "quiet_hours": "enabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 10,
+      "values": {
+        "channel": "sms",
+        "audience": "active_user",
+        "locale": "fr",
+        "quiet_hours": "disabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 11,
+      "values": {
+        "channel": "sms",
+        "audience": "dormant_user",
+        "locale": "en",
+        "quiet_hours": "disabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 12,
+      "values": {
+        "channel": "sms",
+        "audience": "dormant_user",
+        "locale": "fr",
+        "quiet_hours": "enabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 13,
+      "values": {
+        "channel": "push",
+        "audience": "new_user",
+        "locale": "en",
+        "quiet_hours": "enabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 14,
+      "values": {
+        "channel": "push",
+        "audience": "new_user",
+        "locale": "fr",
+        "quiet_hours": "enabled",
+        "template_family": "welcome"
+      }
+    },
+    {
+      "id": 15,
+      "values": {
+        "channel": "push",
+        "audience": "new_user",
+        "locale": "en",
+        "quiet_hours": "disabled",
+        "template_family": "welcome"
+      }
+    },
+    {
+      "id": 16,
+      "values": {
+        "channel": "push",
+        "audience": "active_user",
+        "locale": "en",
+        "quiet_hours": "disabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 17,
+      "values": {
+        "channel": "push",
+        "audience": "active_user",
+        "locale": "fr",
+        "quiet_hours": "enabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 18,
+      "values": {
+        "channel": "push",
+        "audience": "dormant_user",
+        "locale": "en",
+        "quiet_hours": "enabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 19,
+      "values": {
+        "channel": "push",
+        "audience": "dormant_user",
+        "locale": "fr",
+        "quiet_hours": "enabled",
+        "template_family": "promo"
+      }
+    },
+    {
+      "id": 20,
+      "values": {
+        "channel": "push",
+        "audience": "new_user",
+        "locale": "fr",
+        "quiet_hours": "disabled",
+        "template_family": "welcome"
+      }
+    }
+  ]
+}

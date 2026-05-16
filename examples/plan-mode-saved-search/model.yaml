@@ -1,0 +1,14 @@
+model_name: saved_search_slugs
+parameters:
+  trade: [electrician, plumber, carpenter, laborer]
+  location_mode: [local, statewide, nationwide]
+  per_diem: [true, false]
+  relocation: [true, false]
+  union: [union, open_shop, all]
+  pay_range: [present, absent]
+  skills: [zero, one, two_plus]
+constraints:
+  - type: invalid_pair
+    if: { parameter: location_mode, value: nationwide }
+    then_not: { parameter: relocation, value: true }
+strength: 2

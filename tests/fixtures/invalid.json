@@ -1,0 +1,5 @@
+{
+  "parameters": {
+    "browser": ["chrome", "chrome"]
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "model_name": "lattice_cli_matrix",
+    "strength": 2,
+    "test_count": 10,
+    "exhaustive_count": 72,
+    "reduction": "7.2x",
+    "coverage": "100.0%",
+    "seed": 42
+  },
+  "coverage_curve": [
+    {
+      "scenario": 1,
+      "cumulative_pct": 18.2
+    },
+    {
+      "scenario": 2,
+      "cumulative_pct": 36.4
+    },
+    {
+      "scenario": 3,
+      "cumulative_pct": 49.1
+    },
+    {
+      "scenario": 4,
+      "cumulative_pct": 65.5
+    },
+    {
+      "scenario": 5,
+      "cumulative_pct": 76.4
+    },
+    {
+      "scenario": 6,
+      "cumulative_pct": 85.5
+    },
+    {
+      "scenario": 7,
+      "cumulative_pct": 90.9
+    },
+    {
+      "scenario": 8,
+      "cumulative_pct": 94.5
+    },
+    {
+      "scenario": 9,
+      "cumulative_pct": 98.2
+    },
+    {
+      "scenario": 10,
+      "cumulative_pct": 100.0
+    }
+  ],
+  "scenarios": [
+    {
+      "id": 1,
+      "values": {
+        "command": "validate",
+        "input_source": "stdin",
+        "schema_encoding": "json",
+        "schema_profile": "invalid",
+        "output_format": "json"
+      }
+    },
+    {
+      "id": 2,
+      "values": {
+        "command": "generate",
+        "input_source": "file",
+        "schema_encoding": "yaml",
+        "schema_profile": "constrained",
+        "output_format": "table"
+      }
+    },
+    {
+      "id": 3,
+      "values": {
+        "command": "generate",
+        "input_source": "stdin",
+        "schema_encoding": "json",
+        "schema_profile": "simple",
+        "output_format": "json"
+      }
+    },
+    {
+      "id": 4,
+      "values": {
+        "command": "validate",
+        "input_source": "file",
+        "schema_encoding": "yaml",
+        "schema_profile": "simple",
+        "output_format": "text"
+      }
+    },
+    {
+      "id": 5,
+      "values": {
+        "command": "validate",
+        "input_source": "stdin",
+        "schema_encoding": "json",
+        "schema_profile": "constrained",
+        "output_format": "text"
+      }
+    },
+    {
+      "id": 6,
+      "values": {
+        "command": "generate",
+        "input_source": "stdin",
+        "schema_encoding": "yaml",
+        "schema_profile": "invalid",
+        "output_format": "table"
+      }
+    },
+    {
+      "id": 7,
+      "values": {
+        "command": "validate",
+        "input_source": "file",
+        "schema_encoding": "json",
+        "schema_profile": "constrained",
+        "output_format": "json"
+      }
+    },
+    {
+      "id": 8,
+      "values": {
+        "command": "validate",
+        "input_source": "file",
+        "schema_encoding": "json",
+        "schema_profile": "invalid",
+        "output_format": "text"
+      }
+    },
+    {
+      "id": 9,
+      "values": {
+        "command": "generate",
+        "input_source": "stdin",
+        "schema_encoding": "json",
+        "schema_profile": "simple",
+        "output_format": "table"
+      }
+    },
+    {
+      "id": 10,
+      "values": {
+        "command": "validate",
+        "input_source": "stdin",
+        "schema_encoding": "yaml",
+        "schema_profile": "simple",
+        "output_format": "json"
+      }
+    }
+  ]
+}

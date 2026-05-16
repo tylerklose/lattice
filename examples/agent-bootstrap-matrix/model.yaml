@@ -1,0 +1,34 @@
+model_name: agent_bootstrap_matrix
+parameters:
+  codex_detection: [available, unavailable]
+  claude_detection: [available, unavailable]
+  codex_directive: [default, force, skip]
+  claude_directive: [default, force, skip]
+  target_mode: [explicit, default]
+  output_format: [json, text]
+constraints:
+  - type: forced
+    assignments:
+      - { parameter: codex_detection, value: unavailable }
+      - { parameter: claude_detection, value: available }
+      - { parameter: codex_directive, value: default }
+      - { parameter: claude_directive, value: default }
+      - { parameter: target_mode, value: explicit }
+      - { parameter: output_format, value: json }
+  - type: forced
+    assignments:
+      - { parameter: codex_detection, value: unavailable }
+      - { parameter: claude_detection, value: unavailable }
+      - { parameter: codex_directive, value: default }
+      - { parameter: claude_directive, value: default }
+      - { parameter: target_mode, value: default }
+      - { parameter: output_format, value: json }
+  - type: forced
+    assignments:
+      - { parameter: codex_detection, value: available }
+      - { parameter: claude_detection, value: available }
+      - { parameter: codex_directive, value: skip }
+      - { parameter: claude_directive, value: skip }
+      - { parameter: target_mode, value: explicit }
+      - { parameter: output_format, value: text }
+strength: 2

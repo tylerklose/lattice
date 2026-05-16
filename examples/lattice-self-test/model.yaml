@@ -1,0 +1,35 @@
+model_name: lattice_cli_matrix
+parameters:
+  command: [validate, generate]
+  input_source: [stdin, file]
+  schema_encoding: [json, yaml]
+  schema_profile: [simple, constrained, invalid]
+  output_format: [json, text, table]
+constraints:
+  - type: invalid_pair
+    if: { parameter: command, value: validate }
+    then_not: { parameter: output_format, value: table }
+  - type: invalid_pair
+    if: { parameter: command, value: generate }
+    then_not: { parameter: output_format, value: text }
+  - type: forced
+    assignments:
+      - { parameter: command, value: validate }
+      - { parameter: input_source, value: stdin }
+      - { parameter: schema_profile, value: invalid }
+      - { parameter: output_format, value: json }
+  - type: forced
+    assignments:
+      - { parameter: command, value: generate }
+      - { parameter: input_source, value: file }
+      - { parameter: schema_encoding, value: yaml }
+      - { parameter: schema_profile, value: constrained }
+      - { parameter: output_format, value: table }
+  - type: forced
+    assignments:
+      - { parameter: command, value: generate }
+      - { parameter: input_source, value: stdin }
+      - { parameter: schema_encoding, value: json }
+      - { parameter: schema_profile, value: simple }
+      - { parameter: output_format, value: json }
+strength: 2

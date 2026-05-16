@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "model_name": "agent_bootstrap_matrix",
+    "strength": 2,
+    "test_count": 10,
+    "exhaustive_count": 144,
+    "reduction": "14.4x",
+    "coverage": "100.0%",
+    "seed": 42
+  },
+  "coverage_curve": [
+    {
+      "scenario": 1,
+      "cumulative_pct": 18.5
+    },
+    {
+      "scenario": 2,
+      "cumulative_pct": 29.6
+    },
+    {
+      "scenario": 3,
+      "cumulative_pct": 46.9
+    },
+    {
+      "scenario": 4,
+      "cumulative_pct": 61.7
+    },
+    {
+      "scenario": 5,
+      "cumulative_pct": 71.6
+    },
+    {
+      "scenario": 6,
+      "cumulative_pct": 79.0
+    },
+    {
+      "scenario": 7,
+      "cumulative_pct": 87.7
+    },
+    {
+      "scenario": 8,
+      "cumulative_pct": 95.1
+    },
+    {
+      "scenario": 9,
+      "cumulative_pct": 98.8
+    },
+    {
+      "scenario": 10,
+      "cumulative_pct": 100.0
+    }
+  ],
+  "scenarios": [
+    {
+      "id": 1,
+      "values": {
+        "codex_detection": "unavailable",
+        "claude_detection": "available",
+        "codex_directive": "default",
+        "claude_directive": "default",
+        "target_mode": "explicit",
+        "output_format": "json"
+      }
+    },
+    {
+      "id": 2,
+      "values": {
+        "codex_detection": "unavailable",
+        "claude_detection": "unavailable",
+        "codex_directive": "default",
+        "claude_directive": "default",
+        "target_mode": "default",
+        "output_format": "json"
+      }
+    },
+    {
+      "id": 3,
+      "values": {
+        "codex_detection": "available",
+        "claude_detection": "available",
+        "codex_directive": "skip",
+        "claude_directive": "skip",
+        "target_mode": "explicit",
+        "output_format": "text"
+      }
+    },
+    {
+      "id": 4,
+      "values": {
+        "codex_detection": "available",
+        "claude_detection": "unavailable",
+        "codex_directive": "force",
+        "claude_directive": "force",
+        "target_mode": "explicit",
+        "output_format": "text"
+      }
+    },
+    {
+      "id": 5,
+      "values": {
+        "codex_detection": "available",
+        "claude_detection": "available",
+        "codex_directive": "default",
+        "claude_directive": "force",
+        "target_mode": "default",
+        "output_format": "json"
+      }
+    },
+    {
+      "id": 6,
+      "values": {
+        "codex_detection": "available",
+        "claude_detection": "available",
+        "codex_directive": "force",
+        "claude_directive": "default",
+        "target_mode": "default",
+        "output_format": "text"
+      }
+    },
+    {
+      "id": 7,
+      "values": {
+        "codex_detection": "unavailable",
+        "claude_detection": "unavailable",
+        "codex_directive": "force",
+        "claude_directive": "skip",
+        "target_mode": "default",
+        "output_format": "json"
+      }
+    },
+    {
+      "id": 8,
+      "values": {
+        "codex_detection": "unavailable",
+        "claude_detection": "unavailable",
+        "codex_directive": "skip",
+        "claude_directive": "force",
+        "target_mode": "default",
+        "output_format": "json"
+      }
+    },
+    {
+      "id": 9,
+      "values": {
+        "codex_detection": "unavailable",
+        "claude_detection": "available",
+        "codex_directive": "default",
+        "claude_directive": "skip",
+        "target_mode": "explicit",
+        "output_format": "text"
+      }
+    },
+    {
+      "id": 10,
+      "values": {
+        "codex_detection": "available",
+        "claude_detection": "available",
+        "codex_directive": "skip",
+        "claude_directive": "default",
+        "target_mode": "explicit",
+        "output_format": "json"
+      }
+    }
+  ]
+}

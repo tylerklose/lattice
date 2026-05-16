@@ -1,0 +1,42 @@
+model_name: payments
+parameters:
+  - name: payment_method
+    values: [credit_card, paypal, apple_pay]
+  - name: region
+    values: [US, UK]
+  - name: currency
+    values: [USD, GBP]
+  - name: os
+    values: [macos, windows]
+  - name: browser
+    values: [chrome, safari]
+    weights: [0.7, 0.3]
+  - name: loyalty
+    values: [none, gold]
+constraints:
+  - type: invalid_pair
+    if: { parameter: payment_method, value: apple_pay }
+    then_not: { parameter: os, value: windows }
+  - type: bidirectional
+    pair:
+      - { parameter: browser, value: safari }
+      - { parameter: os, value: macos }
+  - type: forward_dep
+    source: { parameter: loyalty, value: gold }
+    target: { parameter: payment_method, value: credit_card }
+  - type: conditional
+    parameter: card_type
+    values: [visa, mastercard]
+    parent: payment_method
+    applies_when: [credit_card]
+  - type: forced
+    assignments:
+      - { parameter: payment_method, value: apple_pay }
+      - { parameter: browser, value: safari }
+      - { parameter: os, value: macos }
+  - type: higher_order
+    if_all:
+      - { parameter: payment_method, value: apple_pay }
+      - { parameter: region, value: UK }
+    then_not: { parameter: currency, value: USD }
+strength: 2

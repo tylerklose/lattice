@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lattice-cover"
+version = "0.1.0"
+description = "Deterministic combinatorial coverage for coding harness workflows."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [
+  { name = "Tyler Klose", email = "tylerklose@gmail.com" },
+]
+keywords = [
+  "coding-agents",
+  "combinatorial-testing",
+  "pairwise-testing",
+  "test-generation",
+  "coverage",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Software Development :: Testing",
+]
+dependencies = [
+  "PyYAML>=6,<7",
+]
+
+[project.urls]
+Homepage = "https://github.com/tylerklose/lattice"
+Repository = "https://github.com/tylerklose/lattice"
+Issues = "https://github.com/tylerklose/lattice/issues"
+
+[project.optional-dependencies]
+solver = [
+  "ortools>=9.10,<10",
+]
+
+[project.scripts]
+lattice = "lattice.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+lattice = [
+  "resources/codex/lattice-workflow/SKILL.md",
+  "resources/codex/lattice-workflow/agents/*.yaml",
+  "resources/codex/lattice-workflow/references/*.md",
+  "resources/claude/lattice-workflow/SKILL.md",
+  "resources/claude/lattice-workflow/references/*.md",
+]

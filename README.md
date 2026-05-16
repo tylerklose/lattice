@@ -1,0 +1,157 @@
+# Lattice
+
+Lattice is a deterministic combinatorial reasoning backend for coding harnesses.
+
+Project status: experimental `0.1`. The CLI and agent skill bootstrap path work, but the schema contract may still evolve while the project finds its first users.
+
+The big picture is simple:
+
+1. A coding harness extracts a schema from code, a PRD, or a plan.
+2. The harness sends that schema to Lattice as JSON or YAML.
+3. `lattice generate` turns the schema into a deterministic pairwise or t-way scenario surface.
+4. The harness uses that output to strengthen a plan or write tests.
+
+The harness handles extraction and synthesis. Lattice handles validation, constraints, and combinatorics.
+
+A schema should usually be scoped to one coherent interaction surface: one feature, one workflow, one service behavior, one endpoint family, or one data-model slice.
+
+## Install For Agents
+
+Start with [docs/install.md](docs/install.md) when you want a coding agent to adopt Lattice.
+
+That page covers:
+
+- installing the `lattice` CLI
+- installing or recreating the `lattice-workflow` Codex and Claude Code skills with `lattice agent bootstrap`
+- adding an agent memory for when to reach for Lattice
+- running a smoke test over stdin
+
+## Why This Shape
+
+Lattice is split into three seams on purpose:
+
+- `parser.py`: the schema contract between a harness and the engine
+- `constraints.py`: deterministic feasibility and constraint reasoning
+- `ipog.py`: covering-array generation and coverage accounting
+
+That keeps the math isolated from any Claude Code, Codex, or other harness wrapper.
+
+## CLI
+
+```bash
+# stdin-first, harness-friendly
+cat schema.json | lattice validate
+cat schema.json | lattice generate
+
+# file input is optional and useful for debugging
+lattice validate schema.yaml --format text
+lattice generate schema.yaml --strength 3 --format table
+
+# explicit machine-readable validation
+lattice validate schema.json --format json
+```
+
+Supported output formats:
+
+- `json`
+- `table`
+- `csv`
+- `summary`
+
+`generate` defaults to JSON because the primary consumer is a coding harness. File-based schemas are supported, but the schema file is transport, not the product surface.
+
+## Model Features
+
+Lattice currently supports:
+
+- pairwise and t-way generation
+- JSON and YAML schema transport
+- `invalid_pair`
+- `bidirectional`
+- `forward_dep`
+- `conditional`
+- `forced`
+- `higher_order`
+- inline parameter `weights`
+- deterministic generation via `--seed`
+
+`conditional` parameters are first-class schema features. The parser expands them into concrete parameter domains and the constraint engine enforces `N/A` semantics automatically.
+
+## Solver Notes
+
+The current engine is deterministic and self-contained. If `ortools` is installed via the `solver` extra, Lattice can use CP-SAT feasibility checks for partial assignments; otherwise it falls back to the built-in backtracking solver.
+
+Install in editable mode while developing:
+
+```bash
+python3 -m pip install -e /path/to/lattice
+```
+
+Install with the optional solver backend:
+
+```bash
+python3 -m pip install -e "/path/to/lattice[solver]"
+```
+
+## Using In Other Projects
+
+The normal workflow in another repo is:
+
+1. install Lattice once into the Python environment your harness uses
+2. have the harness emit a schema on stdin
+3. call `lattice validate`
+4. call `lattice generate`
+5. consume the JSON output inside the harness
+
+Example:
+
+```bash
+cat schema.json | lattice validate
+cat schema.json | lattice generate
+```
+
+If you want Codex or another coding agent to use the same workflow in another repo, start with [docs/install.md](docs/install.md), then see [docs/using-in-other-projects.md](docs/using-in-other-projects.md).
+
+Scope each schema to the thing being worked on: the feature, service, workflow, or behavior slice under active design or test work.
+
+The shortest agent adoption path after install is:
+
+```bash
+lattice agent bootstrap
+lattice agent doctor
+```
+
+`bootstrap` only installs skills for harnesses detected on the machine.
+
+## Harness Contract
+
+Lattice is intentionally narrow. A coding harness owns extraction and interpretation; Lattice owns schema validation and deterministic scenario generation.
+
+- plan synthesis: harness extracts schema from a plan, Lattice generates scenarios, harness strengthens the plan
+- test synthesis: harness extracts schema from code/tests, Lattice generates scenarios, harness writes missing tests
+
+See [docs/agent-handoff.md](docs/agent-handoff.md) for the repository-level handoff shape.
+See [docs/workflows.md](docs/workflows.md) for concrete Codex/Claude usage patterns.
+See [docs/using-in-other-projects.md](docs/using-in-other-projects.md) for portable installation and adoption.
+See [docs/lattice-on-lattice.md](docs/lattice-on-lattice.md) for a worked example of Lattice testing its own agent bootstrap surface.
+
+## Skill
+
+This repo includes a repo-local Codex skill at `.codex/skills/lattice-workflow/`.
+
+Use it when you want a coding harness to:
+
+- extract a schema from code or a spec
+- validate the schema before generation
+- run Lattice deterministically
+- interpret the rows as design review scenarios or test cases
+
+## Examples
+
+The `examples/` directory contains four end-to-end examples:
+
+- `plan-mode-saved-search`: plan -> schema -> generated scenarios
+- `test-mode-checkout`: code/test surface -> schema -> generated scenarios
+- `three-way-notifications`: strength-3 schema -> generated scenarios
+- `lattice-self-test`: Lattice generates a matrix for testing Lattice itself
+- `agent-bootstrap-matrix`: Lattice generates a matrix for testing agent skill bootstrap behavior
