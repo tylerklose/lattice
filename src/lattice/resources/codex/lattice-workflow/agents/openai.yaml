@@ -1,7 +1,7 @@
 interface:
   display_name: "Lattice Workflow"
-  short_description: "Generate pairwise coverage for plans and tests"
-  default_prompt: "Use $lattice-workflow to model interacting states, extract a Lattice schema, validate it, generate pairwise scenarios, and use the rows to strengthen the plan or write tests."
+  short_description: "Generate pairwise coverage for plans, tests, and variants"
+  default_prompt: "Use $lattice-workflow to model interacting states or variant dimensions, extract a Lattice schema, validate it, generate pairwise rows, and use the rows to strengthen the plan, tests, fixtures, or visual review."
 
 policy:
   allow_implicit_invocation: true

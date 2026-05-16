@@ -1,19 +1,23 @@
 # Lattice
 
-Lattice is a deterministic combinatorial reasoning backend for coding harnesses.
+Lattice turns finite, constrained parameter spaces into deterministic coverage rows.
+
+It is built to be easy for coding agents to call, but it is not limited to backend logic. Use it whenever a surface has dimensions, values, rules, and an evaluator: a feature, workflow, API, state machine, Rails partial, design-system component, email template, config matrix, or data-model slice.
 
 Project status: experimental `0.1`. The CLI and agent skill bootstrap path work, but the schema contract may still evolve while the project finds its first users.
 
 The big picture is simple:
 
-1. A coding harness extracts a schema from code, a PRD, or a plan.
+1. A person or agent names the surface and extracts parameters, values, and constraints.
 2. The harness sends that schema to Lattice as JSON or YAML.
-3. `lattice generate` turns the schema into a deterministic pairwise or t-way scenario surface.
-4. The harness uses that output to strengthen a plan or write tests.
+3. `lattice generate` turns the schema into deterministic pairwise or t-way coverage rows.
+4. The harness maps those rows to an evaluator: tests, screenshots, contact sheets, visual diffs, sandbox calls, fixtures, or plan review.
 
 The harness handles extraction and synthesis. Lattice handles validation, constraints, and combinatorics.
 
-A schema should usually be scoped to one coherent interaction surface: one feature, one workflow, one service behavior, one endpoint family, or one data-model slice.
+A schema should usually be scoped to one coherent surface: one feature, one workflow, one service behavior, one endpoint family, one rendering surface, one component's variant space, one template family, one config matrix, or one data-model slice.
+
+Reach for Lattice when the combinations are easy to describe but annoying or risky to enumerate by hand. The product is not the schema file. The product is the compact set of rows that tells an evaluator what to inspect.
 
 ## Install For Agents
 
@@ -21,14 +25,14 @@ Start with [docs/install.md](docs/install.md) when you want a coding agent to ad
 
 That page covers:
 
-- installing the `lattice` CLI
+- installing the `lattice` CLI with `pipx`, `uvx`, or `pip`
 - installing or recreating the `lattice-workflow` Codex and Claude Code skills with `lattice agent bootstrap`
 - adding an agent memory for when to reach for Lattice
 - running a smoke test over stdin
 
 ## Why This Shape
 
-Lattice is split into three seams on purpose:
+Lattice is split into three small modules on purpose:
 
 - `parser.py`: the schema contract between a harness and the engine
 - `constraints.py`: deterministic feasibility and constraint reasoning
@@ -58,7 +62,7 @@ Supported output formats:
 - `csv`
 - `summary`
 
-`generate` defaults to JSON because the primary consumer is a coding harness. File-based schemas are supported, but the schema file is transport, not the product surface.
+`generate` defaults to JSON because the primary consumer is usually a coding harness. File-based schemas are supported, but the schema file is transport, not the product surface.
 
 ## Model Features
 
@@ -112,7 +116,7 @@ cat schema.json | lattice generate
 
 If you want Codex or another coding agent to use the same workflow in another repo, start with [docs/install.md](docs/install.md), then see [docs/using-in-other-projects.md](docs/using-in-other-projects.md).
 
-Scope each schema to the thing being worked on: the feature, service, workflow, or behavior slice under active design or test work.
+Scope each schema to the thing being worked on: the feature, service, workflow, component, rendering surface, template family, config matrix, or behavior slice under active design or test work.
 
 The shortest agent adoption path after install is:
 
@@ -125,10 +129,12 @@ lattice agent doctor
 
 ## Harness Contract
 
-Lattice is intentionally narrow. A coding harness owns extraction and interpretation; Lattice owns schema validation and deterministic scenario generation.
+Lattice is intentionally narrow. A harness owns extraction and interpretation; Lattice owns schema validation and deterministic row generation.
 
 - plan synthesis: harness extracts schema from a plan, Lattice generates scenarios, harness strengthens the plan
 - test synthesis: harness extracts schema from code/tests, Lattice generates scenarios, harness writes missing tests
+- variant coverage: harness extracts component, template, or design-system variants, Lattice generates rows, harness renders screenshots, a contact sheet, or visual diffs
+- evaluator coverage: harness extracts a config or sandbox matrix, Lattice generates rows, harness runs each row through the relevant evaluator
 
 See [docs/agent-handoff.md](docs/agent-handoff.md) for the repository-level handoff shape.
 See [docs/workflows.md](docs/workflows.md) for concrete Codex/Claude usage patterns.
@@ -141,17 +147,18 @@ This repo includes a repo-local Codex skill at `.codex/skills/lattice-workflow/`
 
 Use it when you want a coding harness to:
 
-- extract a schema from code or a spec
+- extract a schema from code, a spec, or a variant surface
 - validate the schema before generation
 - run Lattice deterministically
-- interpret the rows as design review scenarios or test cases
+- interpret the rows as design review scenarios, rendered variants, fixtures, or test cases
 
 ## Examples
 
-The `examples/` directory contains four end-to-end examples:
+The `examples/` directory contains six end-to-end examples:
 
 - `plan-mode-saved-search`: plan -> schema -> generated scenarios
 - `test-mode-checkout`: code/test surface -> schema -> generated scenarios
 - `three-way-notifications`: strength-3 schema -> generated scenarios
 - `lattice-self-test`: Lattice generates a matrix for testing Lattice itself
 - `agent-bootstrap-matrix`: Lattice generates a matrix for testing agent skill bootstrap behavior
+- `component-variant-matrix`: component/rendering surface -> schema -> generated visual review variants

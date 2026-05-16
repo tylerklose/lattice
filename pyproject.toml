@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "lattice-cover"
 version = "0.1.0"
-description = "Deterministic combinatorial coverage for coding harness workflows."
+description = "Deterministic combinatorial coverage for agent workflows and constrained variant surfaces."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
@@ -16,8 +16,10 @@ authors = [
 keywords = [
   "coding-agents",
   "combinatorial-testing",
+  "component-variants",
   "pairwise-testing",
   "test-generation",
+  "visual-testing",
   "coverage",
 ]
 classifiers = [

@@ -3,10 +3,12 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections.abc import Callable, Sequence
 from pathlib import Path
-from typing import Sequence
+from typing import Any
 
 from lattice.agent import (
+    AgentSetup,
     DEFAULT_PROMPT,
     MEMORY_SNIPPET,
     claude_code_available,
@@ -22,6 +24,8 @@ from lattice.constraints import ConstraintEngine, ConstraintError
 from lattice.formatters import render_output
 from lattice.ipog import generate_covering_array
 from lattice.parser import ModelIOError, ValidationError, load_model
+
+DEFAULT_AGENT_FORMAT = "text"
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -87,24 +91,24 @@ def _build_parser() -> argparse.ArgumentParser:
     bootstrap.add_argument("--skip-codex", action="store_true", help="Do not install the Codex skill.")
     bootstrap.add_argument("--skip-claude", action="store_true", help="Do not install the Claude Code skill.")
     bootstrap.add_argument("--force-claude", action="store_true", help="Install the Claude Code skill even if Claude Code is not detected.")
-    bootstrap.add_argument("--format", default="text", choices=("text", "json"))
+    bootstrap.add_argument("--format", default=DEFAULT_AGENT_FORMAT, choices=("text", "json"))
 
     install_skill = agent_subparsers.add_parser("install-codex-skill", help="Install the bundled Codex skill.")
     install_skill.add_argument("--target", help="Destination skill directory. Defaults to $CODEX_HOME or ~/.codex.")
-    install_skill.add_argument("--format", default="text", choices=("text", "json"))
+    install_skill.add_argument("--format", default=DEFAULT_AGENT_FORMAT, choices=("text", "json"))
 
     install_claude = agent_subparsers.add_parser("install-claude-skill", help="Install the bundled Claude Code skill.")
     install_claude.add_argument("--target", help="Destination skill directory. Defaults to ~/.claude/skills.")
     install_claude.add_argument("--force", action="store_true", help="Install even if Claude Code is not detected.")
-    install_claude.add_argument("--format", default="text", choices=("text", "json"))
+    install_claude.add_argument("--format", default=DEFAULT_AGENT_FORMAT, choices=("text", "json"))
 
     memory = agent_subparsers.add_parser("memory", help="Print the persistent memory snippet for agents.")
-    memory.add_argument("--format", default="text", choices=("text", "json"))
+    memory.add_argument("--format", default=DEFAULT_AGENT_FORMAT, choices=("text", "json"))
 
     doctor = agent_subparsers.add_parser("doctor", help="Check whether agent skills are installed.")
     doctor.add_argument("--target", help="Codex skill directory to check. Defaults to $CODEX_HOME or ~/.codex.")
     doctor.add_argument("--claude-target", help="Claude Code skill directory to check. Defaults to ~/.claude/skills.")
-    doctor.add_argument("--format", default="text", choices=("text", "json"))
+    doctor.add_argument("--format", default=DEFAULT_AGENT_FORMAT, choices=("text", "json"))
     return parser
 
 
@@ -159,54 +163,46 @@ def _run_agent_command(args: argparse.Namespace) -> int:
         claude_available = claude_code_available()
         codex_skill_path = Path(args.target).expanduser() if args.target else default_codex_skill_path()
         claude_skill_path = Path(args.claude_target).expanduser() if args.claude_target else default_claude_skill_path()
-
-        codex_setup = None
-        codex_skipped_reason = None
-        if args.skip_codex:
-            codex_skipped_reason = "skipped by --skip-codex"
-        elif codex_detected or args.force_codex:
-            codex_setup = install_codex_skill(args.target)
-        else:
-            codex_skipped_reason = "Codex was not detected"
-
-        claude_setup = None
-        claude_skipped_reason = None
-        if args.skip_claude:
-            claude_skipped_reason = "skipped by --skip-claude"
-        elif claude_available or args.force_claude:
-            claude_setup = install_claude_skill(args.claude_target, force=args.force_claude)
-        else:
-            claude_skipped_reason = "Claude Code was not detected"
+        codex_setup, codex_skipped_reason = _maybe_install_agent_skill(
+            detected=codex_detected,
+            force=args.force_codex,
+            skip=args.skip_codex,
+            skip_flag="--skip-codex",
+            unavailable_reason="Codex was not detected",
+            install=lambda: install_codex_skill(args.target),
+        )
+        claude_setup, claude_skipped_reason = _maybe_install_agent_skill(
+            detected=claude_available,
+            force=args.force_claude,
+            skip=args.skip_claude,
+            skip_flag="--skip-claude",
+            unavailable_reason="Claude Code was not detected",
+            install=lambda: install_claude_skill(args.claude_target, force=args.force_claude),
+        )
 
         if args.format == "json":
             payload = {
                 "status": "ok",
-                "codex": {
-                    "available": codex_detected,
-                    "installed": codex_setup is not None,
-                    "skill_path": str(codex_setup.skill_path) if codex_setup else str(codex_skill_path),
-                    "skipped_reason": codex_skipped_reason,
-                },
-                "claude": {
-                    "available": claude_available,
-                    "installed": claude_setup is not None,
-                    "skill_path": str(claude_setup.skill_path) if claude_setup else str(claude_skill_path),
-                    "skipped_reason": claude_skipped_reason,
-                },
+                "codex": _agent_surface_payload(
+                    detected=codex_detected,
+                    setup=codex_setup,
+                    skill_path=codex_skill_path,
+                    skipped_reason=codex_skipped_reason,
+                ),
+                "claude": _agent_surface_payload(
+                    detected=claude_available,
+                    setup=claude_setup,
+                    skill_path=claude_skill_path,
+                    skipped_reason=claude_skipped_reason,
+                ),
                 "memory": MEMORY_SNIPPET,
                 "default_prompt": DEFAULT_PROMPT,
             }
             print(json.dumps(payload, indent=2))
             return 0
 
-        if codex_setup is not None:
-            print(f"Installed `{codex_setup.skill_name}` Codex skill at {codex_setup.skill_path}")
-        elif codex_skipped_reason:
-            print(f"Codex skill: not installed ({codex_skipped_reason})")
-        if claude_setup is not None:
-            print(f"Installed `{claude_setup.skill_name}` Claude Code skill at {claude_setup.skill_path}")
-        elif claude_skipped_reason:
-            print(f"Claude Code skill: not installed ({claude_skipped_reason})")
+        _print_agent_install_status("Codex", codex_setup, codex_skipped_reason)
+        _print_agent_install_status("Claude Code", claude_setup, claude_skipped_reason)
         print("")
         print("Agent memory:")
         print(MEMORY_SNIPPET)
@@ -217,13 +213,7 @@ def _run_agent_command(args: argparse.Namespace) -> int:
 
     if args.agent_command == "install-codex-skill":
         setup = install_codex_skill(args.target)
-        if args.format == "json":
-            payload = {"status": "ok", **setup.to_json()}
-            print(json.dumps(payload, indent=2))
-            return 0
-
-        print(f"Installed `{setup.skill_name}` Codex skill at {setup.skill_path}")
-        return 0
+        return _emit_agent_setup(setup, "Codex", args.format)
 
     if args.agent_command == "install-claude-skill":
         try:
@@ -235,13 +225,12 @@ def _run_agent_command(args: argparse.Namespace) -> int:
                 print(str(exc), file=sys.stderr)
             return 1
 
-        if args.format == "json":
-            payload = {"status": "ok", "available": claude_code_available(), **setup.to_json()}
-            print(json.dumps(payload, indent=2))
-            return 0
-
-        print(f"Installed `{setup.skill_name}` Claude Code skill at {setup.skill_path}")
-        return 0
+        return _emit_agent_setup(
+            setup,
+            "Claude Code",
+            args.format,
+            extra={"available": claude_code_available()},
+        )
 
     if args.agent_command == "memory":
         if args.format == "json":
@@ -283,3 +272,60 @@ def _run_agent_command(args: argparse.Namespace) -> int:
 
     print(f"Unknown agent command `{args.agent_command}`.", file=sys.stderr)
     return 2
+
+
+def _maybe_install_agent_skill(
+    *,
+    detected: bool,
+    force: bool,
+    skip: bool,
+    skip_flag: str,
+    unavailable_reason: str,
+    install: Callable[[], AgentSetup],
+) -> tuple[AgentSetup | None, str | None]:
+    if skip:
+        return None, f"skipped by {skip_flag}"
+    if detected or force:
+        return install(), None
+    return None, unavailable_reason
+
+
+def _agent_surface_payload(
+    *,
+    detected: bool,
+    setup: AgentSetup | None,
+    skill_path: Path,
+    skipped_reason: str | None,
+) -> dict[str, Any]:
+    return {
+        "available": detected,
+        "installed": setup is not None,
+        "skill_path": str(setup.skill_path if setup else skill_path),
+        "skipped_reason": skipped_reason,
+    }
+
+
+def _emit_agent_setup(
+    setup: AgentSetup,
+    label: str,
+    output_format: str,
+    *,
+    extra: dict[str, Any] | None = None,
+) -> int:
+    if output_format == "json":
+        print(json.dumps({"status": "ok", **(extra or {}), **setup.to_json()}, indent=2))
+        return 0
+
+    print(f"Installed `{setup.skill_name}` {label} skill at {setup.skill_path}")
+    return 0
+
+
+def _print_agent_install_status(
+    label: str,
+    setup: AgentSetup | None,
+    skipped_reason: str | None,
+) -> None:
+    if setup is not None:
+        print(f"Installed `{setup.skill_name}` {label} skill at {setup.skill_path}")
+    elif skipped_reason:
+        print(f"{label} skill: not installed ({skipped_reason})")

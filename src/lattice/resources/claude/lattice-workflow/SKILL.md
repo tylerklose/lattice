@@ -1,6 +1,6 @@
 ---
 name: lattice-workflow
-description: Use when planning or testing behavior with interacting states, roles, permissions, feature flags, modes, providers, optional fields, validation branches, lifecycle states, combinatorial edge cases, pairwise coverage, or t-way coverage. Extract a Lattice schema, run the local Lattice CLI, and use generated rows to strengthen plans or tests.
+description: Use when planning or testing behavior or variant surfaces with interacting states, roles, permissions, feature flags, modes, providers, optional fields, component props, rendering branches, template variants, config matrices, lifecycle states, combinatorial edge cases, pairwise coverage, or t-way coverage. Extract a Lattice schema, run the local Lattice CLI, and use generated rows to strengthen plans, tests, fixtures, rendered variants, or review matrices.
 ---
 
 # Lattice Workflow
@@ -13,9 +13,11 @@ Use this skill when the task is any of:
 
 - derive a combinatorial model from a feature or PRD
 - derive a test matrix from existing code
+- derive a variant matrix from a component, partial, template, design-system story, or config surface
 - convert edge cases into explicit parameter/value constraints
 - generate pairwise or 3-way scenarios without hand-enumerating combinations
-- review a plan involving roles, permissions, modes, providers, feature flags, optional fields, validation branches, or lifecycle states
+- render a compact visual review matrix instead of every possible variant
+- review a plan involving roles, permissions, modes, providers, feature flags, optional fields, component props, rendering branches, template variants, config matrices, or lifecycle states
 - find coverage gaps where bugs are likely to hide in interactions rather than single branches
 
 Do not invent pairwise combinations manually. The schema is the contract. The generated rows are the source of truth. The schema file is optional transport.
@@ -45,7 +47,7 @@ lattice agent install-claude-skill
 ## Workflow
 
 1. Extract the schema.
-   First choose the scope. A schema should usually describe one coherent interaction surface: one feature, one workflow, one service behavior, one endpoint family, or one data-model interaction surface. Then choose parameters that represent independent decisions or state partitions inside that scope. Choose values that are meaningful partitions, not every literal in the codebase.
+   First choose the scope. A schema should usually describe one coherent interaction surface: one feature, one workflow, one service behavior, one endpoint family, one rendering surface, one component's variant space, one template family, one config matrix, or one data-model interaction surface. Then choose parameters that represent independent decisions or state partitions inside that scope. Choose values that are meaningful partitions, not every literal in the codebase.
 2. Encode constraints.
    Prefer the smallest constraint type that matches the rule. Use `conditional` instead of hand-writing `N/A` values.
 3. Validate before generation.
@@ -76,11 +78,11 @@ lattice agent install-claude-skill
 
    Default to pairwise unless the user explicitly asks for a higher strength.
 5. Interpret the output.
-   In plan mode, turn rows into plan revisions, missing decisions, and review scenarios. In test mode, diff the rows against the existing tests and write the missing cases.
+   In plan mode, turn rows into plan revisions, missing decisions, and review scenarios. In test mode, diff the rows against the existing tests and write the missing cases. In variant mode, turn rows into fixtures, rendered variants, screenshots, contact sheets, visual diff inputs, or review checklists.
 
 ## Modeling Rules
 
-- Scope one schema to one interaction surface. Do not default to the whole app unless the app is genuinely small and the behavior surface is still coherent.
+- Scope one schema to one interaction surface. Do not default to the whole app unless the app is genuinely small and the behavior or rendering surface is still coherent.
 - Keep parameter names stable and implementation-adjacent.
 - Use value partitions such as `present` and `absent`, not brittle prose.
 - Avoid derived duplicate parameters. If one field is determined by another, represent that as a constraint.

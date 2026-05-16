@@ -4,11 +4,11 @@ Use this file when you are extracting a schema from code or prose and need tight
 
 ## Parameter Selection
 
-- Scope one schema to one coherent behavior surface.
-  Good scopes: one feature, one service behavior, one workflow, one endpoint family, one state-machine slice.
+- Scope one schema to one coherent behavior or rendering surface.
+  Good scopes: one feature, one service behavior, one workflow, one endpoint family, one state-machine slice, one component's variant space, one template family.
   Bad default scope: the whole app.
 - Model the decisions that change behavior, not every field in a payload.
-- Prefer parameters that are visible in tests, UI branches, validation logic, or feature flags.
+- Prefer parameters that are visible in tests, UI branches, rendering branches, validation logic, template variants, component props, or feature flags.
 - Split large raw domains into behavioral partitions.
   Good: `pay_range = present|absent`
   Bad: every exact salary string
@@ -34,7 +34,7 @@ Choose the smallest expressive type. If a rule can be represented as `invalid_pa
 
 ## Extraction Process
 
-1. Choose the behavior surface you are modeling.
+1. Choose the behavior or rendering surface you are modeling.
 2. Start from branches, validations, and business rules inside that scope.
 3. Convert prose like "only when", "must", "cannot", and "except" into candidate constraints.
 4. Remove cosmetic parameters that do not affect behavior.
@@ -46,4 +46,5 @@ Choose the smallest expressive type. If a rule can be represented as `invalid_pa
 
 - Plan mode: each row becomes a review scenario or a missing decision in the plan.
 - Test mode: each row becomes a candidate setup matrix.
+- Variant mode: each row becomes a rendered variant, fixture, screenshot, visual diff input, contact-sheet item, or review checklist item.
 - Generated rows are not test names by themselves. The agent still needs to map them to application-specific assertions.

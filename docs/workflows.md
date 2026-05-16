@@ -4,7 +4,7 @@ This file makes the harness-to-Lattice boundary explicit. Lattice is one determi
 
 ## Core Contract
 
-1. The harness inspects code, a PRD, or a design thread.
+1. The harness inspects code, a PRD, a design thread, or a variant-heavy surface.
 2. The harness extracts a structured schema for one coherent interaction surface.
 3. The harness runs `lattice validate`.
 4. The harness runs `lattice generate`.
@@ -12,7 +12,7 @@ This file makes the harness-to-Lattice boundary explicit. Lattice is one determi
 
 The harness does not invent the pairwise combinations itself.
 
-Good default scope: one feature, one workflow, one service behavior, one endpoint family, or one state-machine slice.
+Good default scope: one feature, one workflow, one service behavior, one endpoint family, one rendering surface, one component's variant space, one template family, one config matrix, or one state-machine slice.
 
 ## Command Pattern
 
@@ -93,6 +93,29 @@ Reference example:
 - [examples/three-way-notifications/brief.md](examples/three-way-notifications/brief.md)
 - [examples/three-way-notifications/model.yaml](examples/three-way-notifications/model.yaml)
 - [examples/three-way-notifications/scenarios.json](examples/three-way-notifications/scenarios.json)
+
+## Variant Rendering Mode
+
+Use when the starting point is a visual surface, component, partial, email template, PDF template, design-system story, or other finite rendering matrix.
+
+Recommended prompt shape:
+
+1. Ask the agent to identify rendering dimensions, meaningful value partitions, and true impossibilities.
+2. Require a structured schema.
+3. Require generated rows to be rendered or prepared for the chosen evaluator.
+4. Ask for the rows to become a contact sheet, screenshot matrix, fixture set, visual diff run, or review checklist.
+
+Example:
+
+```text
+Use $lattice-workflow. Inspect this component's variant surface, extract a Lattice schema, validate it, generate pairwise rows, and turn the rows into a visual review matrix.
+```
+
+Reference example:
+
+- [examples/component-variant-matrix/brief.md](examples/component-variant-matrix/brief.md)
+- [examples/component-variant-matrix/model.yaml](examples/component-variant-matrix/model.yaml)
+- [examples/component-variant-matrix/scenarios.json](examples/component-variant-matrix/scenarios.json)
 
 ## Self-Hosting Mode
 

@@ -19,6 +19,18 @@ python3 -m pip install -e "/path/to/lattice[solver]"
 Once `lattice-cover` is published to the package index your agents use, install with:
 
 ```bash
+pipx install lattice-cover
+```
+
+For one-shot use from an agent, run the package-provided command through `uvx`:
+
+```bash
+uvx --from lattice-cover lattice agent bootstrap
+```
+
+Plain `pip` is still fine when the target harness owns the Python environment:
+
+```bash
 python3 -m pip install lattice-cover
 ```
 
@@ -36,11 +48,11 @@ If that fails, install it into the current Python environment before continuing.
 
 In another repository, the primary loop should be:
 
-1. the harness inspects code, tests, or a plan
+1. the harness inspects code, tests, a plan, a component, a template, or a config matrix
 2. the harness extracts a schema
 3. the harness pipes that schema to `lattice validate`
 4. the harness pipes that schema to `lattice generate`
-5. the harness uses the generated rows to revise a plan or write tests
+5. the harness uses the generated rows to revise a plan, write tests, render variants, build fixtures, or run visual review
 
 Example:
 
@@ -94,6 +106,12 @@ Test work:
 
 ```text
 Use $lattice-workflow. Inspect this code and test surface, extract a Lattice schema, validate it, generate pairwise scenarios, and turn uncovered rows into concrete tests.
+```
+
+Variant work:
+
+```text
+Use $lattice-workflow. Inspect this component or template variant surface, extract a Lattice schema, validate it, generate pairwise rows, and turn the rows into fixtures, rendered variants, or a visual review matrix.
 ```
 
 ## When To Persist Schemas

@@ -24,6 +24,19 @@ lattice --help
 Once `lattice-cover` is published to the package index your agents use, the install command should become:
 
 ```bash
+pipx install lattice-cover
+lattice --help
+```
+
+For a one-shot agent setup without a persistent install, use `uvx`:
+
+```bash
+uvx --from lattice-cover lattice agent bootstrap
+```
+
+If neither `pipx` nor `uvx` is available, plain `pip` still works:
+
+```bash
 python3 -m pip install lattice-cover
 lattice --help
 ```
@@ -95,7 +108,7 @@ rsync -a --delete /path/to/lattice/src/lattice/resources/claude/lattice-workflow
 Then ask Codex to use it:
 
 ```text
-Use $lattice-workflow. Inspect this feature or test surface, extract a Lattice schema, validate it, generate pairwise scenarios, and use the rows to strengthen the plan or tests.
+Use $lattice-workflow. Inspect this feature, test surface, component variant space, template, or config matrix; extract a Lattice schema; validate it; generate pairwise rows; and use the rows to strengthen the plan, tests, fixtures, or visual review.
 ```
 
 ## 3. If The Skill Cannot Be Downloaded
@@ -105,20 +118,20 @@ If an agent cannot copy the bundled skill, ask it to create a skill named `latti
 ````markdown
 ---
 name: lattice-workflow
-description: Use when planning or testing behavior with interacting states, roles, permissions, feature flags, modes, providers, optional fields, validation branches, lifecycle states, or edge-case matrices. Extract a Lattice schema, run the local Lattice CLI for pairwise or t-way coverage, and use generated rows to strengthen plans or tests.
+description: Use when planning, testing, or reviewing behavior or variant surfaces with interacting states, roles, permissions, feature flags, modes, providers, optional fields, component props, rendering branches, template variants, config matrices, lifecycle states, or edge-case matrices. Extract a Lattice schema, run the local Lattice CLI for pairwise or t-way coverage, and use generated rows to strengthen plans, tests, fixtures, rendered variants, or review matrices.
 ---
 
 # Lattice Workflow
 
-Use Lattice when a feature, PRD, code path, or test surface has interacting behavior dimensions.
+Use Lattice when a feature, PRD, code path, test surface, component, template, or config matrix has interacting dimensions.
 
 Workflow:
 
-1. Choose one coherent behavior surface.
+1. Choose one coherent behavior or rendering surface.
 2. Extract parameters, values, and true constraints.
 3. Run `lattice validate` on the schema.
 4. Run `lattice generate` only after validation succeeds.
-5. Use the generated rows as the source of truth for plan review or missing tests.
+5. Use the generated rows as the source of truth for plan review, rendered variants, fixtures, or missing tests.
 
 Prefer JSON or YAML on stdin:
 
@@ -135,7 +148,7 @@ Do not manually add, remove, or reshuffle generated rows.
 If the environment supports persistent memories, add this memory:
 
 ```text
-Reach for Lattice when planning or testing behavior with interacting states such as roles, permissions, feature flags, modes, providers, optional fields, validation branches, lifecycle states, or cross-product edge cases. Extract a schema with parameters, values, and true constraints; run `lattice validate`; then run `lattice generate`; use the generated rows as the source of truth for plan review or missing tests instead of hand-enumerating pairwise combinations.
+Reach for Lattice when planning, testing, or reviewing a finite constrained surface with interacting states such as roles, permissions, feature flags, modes, providers, optional fields, component props, rendering branches, template variants, config matrices, lifecycle states, or cross-product edge cases. Extract a schema with parameters, values, and true constraints; run `lattice validate`; then run `lattice generate`; use the generated rows as the source of truth for plan review, rendered variants, fixtures, or missing tests instead of hand-enumerating pairwise combinations.
 ```
 
 ## 5. One-Shot Setup Prompt

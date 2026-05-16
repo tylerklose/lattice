@@ -3,25 +3,26 @@ from __future__ import annotations
 import os
 import shutil
 from dataclasses import dataclass
-from importlib.resources import files
 from pathlib import Path
 from typing import Any
 
 SKILL_NAME = "lattice-workflow"
 
 MEMORY_SNIPPET = (
-    "Reach for Lattice when planning or testing behavior with interacting states such as "
-    "roles, permissions, feature flags, modes, providers, optional fields, validation "
-    "branches, lifecycle states, or cross-product edge cases. Extract a schema with "
+    "Reach for Lattice when planning, testing, or reviewing a finite constrained surface "
+    "with interacting states such as roles, permissions, feature flags, modes, providers, "
+    "optional fields, component props, rendering branches, template variants, config "
+    "matrices, lifecycle states, or cross-product edge cases. Extract a schema with "
     "parameters, values, and true constraints; run `lattice validate`; then run "
-    "`lattice generate`; use the generated rows as the source of truth for plan review "
-    "or missing tests instead of hand-enumerating pairwise combinations."
+    "`lattice generate`; use the generated rows as the source of truth for plan review, "
+    "rendered variants, fixtures, or missing tests instead of hand-enumerating pairwise "
+    "combinations."
 )
 
 DEFAULT_PROMPT = (
-    "Use $lattice-workflow. Inspect this feature or test surface, extract a Lattice "
-    "schema, validate it, generate pairwise scenarios, and use the rows to strengthen "
-    "the plan or tests."
+    "Use $lattice-workflow. Inspect this feature, test surface, component variant space, "
+    "template, or config matrix; extract a Lattice schema; validate it; generate pairwise "
+    "rows; and use the rows to strengthen the plan, tests, fixtures, or visual review."
 )
 
 
@@ -54,7 +55,11 @@ def default_claude_skill_path() -> Path:
 
 
 def codex_available() -> bool:
-    return shutil.which("codex") is not None or (Path.home() / ".codex").exists() or bool(os.environ.get("CODEX_HOME"))
+    return (
+        shutil.which("codex") is not None
+        or (Path.home() / ".codex").exists()
+        or bool(os.environ.get("CODEX_HOME"))
+    )
 
 
 def claude_code_available() -> bool:
@@ -63,12 +68,7 @@ def claude_code_available() -> bool:
 
 def install_codex_skill(target: str | None = None) -> AgentSetup:
     destination = Path(target).expanduser() if target else default_codex_skill_path()
-    source = files("lattice") / "resources" / "codex" / SKILL_NAME
-    if not source.is_dir():
-        raise FileNotFoundError(f"Bundled Codex skill `{SKILL_NAME}` was not found.")
-
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(source, destination, dirs_exist_ok=True)
+    _copy_bundled_skill("codex", destination)
     return AgentSetup(
         surface="codex",
         skill_name=SKILL_NAME,
@@ -83,12 +83,7 @@ def install_claude_skill(target: str | None = None, *, force: bool = False) -> A
         raise RuntimeError("Claude Code was not detected. Re-run with --force to install anyway.")
 
     destination = Path(target).expanduser() if target else default_claude_skill_path()
-    source = files("lattice") / "resources" / "claude" / SKILL_NAME
-    if not source.is_dir():
-        raise FileNotFoundError(f"Bundled Claude skill `{SKILL_NAME}` was not found.")
-
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(source, destination, dirs_exist_ok=True)
+    _copy_bundled_skill("claude", destination)
     return AgentSetup(
         surface="claude-code",
         skill_name=SKILL_NAME,
@@ -106,3 +101,12 @@ def codex_skill_installed(target: str | None = None) -> bool:
 def claude_skill_installed(target: str | None = None) -> bool:
     destination = Path(target).expanduser() if target else default_claude_skill_path()
     return (destination / "SKILL.md").is_file()
+
+
+def _copy_bundled_skill(resource_name: str, destination: Path) -> None:
+    source = Path(__file__).with_name("resources") / resource_name / SKILL_NAME
+    if not source.is_dir():
+        raise FileNotFoundError(f"Bundled {resource_name} skill `{SKILL_NAME}` was not found.")
+
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(source, destination, dirs_exist_ok=True)

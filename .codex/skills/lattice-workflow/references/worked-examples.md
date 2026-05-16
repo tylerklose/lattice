@@ -26,6 +26,14 @@ Use when pairwise is not enough and the user explicitly wants 3-way coverage.
 - Schema transport: `model.yaml`
 - Output: `scenarios.json`
 
+## `examples/component-variant-matrix`
+
+Use when the agent starts from a visual component, rendering surface, template, or design-system story and needs compact review variants instead of every possible combination.
+
+- Input: `brief.md`
+- Schema transport: `model.yaml`
+- Output: `scenarios.json`
+
 ## `examples/lattice-self-test`
 
 Use when you want a meta example of the harness extracting a schema for Lattice's own CLI surface and then using generated rows to drive CLI smoke tests.

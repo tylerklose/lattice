@@ -47,6 +47,10 @@ class ExampleModelTests(unittest.TestCase):
                 ROOT / "examples" / "three-way-notifications" / "scenarios.json",
             ),
             (
+                ROOT / "examples" / "component-variant-matrix" / "model.yaml",
+                ROOT / "examples" / "component-variant-matrix" / "scenarios.json",
+            ),
+            (
                 ROOT / "examples" / "lattice-self-test" / "model.yaml",
                 ROOT / "examples" / "lattice-self-test" / "scenarios.json",
             ),

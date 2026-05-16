@@ -1,0 +1,19 @@
+model_name: book_cover_card_rendering
+parameters:
+  viewport: [mobile, desktop]
+  cover_asset: [portrait, landscape, missing]
+  title_length: [short, long]
+  subtitle: [present, absent]
+  availability: [in_stock, preorder, sold_out]
+  badge: [none, sale, staff_pick]
+  theme: [light, dark]
+constraints:
+  - type: forward_dep
+    source: { parameter: badge, value: sale }
+    target: { parameter: availability, value: in_stock }
+  - type: conditional
+    parameter: preorder_cta
+    values: [notify_me, reserve_now]
+    parent: availability
+    applies_when: [preorder]
+strength: 2

@@ -1,0 +1,253 @@
+{
+  "meta": {
+    "model_name": "book_cover_card_rendering",
+    "strength": 2,
+    "test_count": 14,
+    "exhaustive_count": 1296,
+    "reduction": "92.6x",
+    "coverage": "100.0%",
+    "seed": 42
+  },
+  "coverage_curve": [
+    {
+      "scenario": 1,
+      "cumulative_pct": 17.0
+    },
+    {
+      "scenario": 2,
+      "cumulative_pct": 33.3
+    },
+    {
+      "scenario": 3,
+      "cumulative_pct": 46.7
+    },
+    {
+      "scenario": 4,
+      "cumulative_pct": 57.6
+    },
+    {
+      "scenario": 5,
+      "cumulative_pct": 66.1
+    },
+    {
+      "scenario": 6,
+      "cumulative_pct": 74.5
+    },
+    {
+      "scenario": 7,
+      "cumulative_pct": 81.2
+    },
+    {
+      "scenario": 8,
+      "cumulative_pct": 89.1
+    },
+    {
+      "scenario": 9,
+      "cumulative_pct": 94.5
+    },
+    {
+      "scenario": 10,
+      "cumulative_pct": 95.8
+    },
+    {
+      "scenario": 11,
+      "cumulative_pct": 97.0
+    },
+    {
+      "scenario": 12,
+      "cumulative_pct": 98.8
+    },
+    {
+      "scenario": 13,
+      "cumulative_pct": 99.4
+    },
+    {
+      "scenario": 14,
+      "cumulative_pct": 100.0
+    }
+  ],
+  "scenarios": [
+    {
+      "id": 1,
+      "values": {
+        "viewport": "mobile",
+        "cover_asset": "portrait",
+        "title_length": "short",
+        "subtitle": "present",
+        "availability": "in_stock",
+        "badge": "none",
+        "theme": "light",
+        "preorder_cta": "N/A"
+      }
+    },
+    {
+      "id": 2,
+      "values": {
+        "viewport": "mobile",
+        "cover_asset": "landscape",
+        "title_length": "short",
+        "subtitle": "absent",
+        "availability": "preorder",
+        "badge": "staff_pick",
+        "theme": "dark",
+        "preorder_cta": "notify_me"
+      }
+    },
+    {
+      "id": 3,
+      "values": {
+        "viewport": "mobile",
+        "cover_asset": "missing",
+        "title_length": "long",
+        "subtitle": "present",
+        "availability": "preorder",
+        "badge": "none",
+        "theme": "dark",
+        "preorder_cta": "reserve_now"
+      }
+    },
+    {
+      "id": 4,
+      "values": {
+        "viewport": "mobile",
+        "cover_asset": "portrait",
+        "title_length": "long",
+        "subtitle": "absent",
+        "availability": "sold_out",
+        "badge": "staff_pick",
+        "theme": "light",
+        "preorder_cta": "N/A"
+      }
+    },
+    {
+      "id": 5,
+      "values": {
+        "viewport": "mobile",
+        "cover_asset": "landscape",
+        "title_length": "long",
+        "subtitle": "present",
+        "availability": "in_stock",
+        "badge": "sale",
+        "theme": "dark",
+        "preorder_cta": "N/A"
+      }
+    },
+    {
+      "id": 6,
+      "values": {
+        "viewport": "desktop",
+        "cover_asset": "portrait",
+        "title_length": "short",
+        "subtitle": "absent",
+        "availability": "preorder",
+        "badge": "none",
+        "theme": "light",
+        "preorder_cta": "reserve_now"
+      }
+    },
+    {
+      "id": 7,
+      "values": {
+        "viewport": "desktop",
+        "cover_asset": "landscape",
+        "title_length": "short",
+        "subtitle": "present",
+        "availability": "sold_out",
+        "badge": "none",
+        "theme": "dark",
+        "preorder_cta": "N/A"
+      }
+    },
+    {
+      "id": 8,
+      "values": {
+        "viewport": "desktop",
+        "cover_asset": "missing",
+        "title_length": "short",
+        "subtitle": "absent",
+        "availability": "in_stock",
+        "badge": "sale",
+        "theme": "light",
+        "preorder_cta": "N/A"
+      }
+    },
+    {
+      "id": 9,
+      "values": {
+        "viewport": "desktop",
+        "cover_asset": "missing",
+        "title_length": "long",
+        "subtitle": "present",
+        "availability": "preorder",
+        "badge": "staff_pick",
+        "theme": "light",
+        "preorder_cta": "notify_me"
+      }
+    },
+    {
+      "id": 10,
+      "values": {
+        "viewport": "mobile",
+        "cover_asset": "portrait",
+        "title_length": "short",
+        "subtitle": "present",
+        "availability": "in_stock",
+        "badge": "sale",
+        "theme": "dark",
+        "preorder_cta": "N/A"
+      }
+    },
+    {
+      "id": 11,
+      "values": {
+        "viewport": "mobile",
+        "cover_asset": "portrait",
+        "title_length": "short",
+        "subtitle": "present",
+        "availability": "preorder",
+        "badge": "none",
+        "theme": "light",
+        "preorder_cta": "notify_me"
+      }
+    },
+    {
+      "id": 12,
+      "values": {
+        "viewport": "mobile",
+        "cover_asset": "landscape",
+        "title_length": "short",
+        "subtitle": "present",
+        "availability": "preorder",
+        "badge": "staff_pick",
+        "theme": "light",
+        "preorder_cta": "reserve_now"
+      }
+    },
+    {
+      "id": 13,
+      "values": {
+        "viewport": "mobile",
+        "cover_asset": "missing",
+        "title_length": "short",
+        "subtitle": "present",
+        "availability": "sold_out",
+        "badge": "none",
+        "theme": "light",
+        "preorder_cta": "N/A"
+      }
+    },
+    {
+      "id": 14,
+      "values": {
+        "viewport": "mobile",
+        "cover_asset": "portrait",
+        "title_length": "short",
+        "subtitle": "present",
+        "availability": "in_stock",
+        "badge": "staff_pick",
+        "theme": "light",
+        "preorder_cta": "N/A"
+      }
+    }
+  ]
+}
