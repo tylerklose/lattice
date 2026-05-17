@@ -141,6 +141,7 @@ Lattice is intentionally narrow. A harness owns extraction and interpretation; L
 
 See [docs/agent-handoff.md](docs/agent-handoff.md) for the repository-level handoff shape.
 See [docs/workflows.md](docs/workflows.md) for concrete agent usage patterns.
+See [docs/case-studies.md](docs/case-studies.md) for public audit examples and the standard for how to write them up.
 See [docs/using-in-other-projects.md](docs/using-in-other-projects.md) for portable installation and adoption.
 See [docs/lattice-on-lattice.md](docs/lattice-on-lattice.md) for a worked example of Lattice testing its own agent bootstrap surface.
 
