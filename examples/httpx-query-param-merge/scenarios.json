@@ -1,0 +1,195 @@
+{
+  "meta": {
+    "model_name": "httpx_query_param_merge",
+    "strength": 2,
+    "test_count": 12,
+    "exhaustive_count": 288,
+    "reduction": "24x",
+    "coverage": "100.0%",
+    "seed": 42
+  },
+  "coverage_curve": [
+    {
+      "scenario": 1,
+      "cumulative_pct": 15.0
+    },
+    {
+      "scenario": 2,
+      "cumulative_pct": 30.0
+    },
+    {
+      "scenario": 3,
+      "cumulative_pct": 43.0
+    },
+    {
+      "scenario": 4,
+      "cumulative_pct": 53.0
+    },
+    {
+      "scenario": 5,
+      "cumulative_pct": 65.0
+    },
+    {
+      "scenario": 6,
+      "cumulative_pct": 77.0
+    },
+    {
+      "scenario": 7,
+      "cumulative_pct": 84.0
+    },
+    {
+      "scenario": 8,
+      "cumulative_pct": 90.0
+    },
+    {
+      "scenario": 9,
+      "cumulative_pct": 93.0
+    },
+    {
+      "scenario": 10,
+      "cumulative_pct": 96.0
+    },
+    {
+      "scenario": 11,
+      "cumulative_pct": 98.0
+    },
+    {
+      "scenario": 12,
+      "cumulative_pct": 100.0
+    }
+  ],
+  "scenarios": [
+    {
+      "id": 1,
+      "values": {
+        "entrypoint": "request_object",
+        "method": "GET",
+        "path_shape": "nested_path",
+        "url_query": "multi",
+        "params_arg": "single",
+        "params_shape": "dict"
+      }
+    },
+    {
+      "id": 2,
+      "values": {
+        "entrypoint": "request_object",
+        "method": "POST",
+        "path_shape": "root_path",
+        "url_query": "absent",
+        "params_arg": "absent",
+        "params_shape": "N/A"
+      }
+    },
+    {
+      "id": 3,
+      "values": {
+        "entrypoint": "request_object",
+        "method": "GET",
+        "path_shape": "root_path",
+        "url_query": "single",
+        "params_arg": "multi",
+        "params_shape": "list_tuples"
+      }
+    },
+    {
+      "id": 4,
+      "values": {
+        "entrypoint": "request_object",
+        "method": "POST",
+        "path_shape": "nested_path",
+        "url_query": "absent",
+        "params_arg": "overlapping_key",
+        "params_shape": "list_tuples"
+      }
+    },
+    {
+      "id": 5,
+      "values": {
+        "entrypoint": "client_build_request",
+        "method": "GET",
+        "path_shape": "nested_path",
+        "url_query": "single",
+        "params_arg": "absent",
+        "params_shape": "N/A"
+      }
+    },
+    {
+      "id": 6,
+      "values": {
+        "entrypoint": "client_build_request",
+        "method": "POST",
+        "path_shape": "root_path",
+        "url_query": "multi",
+        "params_arg": "multi",
+        "params_shape": "dict"
+      }
+    },
+    {
+      "id": 7,
+      "values": {
+        "entrypoint": "client_build_request",
+        "method": "GET",
+        "path_shape": "root_path",
+        "url_query": "absent",
+        "params_arg": "single",
+        "params_shape": "list_tuples"
+      }
+    },
+    {
+      "id": 8,
+      "values": {
+        "entrypoint": "client_build_request",
+        "method": "GET",
+        "path_shape": "root_path",
+        "url_query": "single",
+        "params_arg": "overlapping_key",
+        "params_shape": "dict"
+      }
+    },
+    {
+      "id": 9,
+      "values": {
+        "entrypoint": "request_object",
+        "method": "POST",
+        "path_shape": "root_path",
+        "url_query": "single",
+        "params_arg": "single",
+        "params_shape": "dict"
+      }
+    },
+    {
+      "id": 10,
+      "values": {
+        "entrypoint": "request_object",
+        "method": "GET",
+        "path_shape": "nested_path",
+        "url_query": "absent",
+        "params_arg": "multi",
+        "params_shape": "dict"
+      }
+    },
+    {
+      "id": 11,
+      "values": {
+        "entrypoint": "request_object",
+        "method": "GET",
+        "path_shape": "root_path",
+        "url_query": "multi",
+        "params_arg": "absent",
+        "params_shape": "N/A"
+      }
+    },
+    {
+      "id": 12,
+      "values": {
+        "entrypoint": "request_object",
+        "method": "GET",
+        "path_shape": "root_path",
+        "url_query": "multi",
+        "params_arg": "overlapping_key",
+        "params_shape": "list_tuples"
+      }
+    }
+  ]
+}

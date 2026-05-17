@@ -23,8 +23,8 @@ That makes it a good Lattice target.
 
 The implementation lives in:
 
-- [src/lattice/agent.py](src/lattice/agent.py)
-- [src/lattice/cli.py](src/lattice/cli.py)
+- [src/lattice/agent.py](../src/lattice/agent.py)
+- [src/lattice/cli.py](../src/lattice/cli.py)
 
 The command currently supports these adoption paths:
 
@@ -40,7 +40,7 @@ For this exercise, the schema focused only on `bootstrap`. That kept the model c
 
 The schema lives at:
 
-- [examples/agent-bootstrap-matrix/model.yaml](examples/agent-bootstrap-matrix/model.yaml)
+- [examples/agent-bootstrap-matrix/model.yaml](../examples/agent-bootstrap-matrix/model.yaml)
 
 The extracted parameters were:
 
@@ -85,7 +85,7 @@ PYTHONPATH=src python3 -m lattice generate examples/agent-bootstrap-matrix/model
 
 The output lives at:
 
-- [examples/agent-bootstrap-matrix/scenarios.json](examples/agent-bootstrap-matrix/scenarios.json)
+- [examples/agent-bootstrap-matrix/scenarios.json](../examples/agent-bootstrap-matrix/scenarios.json)
 
 Result:
 
@@ -98,7 +98,7 @@ Result:
 
 The executable test lives at:
 
-- [tests/test_agent_bootstrap_matrix.py](tests/test_agent_bootstrap_matrix.py)
+- [tests/test_agent_bootstrap_matrix.py](../tests/test_agent_bootstrap_matrix.py)
 
 The test does not hand-pick cases. It reads the generated scenario file:
 

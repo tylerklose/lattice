@@ -51,9 +51,9 @@ Use $lattice-workflow. Read this feature brief, extract a Lattice schema, valida
 
 Reference example:
 
-- [examples/plan-mode-saved-search/feature.md](examples/plan-mode-saved-search/feature.md)
-- [examples/plan-mode-saved-search/model.yaml](examples/plan-mode-saved-search/model.yaml)
-- [examples/plan-mode-saved-search/scenarios.json](examples/plan-mode-saved-search/scenarios.json)
+- [examples/plan-mode-saved-search/feature.md](../examples/plan-mode-saved-search/feature.md)
+- [examples/plan-mode-saved-search/model.yaml](../examples/plan-mode-saved-search/model.yaml)
+- [examples/plan-mode-saved-search/scenarios.json](../examples/plan-mode-saved-search/scenarios.json)
 
 ## Test Mode
 
@@ -74,9 +74,26 @@ Use $lattice-workflow. Inspect the checkout code and tests, extract a Lattice sc
 
 Reference example:
 
-- [examples/test-mode-checkout/code-notes.md](examples/test-mode-checkout/code-notes.md)
-- [examples/test-mode-checkout/model.json](examples/test-mode-checkout/model.json)
-- [examples/test-mode-checkout/scenarios.json](examples/test-mode-checkout/scenarios.json)
+- [examples/test-mode-checkout/code-notes.md](../examples/test-mode-checkout/code-notes.md)
+- [examples/test-mode-checkout/model.json](../examples/test-mode-checkout/model.json)
+- [examples/test-mode-checkout/scenarios.json](../examples/test-mode-checkout/scenarios.json)
+
+## OSS Audit Mode
+
+Use when the starting point is a popular open source behavior surface with a public oracle, compatibility baseline, spec, or upstream issue. Keep the framing humble: Lattice is not claiming ownership of the bug. It supplies a compact interaction model, generated rows, and a reproducible way to inspect whether valid features compose correctly.
+
+Recommended prompt shape:
+
+1. Ask the agent to identify independently valid features that interact.
+2. Require a schema that includes the known issue row as a `forced` scenario.
+3. Require generated rows to be compared with a public baseline, spec, or upstream reproduction.
+4. Ask for the write-up to link directly to the upstream issue or PR and avoid overstating novelty.
+
+Reference example:
+
+- [examples/httpx-query-param-merge/README.md](../examples/httpx-query-param-merge/README.md)
+- [examples/httpx-query-param-merge/model.yaml](../examples/httpx-query-param-merge/model.yaml)
+- [examples/httpx-query-param-merge/scenarios.json](../examples/httpx-query-param-merge/scenarios.json)
 
 ## Higher Strength Mode
 
@@ -90,9 +107,9 @@ Use $lattice-workflow. Build a strength-3 schema from this notification rollout 
 
 Reference example:
 
-- [examples/three-way-notifications/brief.md](examples/three-way-notifications/brief.md)
-- [examples/three-way-notifications/model.yaml](examples/three-way-notifications/model.yaml)
-- [examples/three-way-notifications/scenarios.json](examples/three-way-notifications/scenarios.json)
+- [examples/three-way-notifications/brief.md](../examples/three-way-notifications/brief.md)
+- [examples/three-way-notifications/model.yaml](../examples/three-way-notifications/model.yaml)
+- [examples/three-way-notifications/scenarios.json](../examples/three-way-notifications/scenarios.json)
 
 ## Variant Rendering Mode
 
@@ -113,9 +130,9 @@ Use $lattice-workflow. Inspect this component's variant surface, extract a Latti
 
 Reference example:
 
-- [examples/component-variant-matrix/brief.md](examples/component-variant-matrix/brief.md)
-- [examples/component-variant-matrix/model.yaml](examples/component-variant-matrix/model.yaml)
-- [examples/component-variant-matrix/scenarios.json](examples/component-variant-matrix/scenarios.json)
+- [examples/component-variant-matrix/brief.md](../examples/component-variant-matrix/brief.md)
+- [examples/component-variant-matrix/model.yaml](../examples/component-variant-matrix/model.yaml)
+- [examples/component-variant-matrix/scenarios.json](../examples/component-variant-matrix/scenarios.json)
 
 ## Self-Hosting Mode
 
@@ -123,4 +140,4 @@ Use when Lattice should test its own CLI, configuration, or agent integration be
 
 Reference document:
 
-- [docs/lattice-on-lattice.md](docs/lattice-on-lattice.md)
+- [docs/lattice-on-lattice.md](lattice-on-lattice.md)

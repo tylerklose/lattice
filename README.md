@@ -157,7 +157,7 @@ Use it when you want a coding harness to:
 
 ## Examples
 
-The `examples/` directory contains six end-to-end examples:
+The `examples/` directory contains seven end-to-end examples:
 
 - `plan-mode-saved-search`: plan -> schema -> generated scenarios
 - `test-mode-checkout`: code/test surface -> schema -> generated scenarios
@@ -165,3 +165,4 @@ The `examples/` directory contains six end-to-end examples:
 - `lattice-self-test`: Lattice generates a matrix for testing Lattice itself
 - `agent-bootstrap-matrix`: Lattice generates a matrix for testing agent skill bootstrap behavior
 - `component-variant-matrix`: component/rendering surface -> schema -> generated visual review variants
+- `httpx-query-param-merge`: OSS audit example for a real HTTPX query-parameter interaction issue

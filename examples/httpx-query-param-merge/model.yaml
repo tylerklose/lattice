@@ -1,0 +1,22 @@
+model_name: httpx_query_param_merge
+parameters:
+  entrypoint: [request_object, client_build_request]
+  method: [GET, POST]
+  path_shape: [root_path, nested_path]
+  url_query: [absent, single, multi]
+  params_arg: [absent, single, multi, overlapping_key]
+constraints:
+  - type: conditional
+    parameter: params_shape
+    parent: params_arg
+    applies_when: [single, multi, overlapping_key]
+    values: [dict, list_tuples]
+  - type: forced
+    assignments:
+      - { parameter: entrypoint, value: request_object }
+      - { parameter: method, value: GET }
+      - { parameter: path_shape, value: nested_path }
+      - { parameter: url_query, value: multi }
+      - { parameter: params_arg, value: single }
+      - { parameter: params_shape, value: dict }
+strength: 2

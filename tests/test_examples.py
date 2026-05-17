@@ -58,6 +58,10 @@ class ExampleModelTests(unittest.TestCase):
                 ROOT / "examples" / "agent-bootstrap-matrix" / "model.yaml",
                 ROOT / "examples" / "agent-bootstrap-matrix" / "scenarios.json",
             ),
+            (
+                ROOT / "examples" / "httpx-query-param-merge" / "model.yaml",
+                ROOT / "examples" / "httpx-query-param-merge" / "scenarios.json",
+            ),
         ]
 
         for model_path, scenarios_path in example_cases:
