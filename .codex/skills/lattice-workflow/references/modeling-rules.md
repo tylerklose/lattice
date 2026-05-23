@@ -45,6 +45,6 @@ Choose the smallest expressive type. If a rule can be represented as `invalid_pa
 ## Interpretation
 
 - Plan mode: each row becomes a review scenario or a missing decision in the plan.
-- Test mode: each row becomes a candidate setup matrix.
+- Test mode: each row becomes a candidate setup matrix. Source the expected behavior from intent — user request, spec, PRD, or ticket — not from the code under test. If you cannot determine intent for a row, stop and surface the ambiguity to the user. Do not encode the current behavior and label it `bug_signal:` to hedge: characterization tests pass for the wrong reasons and hide the asymmetries Lattice is designed to expose. Example: if a mailbox accepts a spoofed `From:` header today, the assertion is still "rejects spoofed sender" — let the test fail and fix the code, do not invert the assertion to match the bug.
 - Variant mode: each row becomes a rendered variant, fixture, screenshot, visual diff input, contact-sheet item, or review checklist item.
 - Generated rows are not test names by themselves. The agent still needs to map them to application-specific assertions.

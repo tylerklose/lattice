@@ -80,6 +80,8 @@ lattice agent install-claude-skill
 5. Interpret the output.
    In plan mode, turn rows into plan revisions, missing decisions, and review scenarios. In test mode, diff the rows against the existing tests and write the missing cases. In variant mode, turn rows into fixtures, rendered variants, screenshots, contact sheets, visual diff inputs, or review checklists.
 
+   In test mode, source expected behavior from intent — the user's request, a spec, a PRD, a ticket, or explicit reasoning about what the system *should* do. The code under test is evidence, not truth. If intent is ambiguous for a row, stop and ask the user. Do not silently encode current behavior and hedge with `bug_signal:`-style annotations: that produces characterization tests, which lock in the implementation (bugs included) instead of catching divergence from intent. The asymmetries Lattice is designed to expose disappear when the test suite mirrors the same mental model as the code.
+
 ## Modeling Rules
 
 - Scope one schema to one interaction surface. Do not default to the whole app unless the app is genuinely small and the behavior or rendering surface is still coherent.
@@ -99,5 +101,6 @@ Read [references/modeling-rules.md](references/modeling-rules.md) when you need 
 - Prefer stdin and JSON because another agent step usually consumes the output.
 - Do not add or remove rows after generation.
 - If validation fails, fix the schema instead of weakening the generation step.
+- In test mode, assertions must reflect intended behavior, not observed behavior. Read intent from the spec, PRD, ticket, or user — never from the code under test. If intent is ambiguous, stop and ask.
 
 Read [references/worked-examples.md](references/worked-examples.md) for concrete examples in this repo.
