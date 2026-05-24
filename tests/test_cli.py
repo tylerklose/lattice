@@ -50,6 +50,63 @@ class CliTests(unittest.TestCase):
         self.assertEqual(parsed["meta"]["model_name"], "saved_search_slugs")
         self.assertGreater(parsed["meta"]["test_count"], 0)
 
+    def test_generate_progress_goes_to_stderr(self) -> None:
+        result = self.run_cli(
+            "generate",
+            "--progress",
+            "--progress-every",
+            "1",
+            str(FIXTURES / "simple.json"),
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+
+        parsed = json.loads(result.stdout)
+        self.assertEqual(parsed["meta"]["model_name"], "simple")
+        self.assertIn("lattice progress: enumerated", result.stderr)
+        self.assertIn("coverage=100.0%", result.stderr)
+
+    def test_generate_can_stop_after_coverage_target(self) -> None:
+        result = self.run_cli(
+            "generate",
+            "--stop-after-coverage",
+            "50",
+            str(FIXTURES / "simple.json"),
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+
+        parsed = json.loads(result.stdout)
+        self.assertEqual(parsed["meta"]["test_count"], 2)
+        self.assertEqual(parsed["meta"]["coverage"], "50.0%")
+
+    def test_generate_treats_coverage_100_as_full_run(self) -> None:
+        result = self.run_cli(
+            "generate",
+            "--stop-after-coverage",
+            "100",
+            str(FIXTURES / "simple.json"),
+        )
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+
+        parsed = json.loads(result.stdout)
+        self.assertEqual(parsed["meta"]["test_count"], 4)
+        self.assertEqual(parsed["meta"]["coverage"], "100.0%")
+
+    def test_generate_can_stop_after_max_rows(self) -> None:
+        result = self.run_cli("generate", "--max-rows", "2", str(FIXTURES / "simple.json"))
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+
+        parsed = json.loads(result.stdout)
+        self.assertEqual(parsed["meta"]["test_count"], 2)
+        self.assertEqual(parsed["meta"]["coverage"], "50.0%")
+
+    def test_generate_rejects_invalid_prefix_limits(self) -> None:
+        result = self.run_cli("generate", "--stop-after-coverage", "0", str(FIXTURES / "simple.json"))
+        self.assertEqual(result.returncode, 1)
+
+        parsed = json.loads(result.stdout)
+        self.assertEqual(parsed["code"], "generation_error")
+        self.assertTrue(any("stop_after_coverage" in error for error in parsed["errors"]))
+
     def test_validate_can_render_text_for_humans(self) -> None:
         result = self.run_cli("validate", "--format", "text", str(FIXTURES / "simple.json"))
         self.assertEqual(result.returncode, 0, msg=result.stderr)

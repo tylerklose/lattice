@@ -52,6 +52,8 @@ cat schema.json | lattice generate
 # file input is optional and useful for debugging
 lattice validate schema.yaml --format text
 lattice generate schema.yaml --strength 3 --format table
+lattice generate schema.yaml --strength 4 --progress --progress-every 25 > scenarios.json
+lattice generate schema.yaml --strength 4 --stop-after-coverage 84 > prefix.json
 
 # explicit machine-readable validation
 lattice validate schema.json --format json
@@ -65,6 +67,17 @@ Supported output formats:
 - `summary`
 
 `generate` defaults to JSON because the primary consumer is usually a coding harness. File-based schemas are supported, but the schema file is transport, not the product surface.
+
+For long higher-strength runs, use `--progress` to stream coverage progress to
+stderr while keeping stdout clean for JSON, CSV, table, or summary output.
+`--progress-every N` controls how many generated scenarios pass between
+updates.
+
+Use `--stop-after-coverage PCT` for prefix runs that stop after the first
+generated scenario reaching that cumulative coverage percentage. Use
+`--max-rows N` for a fixed-size prefix. If both are set, generation stops at
+whichever limit is reached first. `--stop-after-coverage 100` is treated as a
+full run so rounded `100.0%` coverage near the tail does not skip final rows.
 
 ## Model Features
 

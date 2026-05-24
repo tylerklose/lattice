@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Any
@@ -24,7 +25,7 @@ from lattice.agent import (
 )
 from lattice.constraints import ConstraintEngine, ConstraintError
 from lattice.formatters import render_output
-from lattice.ipog import generate_covering_array
+from lattice.ipog import GenerationProgress, generate_covering_array
 from lattice.parser import ModelIOError, ValidationError, load_model
 
 DEFAULT_AGENT_FORMAT = "text"
@@ -54,11 +55,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     try:
+        progress_callback = (
+            _build_progress_callback(args.progress_every)
+            if getattr(args, "progress", False)
+            else None
+        )
         result = generate_covering_array(
             model,
             strength=model.strength,
             seed=args.seed,
             pool_size=args.pool_size,
+            progress=progress_callback,
+            max_rows=args.max_rows,
+            stop_after_coverage=args.stop_after_coverage,
         )
     except ValueError as exc:
         return _emit_error(args, "generation_error", [str(exc)], exit_code=1)
@@ -77,6 +86,23 @@ def _build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--format", default="json", choices=("table", "json", "csv", "summary"))
     generate.add_argument("--seed", type=int, default=42)
     generate.add_argument("--pool-size", type=int, default=50)
+    generate.add_argument(
+        "--max-rows",
+        type=int,
+        help="Generate at most the first N scenarios.",
+    )
+    generate.add_argument(
+        "--stop-after-coverage",
+        type=float,
+        help="Stop after the first generated scenario reaching this cumulative coverage percent.",
+    )
+    generate.add_argument("--progress", action="store_true", help="Print generation progress to stderr.")
+    generate.add_argument(
+        "--progress-every",
+        type=int,
+        default=10,
+        help="With --progress, print every N generated scenarios plus the final scenario.",
+    )
 
     validate = subparsers.add_parser("validate", help="Validate a schema without generating scenarios.")
     validate.add_argument("model", nargs="?", help="Path to a JSON or YAML schema. Reads stdin when omitted.")
@@ -128,6 +154,77 @@ def _build_parser() -> argparse.ArgumentParser:
     doctor.add_argument("--claude-target", help="Claude Code skill directory to check. Defaults to ~/.claude/skills.")
     doctor.add_argument("--format", default=DEFAULT_AGENT_FORMAT, choices=("text", "json"))
     return parser
+
+
+def _build_progress_callback(every: int) -> Callable[[GenerationProgress], None]:
+    if every < 1:
+        raise ValueError("--progress-every must be at least 1")
+
+    started = time.monotonic()
+
+    def report(progress: GenerationProgress) -> None:
+        elapsed = time.monotonic() - started
+        if progress.event == "enumerating":
+            eta = _format_eta(elapsed, progress.covered, progress.total)
+            print(
+                "lattice progress: "
+                f"enumerating interactions "
+                f"checked={progress.covered}/{progress.total} "
+                f"progress={progress.cumulative_pct:.1f}% "
+                f"elapsed={_format_seconds(elapsed)} "
+                f"eta={eta}",
+                file=sys.stderr,
+                flush=True,
+            )
+            return
+
+        if progress.event == "enumerated":
+            print(
+                "lattice progress: "
+                f"enumerated {progress.total} valid interactions; starting generation",
+                file=sys.stderr,
+                flush=True,
+            )
+            return
+
+        if progress.event == "scenario" and progress.scenario % every != 0 and progress.uncovered != 0:
+            return
+
+        eta = _format_eta(elapsed, progress.covered, progress.total)
+        label = "stopped " if progress.event == "stopped" else ""
+        print(
+            "lattice progress: "
+            f"{label}scenario={progress.scenario} "
+            f"covered={progress.covered}/{progress.total} "
+            f"coverage={progress.cumulative_pct:.1f}% "
+            f"uncovered={progress.uncovered} "
+            f"elapsed={_format_seconds(elapsed)} "
+            f"eta={eta}",
+            file=sys.stderr,
+            flush=True,
+        )
+
+    return report
+
+
+def _format_eta(elapsed: float, covered: int, total: int) -> str:
+    if total <= 0 or covered <= 0:
+        return "unknown"
+    if covered >= total:
+        return "0s"
+    remaining = elapsed * ((total - covered) / covered)
+    return _format_seconds(remaining)
+
+
+def _format_seconds(seconds: float) -> str:
+    seconds = max(0, int(round(seconds)))
+    minutes, sec = divmod(seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+    if hours:
+        return f"{hours}h{minutes:02d}m{sec:02d}s"
+    if minutes:
+        return f"{minutes}m{sec:02d}s"
+    return f"{sec}s"
 
 
 def _print_errors(errors: list[str]) -> None:

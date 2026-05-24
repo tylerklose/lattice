@@ -51,6 +51,37 @@ class IpogTests(unittest.TestCase):
         result = generate_covering_array(model, seed=42, pool_size=8)
         verify_coverage(model, result.rows, strength=3)
 
+    def test_generation_can_stop_after_coverage_target(self) -> None:
+        model = load_fixture("simple.json")
+        result = generate_covering_array(model, seed=42, pool_size=8, stop_after_coverage=50)
+
+        self.assertEqual(len(result.rows), 2)
+        self.assertEqual(result.coverage_curve[-1].cumulative_pct, 50.0)
+
+    def test_generation_treats_coverage_100_as_full_run(self) -> None:
+        model = load_fixture("simple.json")
+        full_result = generate_covering_array(model, seed=42, pool_size=8)
+        stopped_result = generate_covering_array(model, seed=42, pool_size=8, stop_after_coverage=100)
+
+        self.assertEqual(stopped_result.rows, full_result.rows)
+        self.assertEqual(stopped_result.coverage_curve[-1].cumulative_pct, 100.0)
+
+    def test_generation_can_stop_after_max_rows(self) -> None:
+        model = load_fixture("simple.json")
+        result = generate_covering_array(model, seed=42, pool_size=8, max_rows=2)
+
+        self.assertEqual(len(result.rows), 2)
+        self.assertEqual(result.coverage_curve[-1].cumulative_pct, 50.0)
+
+    def test_generation_rejects_invalid_prefix_limits(self) -> None:
+        model = load_fixture("simple.json")
+
+        with self.assertRaisesRegex(ValueError, "max_rows"):
+            generate_covering_array(model, max_rows=0)
+
+        with self.assertRaisesRegex(ValueError, "stop_after_coverage"):
+            generate_covering_array(model, stop_after_coverage=0)
+
     def test_constrained_generation_covers_valid_pairs_and_forced_interaction(self) -> None:
         model = load_fixture("constrained.json")
         result = generate_covering_array(model, seed=42, pool_size=20)
