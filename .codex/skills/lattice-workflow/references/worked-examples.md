@@ -49,3 +49,11 @@ Use when you want a meta example of Lattice testing its own agent skill bootstra
 - Input: `brief.md`
 - Schema transport: `model.yaml`
 - Output: `scenarios.json`
+
+## `examples/schema-guidance-matrix`
+
+Use when you want a meta example of Lattice testing its own schema-discoverability guidance across help text, agent instructions, installed skill files, and validation errors.
+
+- Input: `brief.md`
+- Schema transport: `model.yaml`
+- Output: `scenarios.json`

@@ -38,9 +38,10 @@ Default prompt:
 Workflow:
 1. Check whether `lattice --help` works.
 2. Extract one coherent schema with parameters, values, and true constraints.
-3. Run `lattice validate` before generation.
-4. Run `lattice generate` and treat the generated rows as the source of truth.
-5. Map rows to the active evaluator: plan review, tests, fixtures, rendered variants, screenshots, visual diffs, sandbox calls, or another harness-specific action.
+3. Encode nonsensical or impossible combinations as constraints. Do not strip constraints and mark invalid rows after generation. Lattice supports exclusion-style constraints such as `invalid_pair` and `higher_order`, not only `conditional` parameters.
+4. Run `lattice validate` before generation.
+5. Run `lattice generate` and treat the generated rows as the source of truth.
+6. Map rows to the active evaluator: plan review, tests, fixtures, rendered variants, screenshots, visual diffs, sandbox calls, or another harness-specific action.
 
 Prefer JSON or YAML on stdin:
 

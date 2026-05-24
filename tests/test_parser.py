@@ -45,6 +45,31 @@ class ParserTests(unittest.TestCase):
                 }
             )
 
+    def test_conditional_conflict_suggests_exclusion_constraints(self) -> None:
+        with self.assertRaises(ValidationError) as raised:
+            parse_model_data(
+                {
+                    "parameters": {
+                        "mode": ["basic", "advanced"],
+                        "aggregation_level": ["none", "low", "high"],
+                    },
+                    "constraints": [
+                        {
+                            "type": "conditional",
+                            "parameter": "aggregation_level",
+                            "values": ["low", "high"],
+                            "parent": "mode",
+                            "applies_when": ["advanced"],
+                        }
+                    ],
+                }
+            )
+
+        message = "\n".join(raised.exception.errors)
+        self.assertIn("Use `conditional` only to define a child parameter", message)
+        self.assertIn("invalid_pair", message)
+        self.assertIn("higher_order", message)
+
 
 if __name__ == "__main__":
     unittest.main()

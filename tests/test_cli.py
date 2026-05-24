@@ -107,6 +107,14 @@ class CliTests(unittest.TestCase):
         self.assertEqual(parsed["code"], "generation_error")
         self.assertTrue(any("stop_after_coverage" in error for error in parsed["errors"]))
 
+    def test_generate_help_surfaces_schema_features(self) -> None:
+        result = self.run_cli("generate", "--help")
+        self.assertEqual(result.returncode, 0, msg=result.stderr)
+
+        self.assertIn("Schema features", result.stdout)
+        self.assertIn("invalid_pair", result.stdout)
+        self.assertIn("higher_order", result.stdout)
+
     def test_validate_can_render_text_for_humans(self) -> None:
         result = self.run_cli("validate", "--format", "text", str(FIXTURES / "simple.json"))
         self.assertEqual(result.returncode, 0, msg=result.stderr)
@@ -139,6 +147,8 @@ class CliTests(unittest.TestCase):
         self.assertIn("Hermes", parsed["instructions"])
         self.assertIn("xAI-backed agents", parsed["instructions"])
         self.assertIn("lattice generate", parsed["instructions"])
+        self.assertIn("Do not strip constraints", parsed["instructions"])
+        self.assertIn("invalid_pair", parsed["instructions"])
         self.assertIn("Reach for Lattice", parsed["memory"])
 
     def test_agent_installs_generic_skill(self) -> None:
@@ -158,6 +168,11 @@ class CliTests(unittest.TestCase):
             self.assertEqual(parsed["surface"], "generic")
             self.assertTrue((target / "SKILL.md").is_file())
             self.assertTrue((target / "references" / "modeling-rules.md").is_file())
+            self.assertIn("Do not strip true constraints", (target / "SKILL.md").read_text())
+            self.assertIn(
+                "mark them invalid downstream",
+                (target / "references" / "modeling-rules.md").read_text(),
+            )
 
     def test_agent_installs_bundled_codex_skill(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

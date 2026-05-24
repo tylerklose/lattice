@@ -32,6 +32,8 @@ Use this file when you are extracting a schema from code or prose and need tight
 
 Choose the smallest expressive type. If a rule can be represented as `invalid_pair`, do not use `higher_order`.
 
+Do not strip true constraints to get a smaller or easier unconstrained run. Do not generate nonsensical rows and mark them invalid downstream. Lattice's coverage accounting should run over valid interactions, so impossible combinations belong in the schema as `invalid_pair`, `forward_dep`, `bidirectional`, `conditional`, or `higher_order` constraints.
+
 ## Extraction Process
 
 1. Choose the behavior or rendering surface you are modeling.

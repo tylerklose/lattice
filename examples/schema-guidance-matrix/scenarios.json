@@ -1,0 +1,312 @@
+{
+  "meta": {
+    "model_name": "lattice_schema_guidance_matrix",
+    "strength": 2,
+    "test_count": 27,
+    "exhaustive_count": 42,
+    "reduction": "1.6x",
+    "coverage": "100.0%",
+    "seed": 42
+  },
+  "coverage_curve": [
+    {
+      "scenario": 1,
+      "cumulative_pct": 3.7
+    },
+    {
+      "scenario": 2,
+      "cumulative_pct": 7.4
+    },
+    {
+      "scenario": 3,
+      "cumulative_pct": 11.1
+    },
+    {
+      "scenario": 4,
+      "cumulative_pct": 14.8
+    },
+    {
+      "scenario": 5,
+      "cumulative_pct": 18.5
+    },
+    {
+      "scenario": 6,
+      "cumulative_pct": 22.2
+    },
+    {
+      "scenario": 7,
+      "cumulative_pct": 25.9
+    },
+    {
+      "scenario": 8,
+      "cumulative_pct": 29.6
+    },
+    {
+      "scenario": 9,
+      "cumulative_pct": 33.3
+    },
+    {
+      "scenario": 10,
+      "cumulative_pct": 37.0
+    },
+    {
+      "scenario": 11,
+      "cumulative_pct": 40.7
+    },
+    {
+      "scenario": 12,
+      "cumulative_pct": 44.4
+    },
+    {
+      "scenario": 13,
+      "cumulative_pct": 48.1
+    },
+    {
+      "scenario": 14,
+      "cumulative_pct": 51.9
+    },
+    {
+      "scenario": 15,
+      "cumulative_pct": 55.6
+    },
+    {
+      "scenario": 16,
+      "cumulative_pct": 59.3
+    },
+    {
+      "scenario": 17,
+      "cumulative_pct": 63.0
+    },
+    {
+      "scenario": 18,
+      "cumulative_pct": 66.7
+    },
+    {
+      "scenario": 19,
+      "cumulative_pct": 70.4
+    },
+    {
+      "scenario": 20,
+      "cumulative_pct": 74.1
+    },
+    {
+      "scenario": 21,
+      "cumulative_pct": 77.8
+    },
+    {
+      "scenario": 22,
+      "cumulative_pct": 81.5
+    },
+    {
+      "scenario": 23,
+      "cumulative_pct": 85.2
+    },
+    {
+      "scenario": 24,
+      "cumulative_pct": 88.9
+    },
+    {
+      "scenario": 25,
+      "cumulative_pct": 92.6
+    },
+    {
+      "scenario": 26,
+      "cumulative_pct": 96.3
+    },
+    {
+      "scenario": 27,
+      "cumulative_pct": 100.0
+    }
+  ],
+  "scenarios": [
+    {
+      "id": 1,
+      "values": {
+        "surface": "conditional_conflict_error",
+        "assertion": "conditional_child_parameter"
+      }
+    },
+    {
+      "id": 2,
+      "values": {
+        "surface": "generate_help",
+        "assertion": "schema_features"
+      }
+    },
+    {
+      "id": 3,
+      "values": {
+        "surface": "agent_instructions",
+        "assertion": "no_strip_constraints"
+      }
+    },
+    {
+      "id": 4,
+      "values": {
+        "surface": "generate_help",
+        "assertion": "invalid_pair"
+      }
+    },
+    {
+      "id": 5,
+      "values": {
+        "surface": "generate_help",
+        "assertion": "higher_order"
+      }
+    },
+    {
+      "id": 6,
+      "values": {
+        "surface": "generate_help",
+        "assertion": "forward_dep"
+      }
+    },
+    {
+      "id": 7,
+      "values": {
+        "surface": "generate_help",
+        "assertion": "full_schema_reference"
+      }
+    },
+    {
+      "id": 8,
+      "values": {
+        "surface": "validate_help",
+        "assertion": "schema_features"
+      }
+    },
+    {
+      "id": 9,
+      "values": {
+        "surface": "validate_help",
+        "assertion": "invalid_pair"
+      }
+    },
+    {
+      "id": 10,
+      "values": {
+        "surface": "validate_help",
+        "assertion": "higher_order"
+      }
+    },
+    {
+      "id": 11,
+      "values": {
+        "surface": "validate_help",
+        "assertion": "forward_dep"
+      }
+    },
+    {
+      "id": 12,
+      "values": {
+        "surface": "validate_help",
+        "assertion": "full_schema_reference"
+      }
+    },
+    {
+      "id": 13,
+      "values": {
+        "surface": "agent_instructions",
+        "assertion": "invalid_pair"
+      }
+    },
+    {
+      "id": 14,
+      "values": {
+        "surface": "agent_instructions",
+        "assertion": "higher_order"
+      }
+    },
+    {
+      "id": 15,
+      "values": {
+        "surface": "install_generic_skill",
+        "assertion": "invalid_pair"
+      }
+    },
+    {
+      "id": 16,
+      "values": {
+        "surface": "install_generic_skill",
+        "assertion": "higher_order"
+      }
+    },
+    {
+      "id": 17,
+      "values": {
+        "surface": "install_generic_skill",
+        "assertion": "forward_dep"
+      }
+    },
+    {
+      "id": 18,
+      "values": {
+        "surface": "install_generic_skill",
+        "assertion": "no_strip_constraints"
+      }
+    },
+    {
+      "id": 19,
+      "values": {
+        "surface": "install_generic_skill",
+        "assertion": "full_schema_reference"
+      }
+    },
+    {
+      "id": 20,
+      "values": {
+        "surface": "repo_local_skill",
+        "assertion": "invalid_pair"
+      }
+    },
+    {
+      "id": 21,
+      "values": {
+        "surface": "repo_local_skill",
+        "assertion": "higher_order"
+      }
+    },
+    {
+      "id": 22,
+      "values": {
+        "surface": "repo_local_skill",
+        "assertion": "forward_dep"
+      }
+    },
+    {
+      "id": 23,
+      "values": {
+        "surface": "repo_local_skill",
+        "assertion": "no_strip_constraints"
+      }
+    },
+    {
+      "id": 24,
+      "values": {
+        "surface": "conditional_conflict_error",
+        "assertion": "invalid_pair"
+      }
+    },
+    {
+      "id": 25,
+      "values": {
+        "surface": "conditional_conflict_error",
+        "assertion": "higher_order"
+      }
+    },
+    {
+      "id": 26,
+      "values": {
+        "surface": "conditional_conflict_error",
+        "assertion": "forward_dep"
+      }
+    },
+    {
+      "id": 27,
+      "values": {
+        "surface": "conditional_conflict_error",
+        "assertion": "full_schema_reference"
+      }
+    }
+  ]
+}

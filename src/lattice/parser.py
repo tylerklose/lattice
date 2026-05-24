@@ -184,7 +184,11 @@ def _apply_conditional_parameters(parameters: "OrderedDict[str, Parameter]", raw
         actual = set(existing.values)
         if actual != expected:
             errors.append(
-                f"Conditional parameter `{parameter_name}` conflicts with an existing parameter definition."
+                f"Conditional parameter `{parameter_name}` conflicts with an existing parameter definition. "
+                "Use `conditional` only to define a child parameter that applies under parent values. "
+                "For exclusions or requirements between existing parameters, use `invalid_pair`, "
+                "`higher_order`, `forward_dep`, or `bidirectional`; run `lattice agent instructions` "
+                "for the full schema reference."
             )
 
 
@@ -235,7 +239,13 @@ def _parse_constraints(
                 errors.append(f"`constraints[{index}]` references unknown parent parameter `{parent}`.")
                 continue
             if parameter_name not in parameters:
-                errors.append(f"`constraints[{index}]` references unknown conditional parameter `{parameter_name}`.")
+                errors.append(
+                    f"`constraints[{index}]` references unknown conditional parameter `{parameter_name}`. "
+                    "`conditional` must define a child parameter with `values` and a parent gate. "
+                    "For exclusions or requirements between existing parameters, use `invalid_pair`, "
+                    "`higher_order`, `forward_dep`, or `bidirectional`; run `lattice agent instructions` "
+                    "for the full schema reference."
+                )
                 continue
 
             parent_parameter = parameters[parent]

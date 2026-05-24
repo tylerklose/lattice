@@ -49,7 +49,7 @@ lattice agent install-claude-skill
 1. Extract the schema.
    First choose the scope. A schema should usually describe one coherent interaction surface: one feature, one workflow, one service behavior, one endpoint family, one rendering surface, one component's variant space, one template family, one config matrix, or one data-model interaction surface. Then choose parameters that represent independent decisions or state partitions inside that scope. Choose values that are meaningful partitions, not every literal in the codebase.
 2. Encode constraints.
-   Prefer the smallest constraint type that matches the rule. Use `conditional` instead of hand-writing `N/A` values.
+   Prefer the smallest constraint type that matches the rule. Lattice supports exclusion-style constraints, not only conditional parameters: use `invalid_pair` when two assignments cannot coexist and `higher_order` when a combination only becomes invalid with multiple antecedents. Use `conditional` instead of hand-writing `N/A` values.
 3. Validate before generation.
    Prefer the installed `lattice` command with JSON or YAML on stdin:
 
@@ -89,6 +89,8 @@ lattice agent install-claude-skill
 - Use value partitions such as `present` and `absent`, not brittle prose.
 - Avoid derived duplicate parameters. If one field is determined by another, represent that as a constraint.
 - Add constraints only for true business or system rules. Do not use them to encode preferences.
+- Do not strip true constraints to make generation easier, and do not generate nonsensical rows just to mark them invalid later. Encoding constraints changes the coverage universe to valid interactions, which is the point of using Lattice.
+- If two assignments cannot coexist, use `invalid_pair`.
 - If a parameter only matters under a parent value, use `conditional`.
 - If a scenario must appear at least once, use `forced`.
 - If a rule only breaks under multiple antecedents, use `higher_order`.
@@ -101,6 +103,7 @@ Read [references/modeling-rules.md](references/modeling-rules.md) when you need 
 - Prefer stdin and JSON because another agent step usually consumes the output.
 - Do not add or remove rows after generation.
 - If validation fails, fix the schema instead of weakening the generation step.
+- If generation emits rows that are impossible in the target system, stop and add the missing constraint rather than filtering or annotating those rows downstream.
 - In test mode, assertions must reflect intended behavior, not observed behavior. Read intent from the spec, PRD, ticket, or user — never from the code under test. If intent is ambiguous, stop and ask.
 
 Read [references/worked-examples.md](references/worked-examples.md) for concrete examples in this repo.

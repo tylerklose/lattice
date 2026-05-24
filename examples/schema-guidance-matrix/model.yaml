@@ -1,0 +1,76 @@
+model_name: lattice_schema_guidance_matrix
+parameters:
+  surface:
+    - generate_help
+    - validate_help
+    - agent_instructions
+    - install_generic_skill
+    - repo_local_skill
+    - conditional_conflict_error
+  assertion:
+    - schema_features
+    - invalid_pair
+    - higher_order
+    - forward_dep
+    - no_strip_constraints
+    - conditional_child_parameter
+    - full_schema_reference
+constraints:
+  - type: invalid_pair
+    if: { parameter: surface, value: generate_help }
+    then_not: { parameter: assertion, value: no_strip_constraints }
+  - type: invalid_pair
+    if: { parameter: surface, value: generate_help }
+    then_not: { parameter: assertion, value: conditional_child_parameter }
+  - type: invalid_pair
+    if: { parameter: surface, value: validate_help }
+    then_not: { parameter: assertion, value: no_strip_constraints }
+  - type: invalid_pair
+    if: { parameter: surface, value: validate_help }
+    then_not: { parameter: assertion, value: conditional_child_parameter }
+  - type: invalid_pair
+    if: { parameter: surface, value: agent_instructions }
+    then_not: { parameter: assertion, value: schema_features }
+  - type: invalid_pair
+    if: { parameter: surface, value: agent_instructions }
+    then_not: { parameter: assertion, value: forward_dep }
+  - type: invalid_pair
+    if: { parameter: surface, value: agent_instructions }
+    then_not: { parameter: assertion, value: conditional_child_parameter }
+  - type: invalid_pair
+    if: { parameter: surface, value: agent_instructions }
+    then_not: { parameter: assertion, value: full_schema_reference }
+  - type: invalid_pair
+    if: { parameter: surface, value: install_generic_skill }
+    then_not: { parameter: assertion, value: schema_features }
+  - type: invalid_pair
+    if: { parameter: surface, value: install_generic_skill }
+    then_not: { parameter: assertion, value: conditional_child_parameter }
+  - type: invalid_pair
+    if: { parameter: surface, value: repo_local_skill }
+    then_not: { parameter: assertion, value: schema_features }
+  - type: invalid_pair
+    if: { parameter: surface, value: repo_local_skill }
+    then_not: { parameter: assertion, value: conditional_child_parameter }
+  - type: invalid_pair
+    if: { parameter: surface, value: repo_local_skill }
+    then_not: { parameter: assertion, value: full_schema_reference }
+  - type: invalid_pair
+    if: { parameter: surface, value: conditional_conflict_error }
+    then_not: { parameter: assertion, value: schema_features }
+  - type: invalid_pair
+    if: { parameter: surface, value: conditional_conflict_error }
+    then_not: { parameter: assertion, value: no_strip_constraints }
+  - type: forced
+    assignments:
+      - { parameter: surface, value: conditional_conflict_error }
+      - { parameter: assertion, value: conditional_child_parameter }
+  - type: forced
+    assignments:
+      - { parameter: surface, value: generate_help }
+      - { parameter: assertion, value: schema_features }
+  - type: forced
+    assignments:
+      - { parameter: surface, value: agent_instructions }
+      - { parameter: assertion, value: no_strip_constraints }
+strength: 2

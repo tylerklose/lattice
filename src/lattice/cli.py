@@ -29,6 +29,11 @@ from lattice.ipog import GenerationProgress, generate_covering_array
 from lattice.parser import ModelIOError, ValidationError, load_model
 
 DEFAULT_AGENT_FORMAT = "text"
+SCHEMA_HELP = (
+    "Schema features: constraints include invalid_pair, higher_order, "
+    "forward_dep, bidirectional, conditional, and forced; parameters may use "
+    "weights. Run `lattice agent instructions` for the full schema workflow."
+)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -80,7 +85,11 @@ def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="lattice")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    generate = subparsers.add_parser("generate", help="Generate deterministic scenarios from a schema.")
+    generate = subparsers.add_parser(
+        "generate",
+        help="Generate deterministic scenarios from a schema.",
+        epilog=SCHEMA_HELP,
+    )
     generate.add_argument("model", nargs="?", help="Path to a JSON or YAML schema. Reads stdin when omitted.")
     generate.add_argument("--strength", type=int, help="Override the schema strength.")
     generate.add_argument("--format", default="json", choices=("table", "json", "csv", "summary"))
@@ -104,7 +113,11 @@ def _build_parser() -> argparse.ArgumentParser:
         help="With --progress, print every N generated scenarios plus the final scenario.",
     )
 
-    validate = subparsers.add_parser("validate", help="Validate a schema without generating scenarios.")
+    validate = subparsers.add_parser(
+        "validate",
+        help="Validate a schema without generating scenarios.",
+        epilog=SCHEMA_HELP,
+    )
     validate.add_argument("model", nargs="?", help="Path to a JSON or YAML schema. Reads stdin when omitted.")
     validate.add_argument("--strength", type=int, help="Override the schema strength.")
     validate.add_argument("--format", default="json", choices=("json", "text"))

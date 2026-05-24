@@ -94,6 +94,12 @@ Lattice currently supports:
 - inline parameter `weights`
 - deterministic generation via `--seed`
 
+Model true impossibilities as constraints before generation. Do not strip
+constraints and mark impossible rows downstream: that changes the coverage
+surface from valid interactions to an unconstrained cross-product. Use
+`invalid_pair` for two assignments that cannot coexist and `higher_order` when
+the invalid rule needs multiple antecedents.
+
 `conditional` parameters are first-class schema features. The parser expands them into concrete parameter domains and the constraint engine enforces `N/A` semantics automatically.
 
 ## Solver Notes
@@ -171,12 +177,13 @@ Use it when you want a coding harness to:
 
 ## Examples
 
-The `examples/` directory contains seven end-to-end examples:
+The `examples/` directory contains eight end-to-end examples:
 
 - `plan-mode-saved-search`: plan -> schema -> generated scenarios
 - `test-mode-checkout`: code/test surface -> schema -> generated scenarios
 - `three-way-notifications`: strength-3 schema -> generated scenarios
 - `lattice-self-test`: Lattice generates a matrix for testing Lattice itself
 - `agent-bootstrap-matrix`: Lattice generates a matrix for testing agent skill bootstrap behavior
+- `schema-guidance-matrix`: Lattice generates a matrix for testing Lattice's schema discoverability guidance
 - `component-variant-matrix`: component/rendering surface -> schema -> generated visual review variants
 - `httpx-query-param-merge`: OSS audit example for a real HTTPX query-parameter interaction issue

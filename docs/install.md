@@ -160,9 +160,10 @@ Workflow:
 
 1. Choose one coherent behavior or rendering surface.
 2. Extract parameters, values, and true constraints.
-3. Run `lattice validate` on the schema.
-4. Run `lattice generate` only after validation succeeds.
-5. Use the generated rows as the source of truth for plan review, rendered variants, fixtures, or missing tests.
+3. Encode impossible combinations as constraints, not downstream annotations. Use `invalid_pair` when two assignments cannot coexist, `higher_order` when a rule needs multiple antecedents, and `conditional` only for parent-gated parameters.
+4. Run `lattice validate` on the schema.
+5. Run `lattice generate` only after validation succeeds.
+6. Use the generated rows as the source of truth for plan review, rendered variants, fixtures, or missing tests.
 
 Prefer JSON or YAML on stdin:
 
@@ -171,7 +172,7 @@ cat schema.json | lattice validate
 cat schema.json | lattice generate
 ```
 
-Do not manually add, remove, or reshuffle generated rows.
+Do not manually add, remove, or reshuffle generated rows. Do not strip true constraints and mark impossible rows invalid after generation; fix the schema so Lattice covers the valid interaction space.
 ````
 
 ## 5. Add Agent Memory
