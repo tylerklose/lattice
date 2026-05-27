@@ -7,19 +7,13 @@ This file describes the portable workflow for using Lattice outside this reposit
 Install Lattice into the Python environment used by your coding harness:
 
 ```bash
-python3 -m pip install -e /path/to/lattice
+pipx install lattice-cli
 ```
 
 With the optional solver backend:
 
 ```bash
-python3 -m pip install -e "/path/to/lattice[solver]"
-```
-
-Once `lattice-cli` is published to the package index your agents use, install with:
-
-```bash
-pipx install lattice-cli
+pipx install "lattice-cli[solver]"
 ```
 
 For one-shot use from an agent, run the package-provided command through `uvx`:
@@ -32,6 +26,18 @@ Plain `pip` is still fine when the target harness owns the Python environment:
 
 ```bash
 python3 -m pip install lattice-cli
+```
+
+For development against a local checkout:
+
+```bash
+python3 -m pip install -e /path/to/lattice
+```
+
+With the solver extra in development:
+
+```bash
+python3 -m pip install -e "/path/to/lattice[solver]"
 ```
 
 ## Check Before Running

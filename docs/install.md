@@ -7,25 +7,17 @@ This page is the agent-friendly setup path. After it is complete, any coding age
 
 ## 1. Install The CLI
 
-From a local checkout or release archive:
+From PyPI:
 
 ```bash
-python3 -m pip install -e /path/to/lattice
+pipx install lattice-cli
 lattice --help
 ```
 
 With the optional solver backend:
 
 ```bash
-python3 -m pip install -e "/path/to/lattice[solver]"
-lattice --help
-```
-
-Once `lattice-cli` is published to the package index your agents use, the install command should become:
-
-```bash
-pipx install lattice-cli
-lattice --help
+pipx install "lattice-cli[solver]"
 ```
 
 For a one-shot agent setup without a persistent install, use `uvx`:
@@ -39,6 +31,19 @@ If neither `pipx` nor `uvx` is available, plain `pip` still works:
 ```bash
 python3 -m pip install lattice-cli
 lattice --help
+```
+
+For development against a local checkout:
+
+```bash
+python3 -m pip install -e /path/to/lattice
+lattice --help
+```
+
+With the solver extra in development:
+
+```bash
+python3 -m pip install -e "/path/to/lattice[solver]"
 ```
 
 ## 2. Universal Agent Setup

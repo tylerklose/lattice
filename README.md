@@ -118,13 +118,13 @@ the invalid rule needs multiple antecedents.
 
 The current engine is deterministic and self-contained. If `ortools` is installed via the `solver` extra, Lattice can use CP-SAT feasibility checks for partial assignments; otherwise it falls back to the built-in backtracking solver.
 
-Install in editable mode while developing:
+Install from PyPI with the optional solver backend:
 
 ```bash
-python3 -m pip install -e /path/to/lattice
+pipx install "lattice-cli[solver]"
 ```
 
-Install with the optional solver backend:
+Or in editable mode while developing:
 
 ```bash
 python3 -m pip install -e "/path/to/lattice[solver]"

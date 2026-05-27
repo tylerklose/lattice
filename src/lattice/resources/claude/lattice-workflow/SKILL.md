@@ -32,7 +32,13 @@ command -v lattice >/dev/null 2>&1 && lattice --help >/dev/null
 
 If that succeeds, use the installed command.
 
-If it fails and you know the path to the Lattice source checkout, install it into the current Python environment:
+If it fails, install from PyPI:
+
+```bash
+pipx install lattice-cli
+```
+
+Or, if you have a local Lattice source checkout (for development):
 
 ```bash
 python3 -m pip install -e /path/to/lattice
