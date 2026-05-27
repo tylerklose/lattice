@@ -10,6 +10,14 @@ Lattice is the way out. You list the knobs, the settings, and any rules ("Apple 
 
 The math behind this is old. It's what Hexawise and similar tools have been selling for years. What's new here is the packaging: schema in on stdin, rows out on stdout, deterministic, built for a coding agent to call while planning a feature or writing tests. The agent describes the surface, Lattice does the combinatorics, the agent turns each row into a test, a rendered screenshot, a fixture, or a step of plan review.
 
+## What this unlocks
+
+**Pre-code planning.** An agent given a feature spec writes a plan that looks careful and treats interactions as an afterthought. Modeling the surface as a Lattice schema first — parameters, values, constraints — changes the plan. The agent isn't picking edges by gut feel; it has a deterministic list of combinations the design has to handle. Spec gaps surface during modeling, when they're still cheap to address, instead of during the first incident.
+
+**Writing tests.** A coding agent's default test suite is two happy paths and an error case. With Lattice, the agent models the surface, gets the covering rows, and the test file becomes one assertion per row. For most surfaces that's the first time interactions get tested at all, instead of just the cases the author happened to think of.
+
+Same loop in both places: the agent describes the surface, Lattice does the combinatorics, the agent reasons over the rows. The schema is cheap. The coverage is defensible.
+
 ## How it goes
 
 1. The agent writes a small JSON or YAML schema: parameters, values, constraints.
