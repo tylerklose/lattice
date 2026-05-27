@@ -16,22 +16,22 @@ With the optional solver backend:
 python3 -m pip install -e "/path/to/lattice[solver]"
 ```
 
-Once `lattice-cover` is published to the package index your agents use, install with:
+Once `lattice-cli` is published to the package index your agents use, install with:
 
 ```bash
-pipx install lattice-cover
+pipx install lattice-cli
 ```
 
 For one-shot use from an agent, run the package-provided command through `uvx`:
 
 ```bash
-uvx --from lattice-cover lattice agent instructions
+uvx --from lattice-cli lattice agent instructions
 ```
 
 Plain `pip` is still fine when the target harness owns the Python environment:
 
 ```bash
-python3 -m pip install lattice-cover
+python3 -m pip install lattice-cli
 ```
 
 ## Check Before Running

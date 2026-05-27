@@ -21,23 +21,23 @@ python3 -m pip install -e "/path/to/lattice[solver]"
 lattice --help
 ```
 
-Once `lattice-cover` is published to the package index your agents use, the install command should become:
+Once `lattice-cli` is published to the package index your agents use, the install command should become:
 
 ```bash
-pipx install lattice-cover
+pipx install lattice-cli
 lattice --help
 ```
 
 For a one-shot agent setup without a persistent install, use `uvx`:
 
 ```bash
-uvx --from lattice-cover lattice agent instructions
+uvx --from lattice-cli lattice agent instructions
 ```
 
 If neither `pipx` nor `uvx` is available, plain `pip` still works:
 
 ```bash
-python3 -m pip install lattice-cover
+python3 -m pip install lattice-cli
 lattice --help
 ```
 

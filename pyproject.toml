@@ -3,7 +3,7 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "lattice-cover"
+name = "lattice-cli"
 version = "0.1.0"
 description = "Deterministic combinatorial coverage for agent workflows and constrained variant surfaces."
 readme = "README.md"
