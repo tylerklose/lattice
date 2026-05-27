@@ -1,23 +1,25 @@
 # Lattice
 
-Lattice turns finite, constrained parameter spaces into deterministic coverage rows.
+Say you're testing a checkout flow. Users are signed in or guest. They have a coupon or not. The cart is empty, single-item, or multi-item. Shipping is standard, express, or pickup. Payment is card, Apple Pay, or PayPal. The site renders in light or dark mode.
 
-It is built to be easy for coding agents to call, but it is not limited to backend logic. Use it whenever a surface has dimensions, values, rules, and an evaluator: a feature, workflow, API, state machine, Rails partial, design-system component, email template, config matrix, or data-model slice.
+Six knobs, a few settings each — 216 combinations. Real product surfaces have dozens of knobs and hundreds of thousands of combinations. And most production bugs are *interaction* bugs: the one where dark mode plus Apple Pay plus the new coupon breaks the order page, even though each piece works fine alone.
 
-Project status: experimental `0.1`. The CLI and agent skill bootstrap path work, but the schema contract may still evolve while the project finds its first users.
+Nobody writes tests for 216 combinations. Nobody can write tests for 200,000. So humans and coding agents alike pick a handful of cases by gut feel, and the interaction bug ships.
 
-The big picture is simple:
+Lattice is the way out. You list the knobs, the settings, and any rules ("Apple Pay isn't allowed for pickup orders"). Lattice gives back a short, deterministic list of scenarios that hits every *pair* of settings at least once. The six-knob example above collapses from 216 cases to about a dozen — enough to catch the overwhelming majority of interaction bugs without writing the universe.
 
-1. A person or agent names the surface and extracts parameters, values, and constraints.
-2. The harness sends that schema to Lattice as JSON or YAML.
-3. `lattice generate` turns the schema into deterministic pairwise or t-way coverage rows.
-4. The harness maps those rows to an evaluator: tests, screenshots, contact sheets, visual diffs, sandbox calls, fixtures, or plan review.
+The math behind this is old. It's what Hexawise and similar tools have been selling for years. What's new here is the packaging: schema in on stdin, rows out on stdout, deterministic, built for a coding agent to call while planning a feature or writing tests. The agent describes the surface, Lattice does the combinatorics, the agent turns each row into a test, a rendered screenshot, a fixture, or a step of plan review.
 
-The harness handles extraction and synthesis. Lattice handles validation, constraints, and combinatorics.
+## How it goes
 
-A schema should usually be scoped to one coherent surface: one feature, one workflow, one service behavior, one endpoint family, one rendering surface, one component's variant space, one template family, one config matrix, or one data-model slice.
+1. The agent writes a small JSON or YAML schema: parameters, values, constraints.
+2. Pipe it to `lattice generate`.
+3. Lattice returns the covering rows. Same schema and seed always produce the same rows.
+4. The agent maps each row to whatever it's evaluating — a test, a render, a fixture, a sandbox call.
 
-Reach for Lattice when the combinations are easy to describe but annoying or risky to enumerate by hand. The product is not the schema file. The product is the compact set of rows that tells an evaluator what to inspect.
+The schema is the contract between agent and engine. The rows are the product. Lattice does not care whether the surface is a backend feature, an API, a state machine, a Rails partial, a design-system component, an email template, a config matrix, or a data-model slice — if it has dimensions, values, rules, and an evaluator, Lattice can cover it.
+
+Project status: experimental `0.1`. The CLI and agent skill bootstrap path work; the schema contract may still evolve as the project finds its first users.
 
 ## Install For Agents
 
