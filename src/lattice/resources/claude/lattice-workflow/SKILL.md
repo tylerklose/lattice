@@ -5,11 +5,9 @@ description: Use when planning or testing behavior or variant surfaces with inte
 
 # Lattice Workflow
 
-Use this skill to keep Claude on extraction and interpretation while Lattice handles combinatorial coverage.
+Use this skill to keep Claude on extraction and interpretation while Lattice handles the combinatorics.
 
 ## When To Use It
-
-Use this skill when the task is any of:
 
 - derive a combinatorial model from a feature or PRD
 - derive a test matrix from existing code
@@ -18,19 +16,41 @@ Use this skill when the task is any of:
 - generate pairwise or 3-way scenarios without hand-enumerating combinations
 - render a compact visual review matrix instead of every possible variant
 - review a plan involving roles, permissions, modes, providers, feature flags, optional fields, component props, rendering branches, template variants, config matrices, or lifecycle states
-- find coverage gaps where bugs are likely to hide in interactions rather than single branches
+- find coverage gaps where bugs hide in interactions rather than single branches
 
-Do not invent pairwise combinations manually. The schema is the contract. The generated rows are the source of truth. The schema file is optional transport.
+## When NOT To Use It
+
+- **Small enumerable spaces.** Fewer than ~10 total combinations — enumerate by hand.
+- **Independent dimensions.** No interactions can surface a bug; each parameter affects behavior independently.
+- **Non-deterministic systems.** The same input row won't produce repeatable output (e.g., testing LLM responses).
+
+## Minimal Example
+
+A schema (YAML on stdin):
+
+```yaml
+model_name: checkout
+parameters:
+  user: [signed_in, guest]
+  payment: [card, apple_pay, paypal]
+  cart: [empty, single, multi]
+constraints:
+  - invalid_pair: {payment: apple_pay, cart: empty}
+```
+
+One generated row (JSON):
+
+```json
+{"user": "guest", "payment": "card", "cart": "multi"}
+```
+
+The schema is the contract. The generated rows are the source of truth. The schema file is optional transport.
 
 ## Preflight
-
-Before using this skill, check whether `lattice` is already installed:
 
 ```bash
 command -v lattice >/dev/null 2>&1 && lattice --help >/dev/null
 ```
-
-If that succeeds, use the installed command.
 
 If it fails, install from PyPI:
 
@@ -38,10 +58,74 @@ If it fails, install from PyPI:
 pipx install lattice-cli
 ```
 
-Or, if you have a local Lattice source checkout (for development):
+## Workflow
+
+1. **Extract the schema.** Choose one coherent interaction surface — one feature, one workflow, one service behavior, one endpoint family, one component's variant space, one template family, or one config matrix. Parameters represent independent decisions or state partitions. Values are meaningful partitions, not every literal in the codebase.
+
+2. **Encode constraints.** Use the smallest constraint type that matches the rule (see [Constraint Selection](#constraint-selection) below). Encode true impossibilities — do not strip them and mark invalid rows downstream.
+
+3. **Validate.**
+
+   ```bash
+   cat schema.json | lattice validate
+   ```
+
+4. **Generate.** Default to pairwise unless explicitly asked for higher strength.
+
+   ```bash
+   cat schema.json | lattice generate
+   ```
+
+5. **Interpret the output.** Plan mode: rows become plan revisions, missing decisions, review scenarios. Test mode: rows become assertions (see [Test Mode Discipline](#test-mode-discipline) below). Variant mode: rows become fixtures, rendered variants, screenshots, visual-diff inputs.
+
+## Constraint Selection
+
+| Rule shape | Use |
+|---|---|
+| Two assignments cannot coexist | `invalid_pair` |
+| One-to-one pairing (if A then B and if B then A) | `bidirectional` |
+| A requires B, but B may appear elsewhere | `forward_dep` |
+| Child parameter only applies for some parent values | `conditional` |
+| This assignment set must appear in at least one row | `forced` |
+| Rule only breaks under three or more antecedents | `higher_order` |
+
+Prefer the smallest constraint type that matches. Use `conditional` instead of hand-writing `N/A` values.
+
+## Test Mode Discipline
+
+Source expected behavior from intent — the user's request, a spec, a PRD, a ticket, or explicit reasoning about what the system *should* do. **The code under test is evidence, not truth.** If intent is ambiguous for a row, stop and ask the user.
+
+Do not silently encode current behavior and hedge with `bug_signal:`-style annotations. That produces characterization tests, which lock in the implementation (bugs included) instead of catching divergence from intent. The asymmetries Lattice is designed to expose disappear when the test suite mirrors the same mental model as the code.
+
+## Common Pitfalls
+
+❌ Strip constraints to make generation easier, then mark impossible rows invalid after the fact.
+✅ Encode the constraint in the schema, regenerate. Encoding constraints changes the coverage universe to valid interactions — that's the point.
+
+❌ Write tests that assert what the code currently does.
+✅ Write tests that assert what the spec, PRD, or user requested. If intent is ambiguous, ask before writing.
+
+❌ Separate parameters for two fields where one determines the other (e.g., `currency` and `currency_symbol`).
+✅ One parameter plus a constraint expressing the dependency.
+
+❌ Brittle, prose-y value names (`payment_with_apple_pay_using_new_token_flow`).
+✅ Compact partitions: `apple_pay`, `apple_pay_new_token`.
+
+❌ Manually add or remove rows after `lattice generate`.
+✅ If the generated set is wrong, fix the schema. Hand-editing rows breaks the coverage guarantee.
+
+## References
+
+- [references/modeling-rules.md](references/modeling-rules.md) — extraction heuristics, parameter selection, value partitioning, constraint guidance
+- [references/worked-examples.md](references/worked-examples.md) — concrete examples in this repo
+
+## Development Fallback
+
+In a checkout of the Lattice source where the package is not installed:
 
 ```bash
-python3 -m pip install -e /path/to/lattice
+cat schema.json | PYTHONPATH=src python3 -m lattice validate
+cat schema.json | PYTHONPATH=src python3 -m lattice generate
 ```
 
 To install or refresh this skill from the installed package:
@@ -49,67 +133,3 @@ To install or refresh this skill from the installed package:
 ```bash
 lattice agent install-claude-skill
 ```
-
-## Workflow
-
-1. Extract the schema.
-   First choose the scope. A schema should usually describe one coherent interaction surface: one feature, one workflow, one service behavior, one endpoint family, one rendering surface, one component's variant space, one template family, one config matrix, or one data-model interaction surface. Then choose parameters that represent independent decisions or state partitions inside that scope. Choose values that are meaningful partitions, not every literal in the codebase.
-2. Encode constraints.
-   Prefer the smallest constraint type that matches the rule. Lattice supports exclusion-style constraints, not only conditional parameters: use `invalid_pair` when two assignments cannot coexist and `higher_order` when a combination only becomes invalid with multiple antecedents. Use `conditional` instead of hand-writing `N/A` values.
-3. Validate before generation.
-   Prefer the installed `lattice` command with JSON or YAML on stdin:
-
-   ```bash
-   cat schema.json | lattice validate
-   ```
-
-   If you are working inside this repository and the package is not installed yet, the fallback is:
-
-   ```bash
-   cat schema.json | PYTHONPATH=src python3 -m lattice validate
-   ```
-
-   Use a temp file only if the harness needs one for debugging or tool interop.
-4. Generate deterministic scenarios.
-
-   ```bash
-   cat schema.json | lattice generate
-   ```
-
-   The development fallback in this repo is:
-
-   ```bash
-   cat schema.json | PYTHONPATH=src python3 -m lattice generate
-   ```
-
-   Default to pairwise unless the user explicitly asks for a higher strength.
-5. Interpret the output.
-   In plan mode, turn rows into plan revisions, missing decisions, and review scenarios. In test mode, diff the rows against the existing tests and write the missing cases. In variant mode, turn rows into fixtures, rendered variants, screenshots, contact sheets, visual diff inputs, or review checklists.
-
-   In test mode, source expected behavior from intent — the user's request, a spec, a PRD, a ticket, or explicit reasoning about what the system *should* do. The code under test is evidence, not truth. If intent is ambiguous for a row, stop and ask the user. Do not silently encode current behavior and hedge with `bug_signal:`-style annotations: that produces characterization tests, which lock in the implementation (bugs included) instead of catching divergence from intent. The asymmetries Lattice is designed to expose disappear when the test suite mirrors the same mental model as the code.
-
-## Modeling Rules
-
-- Scope one schema to one interaction surface. Do not default to the whole app unless the app is genuinely small and the behavior or rendering surface is still coherent.
-- Keep parameter names stable and implementation-adjacent.
-- Use value partitions such as `present` and `absent`, not brittle prose.
-- Avoid derived duplicate parameters. If one field is determined by another, represent that as a constraint.
-- Add constraints only for true business or system rules. Do not use them to encode preferences.
-- Do not strip true constraints to make generation easier, and do not generate nonsensical rows just to mark them invalid later. Encoding constraints changes the coverage universe to valid interactions, which is the point of using Lattice.
-- If two assignments cannot coexist, use `invalid_pair`.
-- If a parameter only matters under a parent value, use `conditional`.
-- If a scenario must appear at least once, use `forced`.
-- If a rule only breaks under multiple antecedents, use `higher_order`.
-
-Read [references/modeling-rules.md](references/modeling-rules.md) when you need extraction heuristics or constraint selection guidance.
-
-## Output Discipline
-
-- Run `validate` before `generate`.
-- Prefer stdin and JSON because another agent step usually consumes the output.
-- Do not add or remove rows after generation.
-- If validation fails, fix the schema instead of weakening the generation step.
-- If generation emits rows that are impossible in the target system, stop and add the missing constraint rather than filtering or annotating those rows downstream.
-- In test mode, assertions must reflect intended behavior, not observed behavior. Read intent from the spec, PRD, ticket, or user — never from the code under test. If intent is ambiguous, stop and ask.
-
-Read [references/worked-examples.md](references/worked-examples.md) for concrete examples in this repo.
