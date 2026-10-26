@@ -92,7 +92,7 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     generate.add_argument("model", nargs="?", help="Path to a JSON or YAML schema. Reads stdin when omitted.")
     generate.add_argument("--strength", type=int, help="Override the schema strength.")
-    generate.add_argument("--format", default="json", choices=("table", "json", "csv", "summary"))
+    generate.add_argument("--format", default="json", choices=("table", "json", "csv", "summary", "yaml"))
     generate.add_argument("--seed", type=int, default=42)
     generate.add_argument("--pool-size", type=int, default=50)
     generate.add_argument(

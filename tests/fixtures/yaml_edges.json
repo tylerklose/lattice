@@ -1,0 +1,53 @@
+{
+  "model_name": "edge \"cases\"\n\ud83d\ude00",
+  "parameters": {
+    "value": [
+      "guest",
+      "",
+      "yes",
+      "~",
+      "null",
+      "0x1F",
+      "1.0",
+      "2026-10-26",
+      "- item",
+      "? key",
+      ": x",
+      "a: b #c",
+      "  pad  ",
+      "Tuesday\nThursday",
+      "line\n",
+      "say \"hi\" \\ ok",
+      "caf\u00e9",
+      "ok \ud83d\ude00",
+      "tab\there\u0007",
+      "x\u007f",
+      "a\u0085b",
+      "a\u2028b\u2029",
+      "\ufeffbom",
+      "\u00a0nbsp",
+      "N/A",
+      "word word word word word word word word word word word word word word word word word word word word "
+    ],
+    "yes": [
+      "no",
+      "on"
+    ],
+    "a: b #c": [
+      "{x}",
+      "[y]"
+    ],
+    "caf\u00e9 \ud83d\ude00": [
+      "&anchor",
+      "*alias",
+      "!tag",
+      "%dir",
+      "@at",
+      "`tick",
+      "|",
+      ">",
+      "#comment"
+    ]
+  },
+  "strength": 1
+}
