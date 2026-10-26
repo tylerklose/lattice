@@ -77,11 +77,12 @@ Supported output formats:
 - `table`
 - `csv`
 - `summary`
+- `yaml` (same content as `json`, for files people edit by hand)
 
 `generate` defaults to JSON because the primary consumer is usually a coding harness. File-based schemas are supported, but the schema file is transport, not the product surface.
 
 For long higher-strength runs, use `--progress` to stream coverage progress to
-stderr while keeping stdout clean for JSON, CSV, table, or summary output.
+stderr while keeping stdout clean for JSON, YAML, CSV, table, or summary output.
 `--progress-every N` controls how many generated scenarios pass between
 updates.
 

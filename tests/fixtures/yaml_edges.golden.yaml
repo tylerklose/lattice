@@ -1,0 +1,218 @@
+meta:
+  model_name: "edge \"cases\"\n😀"
+  strength: 1
+  test_count: 26
+  exhaustive_count: 936
+  reduction: "36x"
+  coverage: "100.0%"
+  seed: 42
+coverage_curve:
+  - scenario: 1
+    cumulative_pct: 10.3
+  - scenario: 2
+    cumulative_pct: 20.5
+  - scenario: 3
+    cumulative_pct: 25.6
+  - scenario: 4
+    cumulative_pct: 30.8
+  - scenario: 5
+    cumulative_pct: 35.9
+  - scenario: 6
+    cumulative_pct: 41.0
+  - scenario: 7
+    cumulative_pct: 46.2
+  - scenario: 8
+    cumulative_pct: 51.3
+  - scenario: 9
+    cumulative_pct: 56.4
+  - scenario: 10
+    cumulative_pct: 59.0
+  - scenario: 11
+    cumulative_pct: 61.5
+  - scenario: 12
+    cumulative_pct: 64.1
+  - scenario: 13
+    cumulative_pct: 66.7
+  - scenario: 14
+    cumulative_pct: 69.2
+  - scenario: 15
+    cumulative_pct: 71.8
+  - scenario: 16
+    cumulative_pct: 74.4
+  - scenario: 17
+    cumulative_pct: 76.9
+  - scenario: 18
+    cumulative_pct: 79.5
+  - scenario: 19
+    cumulative_pct: 82.1
+  - scenario: 20
+    cumulative_pct: 84.6
+  - scenario: 21
+    cumulative_pct: 87.2
+  - scenario: 22
+    cumulative_pct: 89.7
+  - scenario: 23
+    cumulative_pct: 92.3
+  - scenario: 24
+    cumulative_pct: 94.9
+  - scenario: 25
+    cumulative_pct: 97.4
+  - scenario: 26
+    cumulative_pct: 100.0
+scenarios:
+  - id: 1
+    values:
+      "value": "guest"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 2
+    values:
+      "value": ""
+      "yes": "on"
+      "a: b #c": "[y]"
+      "café 😀": "*alias"
+  - id: 3
+    values:
+      "value": "yes"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "!tag"
+  - id: 4
+    values:
+      "value": "~"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "%dir"
+  - id: 5
+    values:
+      "value": "null"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "@at"
+  - id: 6
+    values:
+      "value": "0x1F"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "`tick"
+  - id: 7
+    values:
+      "value": "1.0"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "|"
+  - id: 8
+    values:
+      "value": "2026-10-26"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": ">"
+  - id: 9
+    values:
+      "value": "- item"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "#comment"
+  - id: 10
+    values:
+      "value": "? key"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 11
+    values:
+      "value": ": x"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 12
+    values:
+      "value": "a: b #c"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 13
+    values:
+      "value": "  pad  "
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 14
+    values:
+      "value": "Tuesday\nThursday"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 15
+    values:
+      "value": "line\n"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 16
+    values:
+      "value": "say \"hi\" \\ ok"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 17
+    values:
+      "value": "café"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 18
+    values:
+      "value": "ok 😀"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 19
+    values:
+      "value": "tab\there\u0007"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 20
+    values:
+      "value": "x\u007f"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 21
+    values:
+      "value": "a\u0085b"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 22
+    values:
+      "value": "a\u2028b\u2029"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 23
+    values:
+      "value": "\ufeffbom"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 24
+    values:
+      "value": " nbsp"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 25
+    values:
+      "value": "N/A"
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"
+  - id: 26
+    values:
+      "value": "word word word word word word word word word word word word word word word word word word word word "
+      "yes": "no"
+      "a: b #c": "{x}"
+      "café 😀": "&anchor"

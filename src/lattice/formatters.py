@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import re
 
 from lattice.ipog import GenerationResult
 from lattice.model import Model
@@ -17,6 +18,8 @@ def render_output(model: Model, result: GenerationResult, *, output_format: str,
         return format_csv(model, result)
     if output_format == "summary":
         return format_summary(model, result)
+    if output_format == "yaml":
+        return format_yaml(model, result, seed=seed)
     raise ValueError(f"Unknown format `{output_format}`.")
 
 
@@ -83,6 +86,73 @@ def format_json(model: Model, result: GenerationResult, *, seed: int) -> str:
         ],
     }
     return json.dumps(payload, indent=2)
+
+
+def format_yaml(model: Model, result: GenerationResult, *, seed: int | None) -> str:
+    """Same content as format_json, written by hand in one fixed style.
+
+    PyYAML and Ruby's Psych quote and wrap differently, so the Python and Ruby
+    implementations write YAML themselves to emit identical bytes. Every string
+    is double-quoted, so no value can be read back as a boolean, null, number
+    or date.
+    """
+    coverage = f"{result.coverage_curve[-1].cumulative_pct:.1f}%" if result.coverage_curve else "0.0%"
+    lines = [
+        "meta:",
+        f"  model_name: {_yaml_string(model.model_name)}",
+        f"  strength: {model.strength}",
+        f"  test_count: {len(result.rows)}",
+        f"  exhaustive_count: {model.exhaustive_count}",
+        f"  reduction: {_yaml_string(_reduction_label(model.exhaustive_count, len(result.rows)))}",
+        f"  coverage: {_yaml_string(coverage)}",
+        f"  seed: {'null' if seed is None else seed}",
+    ]
+
+    if not result.coverage_curve:
+        lines.append("coverage_curve: []")
+    else:
+        lines.append("coverage_curve:")
+        for point in result.coverage_curve:
+            lines.append(f"  - scenario: {point.scenario}")
+            lines.append(f"    cumulative_pct: {json.dumps(point.cumulative_pct)}")
+
+    rows = _named_rows(model, result)
+    if not rows:
+        lines.append("scenarios: []")
+    else:
+        lines.append("scenarios:")
+        for index, row in enumerate(rows):
+            lines.append(f"  - id: {index + 1}")
+            lines.append("    values:")
+            for name in model.parameter_names:
+                lines.append(f"      {_yaml_string(name)}: {_yaml_string(row[name])}")
+    return "\n".join(lines)
+
+
+_YAML_ESCAPES = {
+    '"': '\\"',
+    "\\": "\\\\",
+    "\b": "\\b",
+    "\t": "\\t",
+    "\n": "\\n",
+    "\f": "\\f",
+    "\r": "\\r",
+}
+
+# Characters escaped inside a double-quoted YAML string: the quote and
+# backslash, C0 controls, DEL, C1 controls (U+0085 would otherwise fold to a
+# space), the Unicode line and paragraph separators, the byte-order mark, and
+# the two noncharacters YAML cannot hold. Everything else is written as UTF-8,
+# so accented letters and emoji stay readable.
+_YAML_ESCAPED_CHARS = re.compile(r'["\\\u0000-\u001f\u007f-\u009f\u2028\u2029\ufeff\ufffe\uffff]')
+
+
+def _yaml_string(value: str) -> str:
+    def escape(match: re.Match[str]) -> str:
+        char = match.group(0)
+        return _YAML_ESCAPES.get(char) or f"\\u{ord(char):04x}"
+
+    return '"' + _YAML_ESCAPED_CHARS.sub(escape, value) + '"'
 
 
 def format_csv(model: Model, result: GenerationResult) -> str:
