@@ -168,7 +168,7 @@ class CliTests(unittest.TestCase):
             self.assertEqual(parsed["surface"], "generic")
             self.assertTrue((target / "SKILL.md").is_file())
             self.assertTrue((target / "references" / "modeling-rules.md").is_file())
-            self.assertIn("Do not strip true constraints", (target / "SKILL.md").read_text())
+            self.assertIn("do not strip them and mark invalid rows downstream", (target / "SKILL.md").read_text())
             self.assertIn(
                 "mark them invalid downstream",
                 (target / "references" / "modeling-rules.md").read_text(),
