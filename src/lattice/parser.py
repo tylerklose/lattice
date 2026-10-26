@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import json
+import math
+import re
 import sys
 from collections import OrderedDict
 from pathlib import Path
 from typing import Any
-
-import yaml
 
 from lattice.model import (
     Assignment,
@@ -21,6 +20,7 @@ from lattice.model import (
     normalize_scalar,
     NA_VALUE,
 )
+from lattice.schema_text import load_json, load_yaml
 
 
 class ModelIOError(Exception):
@@ -88,11 +88,11 @@ def _read_model_input(path: str | None) -> tuple[str, str, str | None]:
 def _deserialize_model(text: str, source_name: str, extension: str | None) -> Any:
     loaders = []
     if extension == ".json":
-        loaders = [json.loads]
+        loaders = [load_json]
     elif extension in {".yaml", ".yml"}:
-        loaders = [yaml.safe_load]
+        loaders = [load_yaml]
     else:
-        loaders = [json.loads, yaml.safe_load]
+        loaders = [load_json, load_yaml]
 
     errors: list[str] = []
     for loader in loaders:
@@ -376,26 +376,53 @@ def _parse_weights(
         return None
 
     parsed: list[float] = []
-    for weight in raw_weights:
-        if not isinstance(weight, (int, float)):
+    for raw_weight in raw_weights:
+        weight = _parse_number(raw_weight)
+        if weight is None:
             errors.append(f"`weights` for parameter `{parameter_name}` must be numeric.")
             return None
         if weight <= 0:
             errors.append(f"`weights` for parameter `{parameter_name}` must be greater than zero.")
             return None
-        parsed.append(float(weight))
+        parsed.append(weight)
     return tuple(parsed)
 
 
+_DECIMAL_TEXT = re.compile(r"[-+]?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?")
+_INTEGER_TEXT = re.compile(r"[-+]?[0-9]+")
+
+
+def _parse_number(raw: Any) -> float | None:
+    """A finite number, from a Python number or decimal text such as "0.7" or
+    "1e-3" (schema files keep numbers as text). Booleans are not numbers."""
+    if isinstance(raw, bool):
+        return None
+    if isinstance(raw, (int, float)):
+        number = float(raw)
+    elif isinstance(raw, str) and _DECIMAL_TEXT.fullmatch(raw):
+        number = float(raw)
+    else:
+        return None
+    return number if math.isfinite(number) else None
+
+
 def _parse_strength(raw_strength: Any, parameter_count: int, errors: list[str]) -> int:
+    strength: int | None
     if raw_strength is None:
         strength = 2
+    elif isinstance(raw_strength, bool):
+        strength = None
+    elif isinstance(raw_strength, int):
+        strength = raw_strength
+    elif isinstance(raw_strength, float):
+        strength = int(raw_strength) if math.isfinite(raw_strength) else None
+    elif isinstance(raw_strength, str) and _INTEGER_TEXT.fullmatch(raw_strength):
+        strength = int(raw_strength, 10)
     else:
-        try:
-            strength = int(raw_strength)
-        except (TypeError, ValueError):
-            errors.append("`strength` must be an integer.")
-            return 2
+        strength = None
+    if strength is None:
+        errors.append("`strength` must be an integer.")
+        return 2
 
     if strength < 1:
         errors.append("`strength` must be at least 1.")

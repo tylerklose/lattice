@@ -1,0 +1,219 @@
+{
+  "meta": {
+    "model_name": "scalar_text",
+    "strength": 1,
+    "test_count": 12,
+    "exhaustive_count": 26880,
+    "reduction": "2240x",
+    "coverage": "100.0%",
+    "seed": 42
+  },
+  "coverage_curve": [
+    {
+      "scenario": 1,
+      "cumulative_pct": 22.2
+    },
+    {
+      "scenario": 2,
+      "cumulative_pct": 41.7
+    },
+    {
+      "scenario": 3,
+      "cumulative_pct": 55.6
+    },
+    {
+      "scenario": 4,
+      "cumulative_pct": 66.7
+    },
+    {
+      "scenario": 5,
+      "cumulative_pct": 75.0
+    },
+    {
+      "scenario": 6,
+      "cumulative_pct": 80.6
+    },
+    {
+      "scenario": 7,
+      "cumulative_pct": 86.1
+    },
+    {
+      "scenario": 8,
+      "cumulative_pct": 88.9
+    },
+    {
+      "scenario": 9,
+      "cumulative_pct": 91.7
+    },
+    {
+      "scenario": 10,
+      "cumulative_pct": 94.4
+    },
+    {
+      "scenario": 11,
+      "cumulative_pct": 97.2
+    },
+    {
+      "scenario": 12,
+      "cumulative_pct": 100.0
+    }
+  ],
+  "scenarios": [
+    {
+      "id": 1,
+      "values": {
+        "numbers": "1.10",
+        "times": "2026-10-26",
+        "words": "true",
+        "tagged": "=",
+        "1.10": "x",
+        "true": "p",
+        "weighted": "b",
+        "merged": "d"
+      }
+    },
+    {
+      "id": 2,
+      "values": {
+        "numbers": "0x1F",
+        "times": "2026-10-26 10:00:00",
+        "words": "null",
+        "tagged": "yes",
+        "1.10": "y",
+        "true": "q",
+        "weighted": "a",
+        "merged": "d"
+      }
+    },
+    {
+      "id": 3,
+      "values": {
+        "numbers": "012",
+        "times": "2026-10-26T10:00:00Z",
+        "words": "yEs",
+        "tagged": "<<",
+        "1.10": "y",
+        "true": "q",
+        "weighted": "b",
+        "merged": "c"
+      }
+    },
+    {
+      "id": 4,
+      "values": {
+        "numbers": "1_000",
+        "times": "2026-10-26T10:00:00+02:00",
+        "words": "false",
+        "tagged": "1.5",
+        "1.10": "x",
+        "true": "q",
+        "weighted": "a",
+        "merged": "c"
+      }
+    },
+    {
+      "id": 5,
+      "values": {
+        "numbers": "1e3",
+        "times": "2026-10-26 10:00:00",
+        "words": "nO",
+        "tagged": "07",
+        "1.10": "x",
+        "true": "p",
+        "weighted": "b",
+        "merged": "d"
+      }
+    },
+    {
+      "id": 6,
+      "values": {
+        "numbers": "1.0e+20",
+        "times": "2026-10-26",
+        "words": "y",
+        "tagged": "=",
+        "1.10": "y",
+        "true": "p",
+        "weighted": "b",
+        "merged": "d"
+      }
+    },
+    {
+      "id": 7,
+      "values": {
+        "numbers": ".inf",
+        "times": "2026-10-26",
+        "words": "yes",
+        "tagged": "=",
+        "1.10": "x",
+        "true": "p",
+        "weighted": "b",
+        "merged": "d"
+      }
+    },
+    {
+      "id": 8,
+      "values": {
+        "numbers": "-.inf",
+        "times": "2026-10-26",
+        "words": "true",
+        "tagged": "=",
+        "1.10": "x",
+        "true": "p",
+        "weighted": "b",
+        "merged": "d"
+      }
+    },
+    {
+      "id": 9,
+      "values": {
+        "numbers": ".nan",
+        "times": "2026-10-26",
+        "words": "true",
+        "tagged": "=",
+        "1.10": "x",
+        "true": "p",
+        "weighted": "b",
+        "merged": "d"
+      }
+    },
+    {
+      "id": 10,
+      "values": {
+        "numbers": "1:30",
+        "times": "2026-10-26",
+        "words": "true",
+        "tagged": "=",
+        "1.10": "x",
+        "true": "p",
+        "weighted": "b",
+        "merged": "d"
+      }
+    },
+    {
+      "id": 11,
+      "values": {
+        "numbers": "+12",
+        "times": "2026-10-26",
+        "words": "true",
+        "tagged": "=",
+        "1.10": "x",
+        "true": "p",
+        "weighted": "b",
+        "merged": "d"
+      }
+    },
+    {
+      "id": 12,
+      "values": {
+        "numbers": "-0",
+        "times": "2026-10-26",
+        "words": "true",
+        "tagged": "=",
+        "1.10": "x",
+        "true": "p",
+        "weighted": "b",
+        "merged": "d"
+      }
+    }
+  ]
+}
