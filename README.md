@@ -115,6 +115,17 @@ the invalid rule needs multiple antecedents.
 
 `conditional` parameters are first-class schema features. The parser expands them into concrete parameter domains and the constraint engine enforces `N/A` semantics automatically.
 
+### Values keep their text
+
+Every value in a schema (the model name, parameter names and values, and constraint references) is used exactly as written. In YAML, unquoted `1.10`, `0x1F`, `.inf` or `2026-10-26T10:00:00Z` stay as typed rather than being turned into numbers or dates. The exceptions:
+
+- Unquoted `yes`, `no`, `on`, `off`, `true` and `false` (lowercase, Capitalized or UPPERCASE) become `true` / `false`, and an empty value, `~` or `null` becomes `null`. Quote them (`"yes"`) to keep the word.
+- JSON integers are written in plain decimal form (`-0` becomes `0`).
+
+`strength` must be a whole number, and `weights` decimal numbers such as `0.7` or `1e-3`. Anchors, aliases and `<<` merge keys work; a key written twice, more than one YAML document, or a tag other than YAML's standard ones is an error.
+
+Changed in 0.3.0: earlier versions converted unquoted numbers and dates, so `0x1F` became `31`, `1.10` became `1.1`, and some values (`.inf`, timestamps) came out differently in the Ruby and Python implementations.
+
 ## Solver Notes
 
 The current engine is deterministic and self-contained. If `ortools` is installed via the `solver` extra, Lattice can use CP-SAT feasibility checks for partial assignments; otherwise it falls back to the built-in backtracking solver.

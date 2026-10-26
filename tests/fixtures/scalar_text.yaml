@@ -1,0 +1,17 @@
+# Every value keeps the text written here (see README, "Values keep their text").
+# Shared with the Python implementation; scalar_text.golden.json pins the output.
+model_name: scalar_text
+parameters:
+  numbers: [1.10, 0x1F, 012, 1_000, 1e3, 1.0e+20, .inf, -.inf, .nan, 1:30, +12, -0]
+  times: [2026-10-26, 2026-10-26 10:00:00, 2026-10-26T10:00:00Z, 2026-10-26T10:00:00+02:00]
+  words: [yes, No, ~, yEs, nO, y, "yes"]
+  tagged: [=, <<, !!str yes, !!int 07, !!float 1.5]
+  1.10: [x, y]
+  on: [p, q]
+  weighted: &weighted
+    values: [a, b]
+    weights: [0.7, 3]
+  merged:
+    <<: *weighted
+    values: [c, d]
+strength: 1
