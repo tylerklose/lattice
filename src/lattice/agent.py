@@ -25,6 +25,56 @@ DEFAULT_PROMPT = (
     "rows; and use the rows to strengthen the plan, tests, fixtures, or visual review."
 )
 
+SCHEMA_REFERENCE = """
+Schema format, with one example of each constraint type:
+
+```yaml
+model_name: checkout
+strength: 2
+parameters:
+  user: [guest, member]
+  payment: [card, paypal, apple_pay, invoice]
+  device: [desktop, ios, android]
+  region: [us, eu]
+  currency: [usd, eur]
+  shipping: [standard, express, pickup]
+constraints:
+  # invalid_pair: these two assignments never appear in the same row.
+  - type: invalid_pair
+    if: { parameter: payment, value: apple_pay }
+    then_not: { parameter: device, value: android }
+  # bidirectional: each assignment requires the other.
+  - type: bidirectional
+    pair:
+      - { parameter: region, value: eu }
+      - { parameter: currency, value: eur }
+  # forward_dep: the source requires the target; the target may appear elsewhere.
+  - type: forward_dep
+    source: { parameter: shipping, value: pickup }
+    target: { parameter: region, value: us }
+  # conditional: defines a child parameter that only applies for some parent values.
+  - type: conditional
+    parameter: card_type
+    values: [visa, mastercard]
+    parent: payment
+    applies_when: [card]
+  # forced: this combination must appear in at least one row.
+  - type: forced
+    assignments:
+      - { parameter: user, value: guest }
+      - { parameter: device, value: ios }
+      - { parameter: shipping, value: express }
+  # higher_order: the last assignment is excluded only when all of if_all hold.
+  - type: higher_order
+    if_all:
+      - { parameter: user, value: guest }
+      - { parameter: region, value: eu }
+    then_not: { parameter: shipping, value: pickup }
+```
+
+Every constraint needs a `type` key. Each assignment is `{ parameter: <name>, value: <value> }`.
+"""
+
 GENERIC_AGENT_INSTRUCTIONS = f"""# Lattice Agent Instructions
 
 Lattice is harness-agnostic. Use these instructions in OpenClaw, Hermes, Codex, xAI-backed agents, Claude Code, or any agent that can run shell commands.
@@ -49,7 +99,7 @@ Prefer JSON or YAML on stdin:
 cat schema.json | lattice validate
 cat schema.json | lattice generate
 ```
-"""
+""" + SCHEMA_REFERENCE
 
 
 @dataclass(frozen=True)

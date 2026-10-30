@@ -1,0 +1,32 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ]
+  },
+  "constraints": [
+    {
+      "invalid_pair": {
+        "a": "x",
+        "b": "p"
+      }
+    },
+    {
+      "note": "keys before the type name",
+      "forced": [
+        {
+          "a": "x"
+        }
+      ]
+    },
+    {
+      "higher_order": [],
+      "bidirectional": []
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`constraints[0]` is missing `type`. Use one of: `invalid_pair`, `bidirectional`, `forward_dep`, `conditional`, `forced`, `higher_order`.",
+    "`constraints[1]` is missing `type`. Use one of: `invalid_pair`, `bidirectional`, `forward_dep`, `conditional`, `forced`, `higher_order`."
+  ]
+}

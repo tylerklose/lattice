@@ -1,0 +1,30 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ]
+  },
+  "constraints": [
+    {
+      "type": true
+    },
+    {
+      "type": [
+        "invalid_pair"
+      ]
+    },
+    {
+      "type": {
+        "name": "forced"
+      }
+    },
+    {
+      "type": ""
+    }
+  ]
+}

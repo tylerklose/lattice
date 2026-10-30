@@ -1,0 +1,10 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`constraints[0].type` must be a string, one of: `invalid_pair`, `bidirectional`, `forward_dep`, `conditional`, `forced`, `higher_order`.",
+    "`constraints[1].type` must be a string, one of: `invalid_pair`, `bidirectional`, `forward_dep`, `conditional`, `forced`, `higher_order`.",
+    "`constraints[2].type` must be a string, one of: `invalid_pair`, `bidirectional`, `forward_dep`, `conditional`, `forced`, `higher_order`.",
+    "`constraints[3]` has unknown type ``. Use one of: `invalid_pair`, `bidirectional`, `forward_dep`, `conditional`, `forced`, `higher_order`."
+  ]
+}

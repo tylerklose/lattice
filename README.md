@@ -115,6 +115,30 @@ the invalid rule needs multiple antecedents.
 
 `conditional` parameters are first-class schema features. The parser expands them into concrete parameter domains and the constraint engine enforces `N/A` semantics automatically.
 
+A schema with two constraints:
+
+```yaml
+model_name: checkout
+strength: 2
+parameters:
+  payment_method: [credit_card, paypal, apple_pay]
+  region: [US, UK, DE]
+  browser:
+    values: [chrome, safari, firefox]
+    weights: [0.6, 0.3, 0.1]
+constraints:
+  - type: invalid_pair
+    if: { parameter: payment_method, value: apple_pay }
+    then_not: { parameter: browser, value: firefox }
+  - type: conditional
+    parameter: card_type
+    values: [visa, mastercard]
+    parent: payment_method
+    applies_when: [credit_card]
+```
+
+Every constraint needs a `type` key. Run `lattice agent instructions` for an example of each type.
+
 ### Values keep their text
 
 Every value in a schema (the model name, parameter names and values, and constraint references) is used exactly as written. In YAML, unquoted `1.10`, `0x1F`, `.inf` or `2026-10-26T10:00:00Z` stay as typed rather than being turned into numbers or dates. The exceptions:

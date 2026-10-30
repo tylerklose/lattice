@@ -35,7 +35,9 @@ parameters:
   payment: [card, apple_pay, paypal]
   cart: [empty, single, multi]
 constraints:
-  - invalid_pair: {payment: apple_pay, cart: empty}
+  - type: invalid_pair
+    if: { parameter: payment, value: apple_pay }
+    then_not: { parameter: cart, value: empty }
 ```
 
 One generated row (JSON):

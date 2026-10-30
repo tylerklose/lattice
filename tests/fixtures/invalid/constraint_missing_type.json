@@ -1,0 +1,27 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ]
+  },
+  "constraints": [
+    {
+      "if": {
+        "parameter": "a",
+        "value": "x"
+      },
+      "then_not": {
+        "parameter": "b",
+        "value": "p"
+      }
+    },
+    {
+      "type": null
+    }
+  ]
+}

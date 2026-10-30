@@ -1,0 +1,9 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`constraints[0]` is missing `type`. Write `type: invalid_pair` as its own key, with `if` and `then_not` beside it. Run `lattice agent instructions` for an example of each type.",
+    "`constraints[1]` is missing `type`. Write `type: forced` as its own key, with `assignments` beside it. Run `lattice agent instructions` for an example of each type.",
+    "`constraints[2]` is missing `type`. Write `type: higher_order` as its own key, with `if_all` and `then_not` beside it. Run `lattice agent instructions` for an example of each type."
+  ]
+}

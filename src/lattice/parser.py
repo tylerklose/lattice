@@ -204,6 +204,12 @@ def _parse_constraints(
             continue
 
         constraint_type = raw_constraint.get("type")
+        if constraint_type is None:
+            errors.append(_missing_type_message(index, raw_constraint))
+            continue
+        if not isinstance(constraint_type, str):
+            errors.append(f"`constraints[{index}].type` must be a string, one of: {_CONSTRAINT_TYPE_LIST}.")
+            continue
         if constraint_type == "invalid_pair":
             if_assignment = _parse_assignment(raw_constraint.get("if"), parameters, f"`constraints[{index}].if`", errors)
             then_not = _parse_assignment(raw_constraint.get("then_not"), parameters, f"`constraints[{index}].then_not`", errors)
@@ -316,7 +322,7 @@ def _parse_constraints(
                 parsed.append(HigherOrderConstraint(if_all=tuple(parsed_if_all), then_not=parsed_then_not))
             continue
 
-        errors.append(f"`constraints[{index}]` has unknown type `{constraint_type}`.")
+        errors.append(f"`constraints[{index}]` has unknown type `{constraint_type}`. Use one of: {_CONSTRAINT_TYPE_LIST}.")
 
     return parsed
 
@@ -386,6 +392,31 @@ def _parse_weights(
             return None
         parsed.append(weight)
     return tuple(parsed)
+
+
+# Each constraint type and the keys written beside `type`.
+_CONSTRAINT_FIELDS = {
+    "invalid_pair": "`if` and `then_not`",
+    "bidirectional": "`pair`",
+    "forward_dep": "`source` and `target`",
+    "conditional": "`parameter`, `values`, `parent` and `applies_when`",
+    "forced": "`assignments`",
+    "higher_order": "`if_all` and `then_not`",
+}
+_CONSTRAINT_TYPE_LIST = ", ".join(f"`{name}`" for name in _CONSTRAINT_FIELDS)
+
+
+def _missing_type_message(index: int, raw_constraint: dict[Any, Any]) -> str:
+    """Explains a constraint without `type`. A type name used as a key, as in
+    `- invalid_pair: {...}`, gets the correct form spelled out."""
+    shorthand = next((key for key in raw_constraint if isinstance(key, str) and key in _CONSTRAINT_FIELDS), None)
+    if shorthand is None:
+        return f"`constraints[{index}]` is missing `type`. Use one of: {_CONSTRAINT_TYPE_LIST}."
+    return (
+        f"`constraints[{index}]` is missing `type`. Write `type: {shorthand}` as its own key, "
+        f"with {_CONSTRAINT_FIELDS[shorthand]} beside it. "
+        "Run `lattice agent instructions` for an example of each type."
+    )
 
 
 _DECIMAL_TEXT = re.compile(r"[-+]?[0-9]+(\.[0-9]+)?([eE][-+]?[0-9]+)?")

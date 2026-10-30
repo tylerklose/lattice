@@ -389,7 +389,7 @@ def _run_agent_command(args: argparse.Namespace) -> int:
                 )
             )
         else:
-            print(GENERIC_AGENT_INSTRUCTIONS)
+            print(GENERIC_AGENT_INSTRUCTIONS, end="")
         return 0
 
     if args.agent_command == "doctor":
