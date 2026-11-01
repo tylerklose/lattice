@@ -43,11 +43,6 @@ Homepage = "https://github.com/tylerklose/lattice"
 Repository = "https://github.com/tylerklose/lattice"
 Issues = "https://github.com/tylerklose/lattice/issues"
 
-[project.optional-dependencies]
-solver = [
-  "ortools>=9.10,<10",
-]
-
 [project.scripts]
 lattice = "lattice.cli:main"
 

@@ -46,7 +46,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         model = load_model(args.model, strength_override=getattr(args, "strength", None))
         engine = ConstraintEngine(model)
-        if not engine.can_complete({}):
+        if not engine.satisfiable():
             raise ValidationError(["Model has no valid complete assignments."])
     except ValidationError as exc:
         return _emit_error(args, "validation_error", exc.errors, exit_code=1)

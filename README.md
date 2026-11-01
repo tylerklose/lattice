@@ -179,14 +179,6 @@ Changed in 0.4.0: rows differ from 0.3.x for the same seed, and every example ne
 
 Wheels include the compiled engine for macOS (Apple Silicon and Intel), Linux (x86-64 and ARM64, glibc and musl) and Windows (x86-64), one wheel per platform for every Python from 3.11. Other platforms build from the source distribution, which needs a Rust toolchain. Python running in the browser (Pyodide) isn't supported.
 
-## Solver Notes
-
-`lattice validate` and the constraint checks before generation use a built-in backtracking solver. If `ortools` is installed through the `solver` extra, they use CP-SAT feasibility checks instead:
-
-```bash
-pipx install "lattice-cli[solver]"
-```
-
 ## Using In Other Projects
 
 The normal workflow in another repo is:

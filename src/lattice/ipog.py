@@ -2,10 +2,9 @@
 
 The engine builds a covering array greedily, choosing each row from several
 candidates, then shrinks it with tabu search, and returns the rows ordered so
-each adds the most new coverage. This module turns a parsed model into the
-engine's input (constraints compiled to invalid pairs, requirements,
-higher-order exclusions and forced interactions), then applies `max_rows` and
-`stop_after_coverage` by cutting the ordered rows short. The Ruby gem calls the
+each adds the most new coverage. ConstraintEngine compiles the model into the
+engine's input; this module applies `max_rows` and `stop_after_coverage` by
+cutting the ordered rows short. The Ruby gem calls the
 same engine the same way, so both give identical rows.
 """
 
@@ -14,7 +13,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from lattice import _engine
 from lattice.constraints import ConstraintEngine
 from lattice.model import Model
 
@@ -68,17 +66,11 @@ def generate_covering_array(
     coverage_target = _coverage_target(stop_after_coverage)
 
     engine = ConstraintEngine(model)
-    if not engine.can_complete({}):
+    if not engine.satisfiable():
         raise ValueError("Model has no valid full assignments.")
 
-    rows, new_coverage, total = _engine.generate(
-        [len(parameter.values) for parameter in model.parameters],
-        [list(parameter.normalized_weights) for parameter in model.parameters],
-        actual_strength,
-        _pairs(engine.invalid_pairs),
-        _pairs(engine.requires),
-        [(list(antecedents), forbidden) for antecedents, forbidden in engine.higher_order],
-        [list(forced) for forced in engine.forced_interactions],
+    native = engine.native if actual_strength == model.strength else engine.native_model(actual_strength)
+    rows, new_coverage, total = native.generate(
         seed=seed % 2**64,
         candidates=pool_size,
         shrink_steps=SHRINK_STEPS,
@@ -101,10 +93,6 @@ def generate_covering_array(
             break
 
     return GenerationResult(rows=tuple(kept), coverage_curve=tuple(curve), total_valid_tuples=total)
-
-
-def _pairs(table) -> list[tuple[tuple[int, int], tuple[int, int]]]:
-    return sorted((source, target) for source, targets in table.items() for target in targets)
 
 
 def _report(progress: ProgressCallback | None, event: str, scenario: int, covered: int, total: int) -> None:

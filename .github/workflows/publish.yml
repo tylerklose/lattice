@@ -1,32 +1,90 @@
 name: Publish to PyPI
 
+# A v* tag tests the package on Linux, macOS and Windows, builds one abi3 wheel
+# per platform (each runs every Python from 3.11) plus the source distribution,
+# and publishes them once the `pypi` environment is approved.
+
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  build:
-    name: Build distribution
-    runs-on: ubuntu-latest
+  test:
+    name: Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install build
-        run: python -m pip install --upgrade build
-      - name: Build distribution
-        run: python -m build
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install with the compiled engine
+        run: python -m pip install -e . pytest
+      - name: Test
+        run: python -m pytest -q tests
+
+  wheels:
+    name: Wheel (${{ matrix.name }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux-x86_64, runner: ubuntu-latest, target: x86_64, manylinux: auto }
+          - { name: linux-aarch64, runner: ubuntu-24.04-arm, target: aarch64, manylinux: auto }
+          - { name: musllinux-x86_64, runner: ubuntu-latest, target: x86_64, manylinux: musllinux_1_2 }
+          - { name: musllinux-aarch64, runner: ubuntu-24.04-arm, target: aarch64, manylinux: musllinux_1_2 }
+          - { name: macos-arm64, runner: macos-latest, target: aarch64-apple-darwin }
+          - { name: macos-x86_64, runner: macos-latest, target: x86_64-apple-darwin }
+          - { name: windows-x86_64, runner: windows-latest, target: x64 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          name: dist
-          path: dist/
+          python-version: '3.12'
+      - name: Build wheel
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          manylinux: ${{ matrix.manylinux || 'auto' }}
+          args: --release --out dist
+      - name: Smoke-test the wheel
+        if: matrix.manylinux != 'musllinux_1_2' && matrix.target != 'x86_64-apple-darwin'
+        shell: bash
+        run: |
+          python -m pip install dist/*.whl
+          printf 'parameters:\n  a: [x, y, z]\n  b: [p, q]\n  c: [m, n]\n' | lattice generate --format summary
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheel-${{ matrix.name }}
+          path: dist
+
+  sdist:
+    name: Source distribution
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: PyO3/maturin-action@v1
+        with:
+          command: sdist
+          args: --out dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist
 
   publish:
     name: Publish to PyPI
-    needs: build
+    needs: [test, wheels, sdist]
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -34,10 +92,9 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - name: Download dist
-        uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
-          name: dist
-          path: dist/
+          path: dist
+          merge-multiple: true
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
