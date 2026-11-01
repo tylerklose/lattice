@@ -94,7 +94,7 @@ def _build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--strength", type=int, help="Override the schema strength.")
     generate.add_argument("--format", default="json", choices=("table", "json", "csv", "summary", "yaml"))
     generate.add_argument("--seed", type=int, default=42)
-    generate.add_argument("--pool-size", type=int, default=50)
+    generate.add_argument("--pool-size", type=int, default=16, help="Candidate rows built per step; more can mean fewer scenarios.")
     generate.add_argument(
         "--max-rows",
         type=int,

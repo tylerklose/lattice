@@ -71,7 +71,7 @@ class ExampleModelTests(unittest.TestCase):
         for model_path, scenarios_path in example_cases:
             with self.subTest(model=str(model_path)):
                 model = load_model(str(model_path))
-                result = generate_covering_array(model, seed=42, pool_size=50)
+                result = generate_covering_array(model, seed=42)
                 verify_coverage(model, result.rows, strength=model.strength)
                 rendered = render_output(model, result, output_format="json", seed=42)
                 self.assertEqual(json.loads(rendered), json.loads(scenarios_path.read_text()))

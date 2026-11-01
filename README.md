@@ -50,7 +50,7 @@ Lattice is split into three small modules on purpose:
 
 - `parser.py`: the schema contract between a harness and the engine
 - `constraints.py`: deterministic feasibility and constraint reasoning
-- `ipog.py`: covering-array generation and coverage accounting
+- `ipog.py`: compiles the model for the Rust engine (`rust/`, built on the `lattice-engine` crate) and turns its rows into the coverage curve
 
 That keeps the math isolated from OpenClaw, Hermes, Codex, xAI-backed agents, Claude Code, or any other harness wrapper.
 

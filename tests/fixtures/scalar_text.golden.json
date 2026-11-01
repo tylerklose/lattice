@@ -15,7 +15,7 @@
     },
     {
       "scenario": 2,
-      "cumulative_pct": 41.7
+      "cumulative_pct": 44.4
     },
     {
       "scenario": 3,
@@ -77,12 +77,12 @@
       "values": {
         "numbers": "0x1F",
         "times": "2026-10-26 10:00:00",
-        "words": "null",
-        "tagged": "yes",
+        "words": "false",
+        "tagged": "<<",
         "1.10": "y",
         "true": "q",
         "weighted": "a",
-        "merged": "d"
+        "merged": "c"
       }
     },
     {
@@ -90,12 +90,12 @@
       "values": {
         "numbers": "012",
         "times": "2026-10-26T10:00:00Z",
-        "words": "yEs",
-        "tagged": "<<",
-        "1.10": "y",
-        "true": "q",
+        "words": "null",
+        "tagged": "yes",
+        "1.10": "x",
+        "true": "p",
         "weighted": "b",
-        "merged": "c"
+        "merged": "d"
       }
     },
     {
@@ -103,21 +103,21 @@
       "values": {
         "numbers": "1_000",
         "times": "2026-10-26T10:00:00+02:00",
-        "words": "false",
-        "tagged": "1.5",
+        "words": "yEs",
+        "tagged": "07",
         "1.10": "x",
-        "true": "q",
-        "weighted": "a",
-        "merged": "c"
+        "true": "p",
+        "weighted": "b",
+        "merged": "d"
       }
     },
     {
       "id": 5,
       "values": {
         "numbers": "1e3",
-        "times": "2026-10-26 10:00:00",
+        "times": "2026-10-26",
         "words": "nO",
-        "tagged": "07",
+        "tagged": "1.5",
         "1.10": "x",
         "true": "p",
         "weighted": "b",
@@ -131,7 +131,7 @@
         "times": "2026-10-26",
         "words": "y",
         "tagged": "=",
-        "1.10": "y",
+        "1.10": "x",
         "true": "p",
         "weighted": "b",
         "merged": "d"

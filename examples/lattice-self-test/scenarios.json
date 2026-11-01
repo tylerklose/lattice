@@ -2,9 +2,9 @@
   "meta": {
     "model_name": "lattice_cli_matrix",
     "strength": 2,
-    "test_count": 10,
+    "test_count": 9,
     "exhaustive_count": 72,
-    "reduction": "7.2x",
+    "reduction": "8x",
     "coverage": "100.0%",
     "seed": 42
   },
@@ -19,7 +19,7 @@
     },
     {
       "scenario": 3,
-      "cumulative_pct": 49.1
+      "cumulative_pct": 52.7
     },
     {
       "scenario": 4,
@@ -39,14 +39,10 @@
     },
     {
       "scenario": 8,
-      "cumulative_pct": 94.5
+      "cumulative_pct": 96.4
     },
     {
       "scenario": 9,
-      "cumulative_pct": 98.2
-    },
-    {
-      "scenario": 10,
       "cumulative_pct": 100.0
     }
   ],
@@ -74,21 +70,21 @@
     {
       "id": 3,
       "values": {
-        "command": "generate",
-        "input_source": "stdin",
-        "schema_encoding": "json",
-        "schema_profile": "simple",
-        "output_format": "json"
-      }
-    },
-    {
-      "id": 4,
-      "values": {
         "command": "validate",
         "input_source": "file",
         "schema_encoding": "yaml",
         "schema_profile": "simple",
         "output_format": "text"
+      }
+    },
+    {
+      "id": 4,
+      "values": {
+        "command": "generate",
+        "input_source": "stdin",
+        "schema_encoding": "json",
+        "schema_profile": "simple",
+        "output_format": "json"
       }
     },
     {
@@ -114,11 +110,11 @@
     {
       "id": 7,
       "values": {
-        "command": "validate",
+        "command": "generate",
         "input_source": "file",
         "schema_encoding": "json",
-        "schema_profile": "constrained",
-        "output_format": "json"
+        "schema_profile": "simple",
+        "output_format": "table"
       }
     },
     {
@@ -126,29 +122,19 @@
       "values": {
         "command": "validate",
         "input_source": "file",
-        "schema_encoding": "json",
-        "schema_profile": "invalid",
-        "output_format": "text"
+        "schema_encoding": "yaml",
+        "schema_profile": "constrained",
+        "output_format": "json"
       }
     },
     {
       "id": 9,
       "values": {
-        "command": "generate",
-        "input_source": "stdin",
-        "schema_encoding": "json",
-        "schema_profile": "simple",
-        "output_format": "table"
-      }
-    },
-    {
-      "id": 10,
-      "values": {
         "command": "validate",
-        "input_source": "stdin",
-        "schema_encoding": "yaml",
-        "schema_profile": "simple",
-        "output_format": "json"
+        "input_source": "file",
+        "schema_encoding": "json",
+        "schema_profile": "invalid",
+        "output_format": "text"
       }
     }
   ]

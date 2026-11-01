@@ -37,7 +37,7 @@ class YamlFormatTests(unittest.TestCase):
 
     def generate(self, fixture: str):
         model = load_model(str(FIXTURES / fixture))
-        return model, generate_covering_array(model, strength=model.strength, seed=42, pool_size=50)
+        return model, generate_covering_array(model, strength=model.strength, seed=42)
 
     def test_edge_case_fixture_matches_golden_bytes(self) -> None:
         model, result = self.generate("yaml_edges.json")

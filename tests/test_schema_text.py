@@ -46,7 +46,7 @@ class SchemaTextTests(unittest.TestCase):
 
     def test_yaml_fixture_output_matches_golden(self) -> None:
         model = load_model(str(FIXTURES / "scalar_text.yaml"))
-        result = generate_covering_array(model, strength=model.strength, seed=42, pool_size=50)
+        result = generate_covering_array(model, strength=model.strength, seed=42)
         golden = (FIXTURES / "scalar_text.golden.json").read_text(encoding="utf-8")
         self.assertEqual(format_json(model, result, seed=42) + "\n", golden)
 

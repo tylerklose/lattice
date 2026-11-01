@@ -5,3 +5,7 @@ __pycache__/
 build/
 dist/
 *.egg-info/
+rust/target/
+.venv-dev/
+src/lattice/*.so
+src/lattice/*.pyd

@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=77"]
-build-backend = "setuptools.build_meta"
+requires = ["maturin>=1.16,<2"]
+build-backend = "maturin"
 
 [project]
 name = "lattice-cli"
-version = "0.3.1"
+version = "0.4.0"
 description = "Deterministic combinatorial coverage for agent workflows and constrained variant surfaces."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -51,19 +51,9 @@ solver = [
 [project.scripts]
 lattice = "lattice.cli:main"
 
-[tool.setuptools]
-package-dir = {"" = "src"}
-
-[tool.setuptools.packages.find]
-where = ["src"]
-
-[tool.setuptools.package-data]
-lattice = [
-  "resources/codex/lattice-workflow/SKILL.md",
-  "resources/codex/lattice-workflow/agents/*.yaml",
-  "resources/codex/lattice-workflow/references/*.md",
-  "resources/claude/lattice-workflow/SKILL.md",
-  "resources/claude/lattice-workflow/references/*.md",
-  "resources/generic/lattice-workflow/SKILL.md",
-  "resources/generic/lattice-workflow/references/*.md",
-]
+[tool.maturin]
+python-source = "src"
+module-name = "lattice._engine"
+manifest-path = "rust/Cargo.toml"
+features = ["pyo3/extension-module"]
+exclude = ["src/lattice_cli.egg-info/**"]
