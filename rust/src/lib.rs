@@ -11,8 +11,18 @@ use pyo3::prelude::*;
 
 type Pair = (Assignment, Assignment);
 
-create_exception!(_engine, ForcedInfeasible, PyException, "A forced interaction can't appear in any valid row; args[0] is its index.");
-create_exception!(_engine, NoValidAssignments, PyException, "No row satisfies every constraint.");
+create_exception!(
+    _engine,
+    ForcedInfeasible,
+    PyException,
+    "A forced interaction can't appear in any valid row; args[0] is its index."
+);
+create_exception!(
+    _engine,
+    NoValidAssignments,
+    PyException,
+    "No row satisfies every constraint."
+);
 
 fn to_py(error: Error) -> PyErr {
     match error {
@@ -39,8 +49,18 @@ impl Model {
         higher_order: Vec<(Vec<Assignment>, Assignment)>,
         forced: Vec<Vec<Assignment>>,
     ) -> PyResult<Self> {
-        let model = EngineModel { sizes, weights, strength, invalid_pairs, requires, higher_order, forced };
-        Ok(Model { engine: Engine::new(model).map_err(to_py)? })
+        let model = EngineModel {
+            sizes,
+            weights,
+            strength,
+            invalid_pairs,
+            requires,
+            higher_order,
+            forced,
+        };
+        Ok(Model {
+            engine: Engine::new(model).map_err(to_py)?,
+        })
     }
 
     fn feasibility(&mut self) -> PyResult<()> {
@@ -61,7 +81,12 @@ impl Model {
         shrink_steps: u64,
         patience: u64,
     ) -> PyResult<(Vec<Vec<usize>>, Vec<usize>, usize)> {
-        let options = Options { seed, candidates: candidates.max(1), shrink_steps, patience };
+        let options = Options {
+            seed,
+            candidates: candidates.max(1),
+            shrink_steps,
+            patience,
+        };
         let engine = &mut self.engine;
         let result = py.detach(|| engine.generate(&options)).map_err(to_py)?;
         Ok((result.rows, result.new_coverage, result.valid_tuples))
