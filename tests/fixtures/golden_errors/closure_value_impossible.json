@@ -1,0 +1,7 @@
+{
+  "status": "error",
+  "code": "constraint_error",
+  "errors": [
+    "Constraint closure makes `a=x` impossible."
+  ]
+}

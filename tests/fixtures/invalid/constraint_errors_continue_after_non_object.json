@@ -1,0 +1,30 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ],
+    "c": [
+      "m",
+      "n"
+    ]
+  },
+  "constraints": [
+    "not an object",
+    {
+      "type": "invalid_pair",
+      "if": {
+        "parameter": "zz",
+        "value": "x"
+      },
+      "then_not": {
+        "parameter": "b",
+        "value": "p"
+      }
+    }
+  ]
+}

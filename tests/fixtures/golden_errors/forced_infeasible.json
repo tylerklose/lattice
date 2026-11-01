@@ -1,0 +1,7 @@
+{
+  "status": "error",
+  "code": "constraint_error",
+  "errors": [
+    "Forced interaction is not feasible: a=x, b=p."
+  ]
+}

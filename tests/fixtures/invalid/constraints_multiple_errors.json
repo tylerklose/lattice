@@ -1,0 +1,41 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ]
+  },
+  "constraints": [
+    {
+      "type": "banana"
+    },
+    {
+      "type": "invalid_pair",
+      "if": {
+        "parameter": "zz",
+        "value": "x"
+      },
+      "then_not": {
+        "parameter": "a",
+        "value": "x"
+      }
+    },
+    {
+      "type": "higher_order",
+      "if_all": [
+        {
+          "parameter": "a",
+          "value": "x"
+        }
+      ],
+      "then_not": {
+        "parameter": "b",
+        "value": "p"
+      }
+    }
+  ]
+}

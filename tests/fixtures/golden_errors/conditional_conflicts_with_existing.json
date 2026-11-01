@@ -1,0 +1,7 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "Conditional parameter `b` conflicts with an existing parameter definition. Use `conditional` only to define a child parameter that applies under parent values. For exclusions or requirements between existing parameters, use `invalid_pair`, `higher_order`, `forward_dep`, or `bidirectional`; run `lattice agent instructions` for the full schema reference."
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ],
+    "c": [
+      "m",
+      "n"
+    ]
+  },
+  "constraints": [
+    {
+      "type": "invalid_pair",
+      "if": {
+        "parameter": "a",
+        "value": "x"
+      },
+      "then_not": {
+        "parameter": "b",
+        "value": "p"
+      }
+    },
+    {
+      "type": "forced",
+      "assignments": [
+        {
+          "parameter": "a",
+          "value": "x"
+        },
+        {
+          "parameter": "b",
+          "value": "p"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`parameters[0]` must be an object.",
+    "parameter `a` contains duplicate values.",
+    "`parameters[2]` is missing `name`.",
+    "`strength` cannot exceed the number of parameters."
+  ]
+}

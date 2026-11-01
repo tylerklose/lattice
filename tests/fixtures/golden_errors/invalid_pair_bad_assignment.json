@@ -1,0 +1,7 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`constraints[0].if` must be an object."
+  ]
+}

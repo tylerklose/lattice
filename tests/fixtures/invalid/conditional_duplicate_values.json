@@ -1,0 +1,26 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ]
+  },
+  "constraints": [
+    {
+      "type": "conditional",
+      "parameter": "child",
+      "values": [
+        "v",
+        "v"
+      ],
+      "parent": "a",
+      "applies_when": [
+        "x"
+      ]
+    }
+  ]
+}

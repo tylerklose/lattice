@@ -1,0 +1,40 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ],
+    "c": [
+      "m",
+      "n"
+    ]
+  },
+  "constraints": [
+    {
+      "type": "forward_dep",
+      "source": {
+        "parameter": "zz",
+        "value": "x"
+      },
+      "target": {
+        "parameter": "b",
+        "value": "p"
+      }
+    },
+    {
+      "type": "forward_dep",
+      "source": {
+        "parameter": "a",
+        "value": "x"
+      },
+      "target": {
+        "parameter": "b",
+        "value": "zz"
+      }
+    }
+  ]
+}

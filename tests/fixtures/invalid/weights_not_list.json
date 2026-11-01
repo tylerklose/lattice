@@ -1,0 +1,15 @@
+{
+  "parameters": {
+    "a": {
+      "values": [
+        "x",
+        "y"
+      ],
+      "weights": 5
+    },
+    "b": [
+      "p",
+      "q"
+    ]
+  }
+}

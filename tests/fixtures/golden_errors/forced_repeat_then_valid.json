@@ -1,0 +1,8 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`constraints[0]` repeats parameter `a` inside a forced interaction.",
+    "`constraints[0].assignments[2]` references unknown parameter `zz`."
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "parameter `a` must be a non-empty list.",
+    "`strength` cannot exceed the number of parameters."
+  ]
+}

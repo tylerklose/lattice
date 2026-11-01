@@ -1,0 +1,7 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`constraints[0].then_not` references unknown value `zz` for parameter `b`."
+  ]
+}

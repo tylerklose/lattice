@@ -1,0 +1,38 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ]
+  },
+  "constraints": [
+    {
+      "type": "bidirectional",
+      "pair": [
+        {
+          "parameter": "a",
+          "value": "x"
+        },
+        {
+          "parameter": "b",
+          "value": "p"
+        }
+      ]
+    },
+    {
+      "type": "invalid_pair",
+      "if": {
+        "parameter": "a",
+        "value": "x"
+      },
+      "then_not": {
+        "parameter": "b",
+        "value": "p"
+      }
+    }
+  ]
+}

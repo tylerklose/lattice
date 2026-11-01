@@ -1,0 +1,8 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`constraints[0].pair[0]` references unknown parameter `zz`.",
+    "`constraints[1].pair[1]` references unknown value `zz` for parameter `b`."
+  ]
+}

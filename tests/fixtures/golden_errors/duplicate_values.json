@@ -1,0 +1,8 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "parameter `a` contains duplicate values.",
+    "`strength` cannot exceed the number of parameters."
+  ]
+}

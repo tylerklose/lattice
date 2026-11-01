@@ -1,0 +1,7 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`parameters[0]` is missing `name`."
+  ]
+}

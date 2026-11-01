@@ -1,0 +1,23 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ]
+  },
+  "constraints": [
+    {
+      "type": "bidirectional",
+      "pair": [
+        {
+          "parameter": "a",
+          "value": "x"
+        }
+      ]
+    }
+  ]
+}
