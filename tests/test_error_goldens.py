@@ -18,7 +18,7 @@ class ErrorGoldenTests(unittest.TestCase):
         self.assertGreater(len(CASES), 30)
         for name in CASES:
             with self.subTest(name=name):
-                golden = (FIXTURES / "golden_errors" / f"{name}.json").read_text()
+                golden = (FIXTURES / "golden_errors" / f"{name}.json").read_text(encoding="utf-8")
                 result = subprocess.run(
                     [sys.executable, "-m", "lattice", "validate", "--format", "json", str(FIXTURES / "invalid" / f"{name}.json")],
                     capture_output=True,

@@ -74,7 +74,7 @@ class ExampleModelTests(unittest.TestCase):
                 result = generate_covering_array(model, seed=42)
                 verify_coverage(model, result.rows, strength=model.strength)
                 rendered = render_output(model, result, output_format="json", seed=42)
-                self.assertEqual(json.loads(rendered), json.loads(scenarios_path.read_text()))
+                self.assertEqual(json.loads(rendered), json.loads(scenarios_path.read_text(encoding="utf-8")))
 
 
 if __name__ == "__main__":

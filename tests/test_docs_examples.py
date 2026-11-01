@@ -19,10 +19,10 @@ from lattice.schema_text import load_json, load_yaml
 FENCED_BLOCK = re.compile(r"^```(yaml|json)\n(.*?)^```", re.M | re.S)
 
 SOURCES = {
-    str(path.relative_to(ROOT)): path.read_text()
+    str(path.relative_to(ROOT)): path.read_text(encoding="utf-8")
     for path in sorted([*(ROOT / "src/lattice/resources").rglob("*.md"), *(ROOT / ".codex").rglob("*.md")])
 }
-SOURCES["README.md"] = (ROOT / "README.md").read_text()
+SOURCES["README.md"] = (ROOT / "README.md").read_text(encoding="utf-8")
 SOURCES["lattice agent instructions"] = GENERIC_AGENT_INSTRUCTIONS
 
 

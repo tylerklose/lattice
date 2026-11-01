@@ -28,7 +28,7 @@ class AgentBootstrapMatrixTests(unittest.TestCase):
         )
 
     def test_generated_agent_bootstrap_matrix(self) -> None:
-        scenarios = json.loads(SCENARIOS.read_text())["scenarios"]
+        scenarios = json.loads(SCENARIOS.read_text(encoding="utf-8"))["scenarios"]
 
         for scenario in scenarios:
             values = scenario["values"]
@@ -98,7 +98,7 @@ class AgentBootstrapMatrixTests(unittest.TestCase):
         return env
 
     def _write_fake_executable(self, path: Path) -> None:
-        path.write_text("#!/bin/sh\nexit 0\n")
+        path.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
         path.chmod(0o755)
 
     def _apply_directive(self, command: list[str], harness: str, directive: str) -> None:

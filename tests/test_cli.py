@@ -42,7 +42,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(parsed["schema"]["name"], "simple")
 
     def test_generate_defaults_to_json_and_accepts_stdin(self) -> None:
-        payload = (FIXTURES / "skillit.json").read_text()
+        payload = (FIXTURES / "skillit.json").read_text(encoding="utf-8")
         result = self.run_cli("generate", input_text=payload)
         self.assertEqual(result.returncode, 0, msg=result.stderr)
 
@@ -168,10 +168,10 @@ class CliTests(unittest.TestCase):
             self.assertEqual(parsed["surface"], "generic")
             self.assertTrue((target / "SKILL.md").is_file())
             self.assertTrue((target / "references" / "modeling-rules.md").is_file())
-            self.assertIn("do not strip them and mark invalid rows downstream", (target / "SKILL.md").read_text())
+            self.assertIn("do not strip them and mark invalid rows downstream", (target / "SKILL.md").read_text(encoding="utf-8"))
             self.assertIn(
                 "mark them invalid downstream",
-                (target / "references" / "modeling-rules.md").read_text(),
+                (target / "references" / "modeling-rules.md").read_text(encoding="utf-8"),
             )
 
     def test_agent_installs_bundled_codex_skill(self) -> None:
@@ -241,7 +241,7 @@ class CliTests(unittest.TestCase):
             bin_dir.mkdir()
             for command in ("codex", "claude"):
                 executable = bin_dir / command
-                executable.write_text("#!/bin/sh\nexit 0\n")
+                executable.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
                 executable.chmod(0o755)
 
             codex_target = Path(temp_dir) / "codex" / "lattice-workflow"
@@ -337,7 +337,7 @@ class CliTests(unittest.TestCase):
             bin_dir = Path(temp_dir) / "bin"
             bin_dir.mkdir()
             claude = bin_dir / "claude"
-            claude.write_text("#!/bin/sh\nexit 0\n")
+            claude.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
             claude.chmod(0o755)
 
             codex_target = Path(temp_dir) / "codex" / "lattice-workflow"

@@ -41,7 +41,7 @@ class SchemaGuidanceMatrixTests(unittest.TestCase):
         )
 
     def test_generated_schema_guidance_matrix(self) -> None:
-        scenarios = json.loads(SCENARIOS.read_text())["scenarios"]
+        scenarios = json.loads(SCENARIOS.read_text(encoding="utf-8"))["scenarios"]
 
         for scenario in scenarios:
             values = scenario["values"]
@@ -73,8 +73,8 @@ class SchemaGuidanceMatrixTests(unittest.TestCase):
                 self.assertEqual(result.returncode, 0, msg=result.stderr)
                 return "\n".join(
                     [
-                        (target / "SKILL.md").read_text(),
-                        (target / "references" / "modeling-rules.md").read_text(),
+                        (target / "SKILL.md").read_text(encoding="utf-8"),
+                        (target / "references" / "modeling-rules.md").read_text(encoding="utf-8"),
                     ]
                 )
 
@@ -82,8 +82,8 @@ class SchemaGuidanceMatrixTests(unittest.TestCase):
             skill = ROOT / ".codex" / "skills" / "lattice-workflow"
             return "\n".join(
                 [
-                    (skill / "SKILL.md").read_text(),
-                    (skill / "references" / "modeling-rules.md").read_text(),
+                    (skill / "SKILL.md").read_text(encoding="utf-8"),
+                    (skill / "references" / "modeling-rules.md").read_text(encoding="utf-8"),
                 ]
             )
 
