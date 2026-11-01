@@ -127,8 +127,6 @@ def _coverage_target(stop_after_coverage: float | None) -> float | None:
         return None
     if not 0 < stop_after_coverage <= 100:
         raise ValueError("`stop_after_coverage` must be in the range (0, 100].")
-    if stop_after_coverage >= 100:
-        return None
     return stop_after_coverage
 
 
@@ -146,6 +144,5 @@ def _should_stop(
 
 
 def _coverage_pct(covered_count: int, total_count: int) -> float:
-    if total_count == 0:
-        return 100.0
+    # A satisfiable model always has valid tuples, so total_count is positive.
     return round((covered_count / total_count) * 100, 1)

@@ -256,7 +256,7 @@ class ConstraintEngine:
             failures.add(signature)
             return None
 
-        for value in self._ordered_values(next_parameter, values):
+        for value in values:
             candidate = dict(partial)
             candidate[next_parameter] = value
             normalized = self._normalize_partial(candidate)
@@ -293,10 +293,6 @@ class ConstraintEngine:
                 best_size = len(feasible)
 
         return best_parameter, best_values
-
-    def _ordered_values(self, parameter_index: int, values: Iterable[int]) -> list[int]:
-        parameter = self.model.parameters[parameter_index]
-        return sorted(values, key=lambda value_index: (-parameter.normalized_weights[value_index], value_index))
 
     def _can_complete_with_cp_sat(self, partial: PartialAssignment) -> bool:
         if cp_model is None:  # pragma: no cover - guarded by caller
