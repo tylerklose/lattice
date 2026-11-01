@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import random
 from collections import defaultdict
 from itertools import product
 from typing import Iterable
@@ -69,16 +68,16 @@ class ConstraintEngine:
         if cp_model is not None:
             result = self._can_complete_with_cp_sat(normalized)
         else:
-            result = self._backtrack_complete(normalized, rng=None, failures=set()) is not None
+            result = self._backtrack_complete(normalized, failures=set()) is not None
 
         self._feasibility_cache[signature] = result
         return result
 
-    def complete_assignment(self, partial: PartialAssignment, rng: random.Random | None = None) -> tuple[int, ...] | None:
+    def complete_assignment(self, partial: PartialAssignment) -> tuple[int, ...] | None:
         normalized = self._normalize_partial(dict(partial))
         if normalized is None:
             return None
-        return self._backtrack_complete(normalized, rng=rng, failures=set())
+        return self._backtrack_complete(normalized, failures=set())
 
     def is_complete_assignment_valid(self, row: tuple[int, ...]) -> bool:
         partial = {parameter_index: value_index for parameter_index, value_index in enumerate(row)}
@@ -196,7 +195,7 @@ class ConstraintEngine:
 
         for forced in self.forced_interactions:
             partial = {parameter_index: value_index for parameter_index, value_index in forced}
-            if self.complete_assignment(partial, rng=None) is None:
+            if self.complete_assignment(partial) is None:
                 assignments = ", ".join(
                     f"{self.model.parameters[parameter_index].name}={self.model.parameters[parameter_index].values[value_index]}"
                     for parameter_index, value_index in forced
@@ -242,7 +241,6 @@ class ConstraintEngine:
     def _backtrack_complete(
         self,
         partial: PartialAssignment,
-        rng: random.Random | None,
         failures: set[tuple[tuple[int, int], ...]],
     ) -> tuple[int, ...] | None:
         signature = tuple(sorted(partial.items()))
@@ -258,13 +256,13 @@ class ConstraintEngine:
             failures.add(signature)
             return None
 
-        for value in self._ordered_values(next_parameter, values, rng):
+        for value in self._ordered_values(next_parameter, values):
             candidate = dict(partial)
             candidate[next_parameter] = value
             normalized = self._normalize_partial(candidate)
             if normalized is None:
                 continue
-            result = self._backtrack_complete(normalized, rng=rng, failures=failures)
+            result = self._backtrack_complete(normalized, failures=failures)
             if result is not None:
                 return result
 
@@ -296,19 +294,9 @@ class ConstraintEngine:
 
         return best_parameter, best_values
 
-    def _ordered_values(self, parameter_index: int, values: Iterable[int], rng: random.Random | None) -> list[int]:
+    def _ordered_values(self, parameter_index: int, values: Iterable[int]) -> list[int]:
         parameter = self.model.parameters[parameter_index]
-        values_list = list(values)
-        if rng is None:
-            return sorted(values_list, key=lambda value_index: (-parameter.normalized_weights[value_index], value_index))
-
-        weighted = []
-        for value_index in values_list:
-            weight = parameter.normalized_weights[value_index]
-            ticket = rng.random() / max(weight, 1e-9)
-            weighted.append((ticket, value_index))
-        weighted.sort(key=lambda item: item[0])
-        return [value_index for _, value_index in weighted]
+        return sorted(values, key=lambda value_index: (-parameter.normalized_weights[value_index], value_index))
 
     def _can_complete_with_cp_sat(self, partial: PartialAssignment) -> bool:
         if cp_model is None:  # pragma: no cover - guarded by caller
