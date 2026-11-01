@@ -9,7 +9,7 @@ name = "_engine"
 crate-type = ["cdylib"]
 
 [dependencies]
-lattice-engine = { path = "../../lattice-engine", version = "0.1.0", default-features = false }
+lattice-engine = { version = "0.1.0", default-features = false }
 pyo3 = { version = "0.30", features = ["extension-module", "abi3-py311"] }
 
 [profile.release]

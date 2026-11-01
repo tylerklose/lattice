@@ -251,7 +251,7 @@ The `examples/` directory contains eight end-to-end examples:
 
 ## Development
 
-Building from a checkout needs a Rust toolchain (`rustup`), and, until `lattice-engine` is on crates.io, a checkout of it next to this repo (`../lattice-engine`).
+Building from a checkout needs a Rust toolchain (`rustup`); the engine comes from crates.io (`lattice-engine`).
 
 ```bash
 python3 -m venv .venv && . .venv/bin/activate
