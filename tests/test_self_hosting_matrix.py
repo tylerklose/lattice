@@ -31,7 +31,7 @@ class SelfHostingMatrixTests(unittest.TestCase):
         )
 
     def test_generated_self_hosting_matrix_exercises_cli(self) -> None:
-        scenarios = json.loads(SELF_HOSTING_SCENARIOS.read_text())["scenarios"]
+        scenarios = json.loads(SELF_HOSTING_SCENARIOS.read_text(encoding="utf-8"))["scenarios"]
 
         for scenario in scenarios:
             with self.subTest(scenario=scenario["id"]):
@@ -45,7 +45,7 @@ class SelfHostingMatrixTests(unittest.TestCase):
                 if values["input_source"] == "file":
                     command.append(str(fixture))
                 else:
-                    payload = fixture.read_text()
+                    payload = fixture.read_text(encoding="utf-8")
 
                 result = self.run_cli(*command, input_text=payload)
                 valid_schema = values["schema_profile"] != "invalid"

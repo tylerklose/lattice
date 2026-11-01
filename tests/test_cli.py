@@ -12,6 +12,16 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures"
 
 
+
+def write_fake_executable(path):
+    """A do-nothing executable that shutil.which finds: a shell script, or a
+    .cmd file on Windows (which only runs files with a PATHEXT extension)."""
+    if os.name == "nt":
+        path.with_suffix(".cmd").write_text("@exit /b 0\r\n", encoding="utf-8")
+    else:
+        path.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+        path.chmod(0o755)
+
 class CliTests(unittest.TestCase):
     def run_cli(
         self,
@@ -42,7 +52,7 @@ class CliTests(unittest.TestCase):
         self.assertEqual(parsed["schema"]["name"], "simple")
 
     def test_generate_defaults_to_json_and_accepts_stdin(self) -> None:
-        payload = (FIXTURES / "skillit.json").read_text()
+        payload = (FIXTURES / "skillit.json").read_text(encoding="utf-8")
         result = self.run_cli("generate", input_text=payload)
         self.assertEqual(result.returncode, 0, msg=result.stderr)
 
@@ -168,10 +178,10 @@ class CliTests(unittest.TestCase):
             self.assertEqual(parsed["surface"], "generic")
             self.assertTrue((target / "SKILL.md").is_file())
             self.assertTrue((target / "references" / "modeling-rules.md").is_file())
-            self.assertIn("do not strip them and mark invalid rows downstream", (target / "SKILL.md").read_text())
+            self.assertIn("do not strip them and mark invalid rows downstream", (target / "SKILL.md").read_text(encoding="utf-8"))
             self.assertIn(
                 "mark them invalid downstream",
-                (target / "references" / "modeling-rules.md").read_text(),
+                (target / "references" / "modeling-rules.md").read_text(encoding="utf-8"),
             )
 
     def test_agent_installs_bundled_codex_skill(self) -> None:
@@ -225,6 +235,7 @@ class CliTests(unittest.TestCase):
                 env_overrides={
                     "CODEX_HOME": "",
                     "HOME": str(Path(temp_dir) / "home"),
+                    "USERPROFILE": str(Path(temp_dir) / "home"),
                     "PATH": str(Path(temp_dir) / "bin"),
                 },
             )
@@ -241,14 +252,14 @@ class CliTests(unittest.TestCase):
             bin_dir.mkdir()
             for command in ("codex", "claude"):
                 executable = bin_dir / command
-                executable.write_text("#!/bin/sh\nexit 0\n")
-                executable.chmod(0o755)
+                write_fake_executable(executable)
 
             codex_target = Path(temp_dir) / "codex" / "lattice-workflow"
             claude_target = Path(temp_dir) / "claude" / "lattice-workflow"
             env = {
                 "CODEX_HOME": "",
                 "HOME": str(Path(temp_dir) / "home"),
+                "USERPROFILE": str(Path(temp_dir) / "home"),
                 "PATH": str(bin_dir),
             }
 
@@ -337,8 +348,7 @@ class CliTests(unittest.TestCase):
             bin_dir = Path(temp_dir) / "bin"
             bin_dir.mkdir()
             claude = bin_dir / "claude"
-            claude.write_text("#!/bin/sh\nexit 0\n")
-            claude.chmod(0o755)
+            write_fake_executable(claude)
 
             codex_target = Path(temp_dir) / "codex" / "lattice-workflow"
             claude_target = Path(temp_dir) / "claude" / "lattice-workflow"
@@ -354,6 +364,7 @@ class CliTests(unittest.TestCase):
                 env_overrides={
                     "CODEX_HOME": "",
                     "HOME": str(Path(temp_dir) / "home"),
+                    "USERPROFILE": str(Path(temp_dir) / "home"),
                     "PATH": str(bin_dir),
                 },
             )

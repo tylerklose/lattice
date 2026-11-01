@@ -46,7 +46,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         model = load_model(args.model, strength_override=getattr(args, "strength", None))
         engine = ConstraintEngine(model)
-        if not engine.can_complete({}):
+        if not engine.satisfiable():
             raise ValidationError(["Model has no valid complete assignments."])
     except ValidationError as exc:
         return _emit_error(args, "validation_error", exc.errors, exit_code=1)
@@ -94,7 +94,7 @@ def _build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--strength", type=int, help="Override the schema strength.")
     generate.add_argument("--format", default="json", choices=("table", "json", "csv", "summary", "yaml"))
     generate.add_argument("--seed", type=int, default=42)
-    generate.add_argument("--pool-size", type=int, default=50)
+    generate.add_argument("--pool-size", type=int, default=16, help="Candidate rows built per step; more can mean fewer scenarios.")
     generate.add_argument(
         "--max-rows",
         type=int,

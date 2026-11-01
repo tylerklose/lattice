@@ -2,9 +2,9 @@
   "meta": {
     "model_name": "notifications_matrix",
     "strength": 3,
-    "test_count": 20,
+    "test_count": 18,
     "exhaustive_count": 72,
-    "reduction": "3.6x",
+    "reduction": "4x",
     "coverage": "100.0%",
     "seed": 42
   },
@@ -19,74 +19,66 @@
     },
     {
       "scenario": 3,
-      "cumulative_pct": 26.6
+      "cumulative_pct": 27.5
     },
     {
       "scenario": 4,
-      "cumulative_pct": 31.2
+      "cumulative_pct": 36.7
     },
     {
       "scenario": 5,
-      "cumulative_pct": 35.8
+      "cumulative_pct": 45.0
     },
     {
       "scenario": 6,
-      "cumulative_pct": 41.3
+      "cumulative_pct": 52.3
     },
     {
       "scenario": 7,
-      "cumulative_pct": 45.9
+      "cumulative_pct": 58.7
     },
     {
       "scenario": 8,
-      "cumulative_pct": 50.5
+      "cumulative_pct": 65.1
     },
     {
       "scenario": 9,
-      "cumulative_pct": 56.0
+      "cumulative_pct": 71.6
     },
     {
       "scenario": 10,
-      "cumulative_pct": 61.5
-    },
-    {
-      "scenario": 11,
-      "cumulative_pct": 66.1
-    },
-    {
-      "scenario": 12,
-      "cumulative_pct": 69.7
-    },
-    {
-      "scenario": 13,
       "cumulative_pct": 77.1
     },
     {
-      "scenario": 14,
-      "cumulative_pct": 83.5
+      "scenario": 11,
+      "cumulative_pct": 81.7
     },
     {
-      "scenario": 15,
+      "scenario": 12,
+      "cumulative_pct": 85.3
+    },
+    {
+      "scenario": 13,
       "cumulative_pct": 89.0
     },
     {
+      "scenario": 14,
+      "cumulative_pct": 91.7
+    },
+    {
+      "scenario": 15,
+      "cumulative_pct": 94.5
+    },
+    {
       "scenario": 16,
-      "cumulative_pct": 92.7
+      "cumulative_pct": 97.2
     },
     {
       "scenario": 17,
-      "cumulative_pct": 95.4
-    },
-    {
-      "scenario": 18,
-      "cumulative_pct": 98.2
-    },
-    {
-      "scenario": 19,
       "cumulative_pct": 99.1
     },
     {
-      "scenario": 20,
+      "scenario": 18,
       "cumulative_pct": 100.0
     }
   ],
@@ -98,45 +90,45 @@
         "audience": "new_user",
         "locale": "en",
         "quiet_hours": "enabled",
-        "template_family": "welcome"
+        "template_family": "promo"
       }
     },
     {
       "id": 2,
       "values": {
-        "channel": "email",
-        "audience": "new_user",
+        "channel": "push",
+        "audience": "active_user",
         "locale": "fr",
-        "quiet_hours": "disabled",
+        "quiet_hours": "enabled",
         "template_family": "promo"
       }
     },
     {
       "id": 3,
       "values": {
-        "channel": "email",
+        "channel": "sms",
         "audience": "active_user",
         "locale": "en",
-        "quiet_hours": "enabled",
+        "quiet_hours": "disabled",
         "template_family": "promo"
       }
     },
     {
       "id": 4,
       "values": {
-        "channel": "email",
-        "audience": "active_user",
+        "channel": "push",
+        "audience": "new_user",
         "locale": "fr",
-        "quiet_hours": "enabled",
-        "template_family": "promo"
+        "quiet_hours": "disabled",
+        "template_family": "welcome"
       }
     },
     {
       "id": 5,
       "values": {
-        "channel": "email",
-        "audience": "active_user",
-        "locale": "en",
+        "channel": "sms",
+        "audience": "dormant_user",
+        "locale": "fr",
         "quiet_hours": "disabled",
         "template_family": "promo"
       }
@@ -144,20 +136,20 @@
     {
       "id": 6,
       "values": {
-        "channel": "email",
-        "audience": "dormant_user",
+        "channel": "push",
+        "audience": "new_user",
         "locale": "en",
         "quiet_hours": "enabled",
-        "template_family": "promo"
+        "template_family": "welcome"
       }
     },
     {
       "id": 7,
       "values": {
-        "channel": "email",
+        "channel": "sms",
         "audience": "dormant_user",
-        "locale": "fr",
-        "quiet_hours": "disabled",
+        "locale": "en",
+        "quiet_hours": "enabled",
         "template_family": "promo"
       }
     },
@@ -165,37 +157,37 @@
       "id": 8,
       "values": {
         "channel": "email",
-        "audience": "new_user",
+        "audience": "active_user",
         "locale": "fr",
         "quiet_hours": "disabled",
-        "template_family": "welcome"
+        "template_family": "promo"
       }
     },
     {
       "id": 9,
       "values": {
-        "channel": "sms",
-        "audience": "active_user",
+        "channel": "email",
+        "audience": "new_user",
         "locale": "en",
-        "quiet_hours": "enabled",
-        "template_family": "promo"
+        "quiet_hours": "disabled",
+        "template_family": "welcome"
       }
     },
     {
       "id": 10,
       "values": {
-        "channel": "sms",
-        "audience": "active_user",
+        "channel": "email",
+        "audience": "new_user",
         "locale": "fr",
-        "quiet_hours": "disabled",
-        "template_family": "promo"
+        "quiet_hours": "enabled",
+        "template_family": "welcome"
       }
     },
     {
       "id": 11,
       "values": {
-        "channel": "sms",
-        "audience": "dormant_user",
+        "channel": "push",
+        "audience": "active_user",
         "locale": "en",
         "quiet_hours": "disabled",
         "template_family": "promo"
@@ -204,10 +196,10 @@
     {
       "id": 12,
       "values": {
-        "channel": "sms",
+        "channel": "email",
         "audience": "dormant_user",
-        "locale": "fr",
-        "quiet_hours": "enabled",
+        "locale": "en",
+        "quiet_hours": "disabled",
         "template_family": "promo"
       }
     },
@@ -215,8 +207,8 @@
       "id": 13,
       "values": {
         "channel": "push",
-        "audience": "new_user",
-        "locale": "en",
+        "audience": "dormant_user",
+        "locale": "fr",
         "quiet_hours": "enabled",
         "template_family": "promo"
       }
@@ -227,35 +219,35 @@
         "channel": "push",
         "audience": "new_user",
         "locale": "fr",
-        "quiet_hours": "enabled",
-        "template_family": "welcome"
+        "quiet_hours": "disabled",
+        "template_family": "promo"
       }
     },
     {
       "id": 15,
       "values": {
-        "channel": "push",
-        "audience": "new_user",
+        "channel": "email",
+        "audience": "active_user",
         "locale": "en",
-        "quiet_hours": "disabled",
-        "template_family": "welcome"
+        "quiet_hours": "enabled",
+        "template_family": "promo"
       }
     },
     {
       "id": 16,
       "values": {
-        "channel": "push",
+        "channel": "sms",
         "audience": "active_user",
-        "locale": "en",
-        "quiet_hours": "disabled",
+        "locale": "fr",
+        "quiet_hours": "enabled",
         "template_family": "promo"
       }
     },
     {
       "id": 17,
       "values": {
-        "channel": "push",
-        "audience": "active_user",
+        "channel": "email",
+        "audience": "dormant_user",
         "locale": "fr",
         "quiet_hours": "enabled",
         "template_family": "promo"
@@ -269,26 +261,6 @@
         "locale": "en",
         "quiet_hours": "enabled",
         "template_family": "promo"
-      }
-    },
-    {
-      "id": 19,
-      "values": {
-        "channel": "push",
-        "audience": "dormant_user",
-        "locale": "fr",
-        "quiet_hours": "enabled",
-        "template_family": "promo"
-      }
-    },
-    {
-      "id": 20,
-      "values": {
-        "channel": "push",
-        "audience": "new_user",
-        "locale": "fr",
-        "quiet_hours": "disabled",
-        "template_family": "welcome"
       }
     }
   ]

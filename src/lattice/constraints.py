@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import random
 from collections import defaultdict
-from itertools import product
 from typing import Iterable
 
+from lattice import _engine
 from lattice.model import (
     Assignment,
     BidirectionalConstraint,
@@ -17,12 +16,6 @@ from lattice.model import (
     NA_VALUE,
 )
 
-try:  # pragma: no cover - optional dependency
-    from ortools.sat.python import cp_model
-except Exception:  # pragma: no cover - optional dependency
-    cp_model = None
-
-
 AssignmentRef = tuple[int, int]
 PartialAssignment = dict[int, int]
 
@@ -32,6 +25,12 @@ class ConstraintError(ValueError):
 
 
 class ConstraintEngine:
+    """Compiles a model's constraints to the engine's primitives (invalid pairs,
+    requirements, higher-order exclusions, forced interactions), checks the
+    compiled closure for contradictions, and asks the Rust engine whether the
+    model and its forced interactions are satisfiable. The Ruby gem's
+    ConstraintEngine does the same, so both report the same errors."""
+
     def __init__(self, model: Model):
         self.model = model
         self.parameter_index = {parameter.name: index for index, parameter in enumerate(model.parameters)}
@@ -44,10 +43,11 @@ class ConstraintEngine:
         self.requires: dict[AssignmentRef, set[AssignmentRef]] = defaultdict(set)
         self.higher_order: list[tuple[tuple[AssignmentRef, ...], AssignmentRef]] = []
         self.forced_interactions: list[tuple[AssignmentRef, ...]] = []
-        self._feasibility_cache: dict[tuple[tuple[int, int], ...], bool] = {}
         self._compile_constraints()
         self._compute_implied_pairs()
         self._validate_compiled_constraints()
+        self.native = self.native_model(model.strength)
+        self._satisfiable = self._check_feasibility()
 
     def conflicts(self, left: Assignment, right: Assignment) -> bool:
         return self._to_ref(right) in self.invalid_pairs.get(self._to_ref(left), set())
@@ -56,40 +56,51 @@ class ConstraintEngine:
         refs = self.requires.get(self._to_ref(assignment), set())
         return tuple(sorted(self._from_ref(ref) for ref in refs))
 
+    def satisfiable(self) -> bool:
+        """Whether any row satisfies every constraint."""
+        return self._satisfiable
+
     def can_complete(self, partial: PartialAssignment) -> bool:
-        normalized = self._normalize_partial(dict(partial))
-        if normalized is None:
+        """Whether some valid row contains every assignment in `partial`."""
+        return self.native.can_complete(sorted(partial.items()))
+
+    def engine_constraints(self) -> dict:
+        """The compiled constraints as the engine takes them: invalid pairs and
+        requirements as sorted ((p, v), (q, w)) lists, higher-order exclusions
+        and forced interactions in compile order."""
+        return {
+            "invalid_pairs": _pairs(self.invalid_pairs),
+            "requires": _pairs(self.requires),
+            "higher_order": [(list(antecedents), forbidden) for antecedents, forbidden in self.higher_order],
+            "forced": [list(forced) for forced in self.forced_interactions],
+        }
+
+    def native_model(self, strength: int) -> "_engine.Model":
+        compiled = self.engine_constraints()
+        return _engine.Model(
+            [len(parameter.values) for parameter in self.model.parameters],
+            [list(parameter.normalized_weights) for parameter in self.model.parameters],
+            strength,
+            compiled["invalid_pairs"],
+            compiled["requires"],
+            compiled["higher_order"],
+            compiled["forced"],
+        )
+
+    def _check_feasibility(self) -> bool:
+        """Raises for the first impossible forced interaction; otherwise returns
+        whether the model has any valid row."""
+        try:
+            self.native.feasibility()
+        except _engine.ForcedInfeasible as error:
+            forced = self.forced_interactions[error.args[0]]
+            assignments = ", ".join(
+                f"{self.model.parameters[parameter_index].name}={self.model.parameters[parameter_index].values[value_index]}"
+                for parameter_index, value_index in forced
+            )
+            raise ConstraintError(f"Forced interaction is not feasible: {assignments}.") from None
+        except _engine.NoValidAssignments:
             return False
-
-        signature = tuple(sorted(normalized.items()))
-        cached = self._feasibility_cache.get(signature)
-        if cached is not None:
-            return cached
-
-        if cp_model is not None:
-            result = self._can_complete_with_cp_sat(normalized)
-        else:
-            result = self._backtrack_complete(normalized, rng=None, failures=set()) is not None
-
-        self._feasibility_cache[signature] = result
-        return result
-
-    def complete_assignment(self, partial: PartialAssignment, rng: random.Random | None = None) -> tuple[int, ...] | None:
-        normalized = self._normalize_partial(dict(partial))
-        if normalized is None:
-            return None
-        return self._backtrack_complete(normalized, rng=rng, failures=set())
-
-    def is_complete_assignment_valid(self, row: tuple[int, ...]) -> bool:
-        partial = {parameter_index: value_index for parameter_index, value_index in enumerate(row)}
-        normalized = self._normalize_partial(partial)
-        if normalized is None or len(normalized) != len(self.model.parameters):
-            return False
-
-        for antecedents, forbidden in self.higher_order:
-            if all(normalized.get(param_index) == value_index for param_index, value_index in antecedents):
-                if normalized.get(forbidden[0]) == forbidden[1]:
-                    return False
         return True
 
     def _compile_constraints(self) -> None:
@@ -194,174 +205,6 @@ class ConstraintEngine:
                         f"Constraint closure makes `{left.parameter}={left.value}` conflict with its own requirement `{right.parameter}={right.value}`."
                     )
 
-        for forced in self.forced_interactions:
-            partial = {parameter_index: value_index for parameter_index, value_index in forced}
-            if self.complete_assignment(partial, rng=None) is None:
-                assignments = ", ".join(
-                    f"{self.model.parameters[parameter_index].name}={self.model.parameters[parameter_index].values[value_index]}"
-                    for parameter_index, value_index in forced
-                )
-                raise ConstraintError(f"Forced interaction is not feasible: {assignments}.")
-
-    def _normalize_partial(self, partial: PartialAssignment) -> PartialAssignment | None:
-        normalized = dict(partial)
-        changed = True
-        while changed:
-            changed = False
-            if not self._partial_consistent(normalized):
-                return None
-            for parameter_index, value_index in list(normalized.items()):
-                for required_parameter, required_value in self.requires.get((parameter_index, value_index), set()):
-                    current = normalized.get(required_parameter)
-                    if current is None:
-                        normalized[required_parameter] = required_value
-                        changed = True
-                        continue
-                    if current != required_value:
-                        return None
-        if not self._partial_consistent(normalized):
-            return None
-        return normalized
-
-    def _partial_consistent(self, partial: PartialAssignment) -> bool:
-        for parameter_index, value_index in partial.items():
-            for other_parameter, other_value in partial.items():
-                if parameter_index == other_parameter and value_index != other_value:
-                    return False
-                if parameter_index == other_parameter:
-                    continue
-                if (other_parameter, other_value) in self.invalid_pairs.get((parameter_index, value_index), set()):
-                    return False
-
-        for antecedents, forbidden in self.higher_order:
-            if all(partial.get(parameter_index) == value_index for parameter_index, value_index in antecedents):
-                if partial.get(forbidden[0]) == forbidden[1]:
-                    return False
-        return True
-
-    def _backtrack_complete(
-        self,
-        partial: PartialAssignment,
-        rng: random.Random | None,
-        failures: set[tuple[tuple[int, int], ...]],
-    ) -> tuple[int, ...] | None:
-        signature = tuple(sorted(partial.items()))
-        if signature in failures:
-            return None
-
-        if len(partial) == len(self.model.parameters):
-            row = tuple(partial[index] for index in range(len(self.model.parameters)))
-            return row if self.is_complete_assignment_valid(row) else None
-
-        next_parameter, values = self._next_parameter_values(partial)
-        if next_parameter is None:
-            failures.add(signature)
-            return None
-
-        for value in self._ordered_values(next_parameter, values, rng):
-            candidate = dict(partial)
-            candidate[next_parameter] = value
-            normalized = self._normalize_partial(candidate)
-            if normalized is None:
-                continue
-            result = self._backtrack_complete(normalized, rng=rng, failures=failures)
-            if result is not None:
-                return result
-
-        failures.add(signature)
-        return None
-
-    def _next_parameter_values(self, partial: PartialAssignment) -> tuple[int | None, list[int]]:
-        best_parameter: int | None = None
-        best_values: list[int] = []
-        best_size: int | None = None
-
-        for parameter_index, parameter in enumerate(self.model.parameters):
-            if parameter_index in partial:
-                continue
-            feasible: list[int] = []
-            for value_index in range(len(parameter.values)):
-                candidate = dict(partial)
-                candidate[parameter_index] = value_index
-                if self._normalize_partial(candidate) is not None:
-                    feasible.append(value_index)
-
-            if not feasible:
-                return None, []
-
-            if best_size is None or len(feasible) < best_size:
-                best_parameter = parameter_index
-                best_values = feasible
-                best_size = len(feasible)
-
-        return best_parameter, best_values
-
-    def _ordered_values(self, parameter_index: int, values: Iterable[int], rng: random.Random | None) -> list[int]:
-        parameter = self.model.parameters[parameter_index]
-        values_list = list(values)
-        if rng is None:
-            return sorted(values_list, key=lambda value_index: (-parameter.normalized_weights[value_index], value_index))
-
-        weighted = []
-        for value_index in values_list:
-            weight = parameter.normalized_weights[value_index]
-            ticket = rng.random() / max(weight, 1e-9)
-            weighted.append((ticket, value_index))
-        weighted.sort(key=lambda item: item[0])
-        return [value_index for _, value_index in weighted]
-
-    def _can_complete_with_cp_sat(self, partial: PartialAssignment) -> bool:
-        if cp_model is None:  # pragma: no cover - guarded by caller
-            return False
-
-        model = cp_model.CpModel()
-        variables = [
-            model.NewIntVar(0, len(parameter.values) - 1, parameter.name)
-            for parameter in self.model.parameters
-        ]
-
-        for parameter_index, value_index in partial.items():
-            model.Add(variables[parameter_index] == value_index)
-
-        pair_constraints: dict[tuple[int, int], set[tuple[int, int]]] = defaultdict(set)
-        for left in self._all_assignment_refs():
-            for right in self.invalid_pairs.get(left, set()):
-                if left[0] >= right[0]:
-                    continue
-                pair_constraints[(left[0], right[0])].add((left[1], right[1]))
-
-        for (left_index, right_index), forbidden_pairs in pair_constraints.items():
-            model.AddForbiddenAssignments(
-                [variables[left_index], variables[right_index]],
-                sorted(forbidden_pairs),
-            )
-
-        literal_cache: dict[AssignmentRef, object] = {}
-
-        def literal_for(assignment: AssignmentRef):
-            cached = literal_cache.get(assignment)
-            if cached is not None:
-                return cached
-            lit = model.NewBoolVar(f"p{assignment[0]}_is_{assignment[1]}")
-            model.Add(variables[assignment[0]] == assignment[1]).OnlyEnforceIf(lit)
-            model.Add(variables[assignment[0]] != assignment[1]).OnlyEnforceIf(lit.Not())
-            literal_cache[assignment] = lit
-            return lit
-
-        for antecedents, forbidden in self.higher_order:
-            model.Add(variables[forbidden[0]] != forbidden[1]).OnlyEnforceIf(
-                [literal_for(assignment) for assignment in antecedents]
-            )
-
-        model.AddDecisionStrategy(variables, cp_model.CHOOSE_FIRST, cp_model.SELECT_MIN_VALUE)
-
-        solver = cp_model.CpSolver()
-        solver.parameters.num_search_workers = 1
-        solver.parameters.random_seed = 0
-        solver.parameters.max_time_in_seconds = 2.0
-        status = solver.Solve(model)
-        return status in (cp_model.OPTIMAL, cp_model.FEASIBLE)
-
     def _exclude_other_values(self, source: AssignmentRef, required: AssignmentRef) -> None:
         target_parameter = self.model.parameters[required[0]]
         for value_index in range(len(target_parameter.values)):
@@ -389,3 +232,7 @@ class ConstraintEngine:
     def _from_ref(self, assignment: AssignmentRef) -> Assignment:
         parameter = self.model.parameters[assignment[0]]
         return Assignment(parameter=parameter.name, value=parameter.values[assignment[1]])
+
+
+def _pairs(table: dict[AssignmentRef, set[AssignmentRef]]) -> list[tuple[AssignmentRef, AssignmentRef]]:
+    return sorted((source, target) for source, targets in table.items() for target in targets)

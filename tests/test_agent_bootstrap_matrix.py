@@ -12,6 +12,16 @@ ROOT = Path(__file__).resolve().parents[1]
 SCENARIOS = ROOT / "examples" / "agent-bootstrap-matrix" / "scenarios.json"
 
 
+
+def write_fake_executable(path):
+    """A do-nothing executable that shutil.which finds: a shell script, or a
+    .cmd file on Windows (which only runs files with a PATHEXT extension)."""
+    if os.name == "nt":
+        path.with_suffix(".cmd").write_text("@exit /b 0\r\n", encoding="utf-8")
+    else:
+        path.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+        path.chmod(0o755)
+
 class AgentBootstrapMatrixTests(unittest.TestCase):
     def run_cli(
         self,
@@ -28,7 +38,7 @@ class AgentBootstrapMatrixTests(unittest.TestCase):
         )
 
     def test_generated_agent_bootstrap_matrix(self) -> None:
-        scenarios = json.loads(SCENARIOS.read_text())["scenarios"]
+        scenarios = json.loads(SCENARIOS.read_text(encoding="utf-8"))["scenarios"]
 
         for scenario in scenarios:
             values = scenario["values"]
@@ -82,24 +92,21 @@ class AgentBootstrapMatrixTests(unittest.TestCase):
         bin_dir = temp_path / "bin"
         bin_dir.mkdir()
         if values["codex_detection"] == "available":
-            self._write_fake_executable(bin_dir / "codex")
+            write_fake_executable(bin_dir / "codex")
         if values["claude_detection"] == "available":
-            self._write_fake_executable(bin_dir / "claude")
+            write_fake_executable(bin_dir / "claude")
 
         env = dict(os.environ)
         env.update(
             {
                 "CODEX_HOME": "",
                 "HOME": str(temp_path / "home"),
+                "USERPROFILE": str(temp_path / "home"),
                 "PATH": str(bin_dir),
                 "PYTHONPATH": str(ROOT / "src"),
             }
         )
         return env
-
-    def _write_fake_executable(self, path: Path) -> None:
-        path.write_text("#!/bin/sh\nexit 0\n")
-        path.chmod(0o755)
 
     def _apply_directive(self, command: list[str], harness: str, directive: str) -> None:
         if directive == "force":

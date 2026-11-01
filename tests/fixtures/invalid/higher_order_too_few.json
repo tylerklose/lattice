@@ -1,0 +1,27 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ]
+  },
+  "constraints": [
+    {
+      "type": "higher_order",
+      "if_all": [
+        {
+          "parameter": "a",
+          "value": "x"
+        }
+      ],
+      "then_not": {
+        "parameter": "b",
+        "value": "p"
+      }
+    }
+  ]
+}

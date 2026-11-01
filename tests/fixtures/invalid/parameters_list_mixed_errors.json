@@ -1,0 +1,24 @@
+{
+  "parameters": [
+    42,
+    {
+      "name": "a",
+      "values": [
+        "x",
+        "x"
+      ]
+    },
+    {
+      "values": [
+        "y"
+      ]
+    },
+    {
+      "name": "b",
+      "values": [
+        "p",
+        "q"
+      ]
+    }
+  ]
+}

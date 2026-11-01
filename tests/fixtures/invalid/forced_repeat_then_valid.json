@@ -1,0 +1,35 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ],
+    "c": [
+      "m",
+      "n"
+    ]
+  },
+  "constraints": [
+    {
+      "type": "forced",
+      "assignments": [
+        {
+          "parameter": "a",
+          "value": "x"
+        },
+        {
+          "parameter": "a",
+          "value": "y"
+        },
+        {
+          "parameter": "zz",
+          "value": "m"
+        }
+      ]
+    }
+  ]
+}

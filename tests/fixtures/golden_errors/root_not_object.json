@@ -1,0 +1,7 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "Model root must be a JSON/YAML object."
+  ]
+}

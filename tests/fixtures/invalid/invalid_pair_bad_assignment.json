@@ -1,0 +1,22 @@
+{
+  "parameters": {
+    "a": [
+      "x",
+      "y"
+    ],
+    "b": [
+      "p",
+      "q"
+    ]
+  },
+  "constraints": [
+    {
+      "type": "invalid_pair",
+      "if": 42,
+      "then_not": {
+        "parameter": "a",
+        "value": "x"
+      }
+    }
+  ]
+}

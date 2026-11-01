@@ -1,0 +1,9 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`constraints[0]` conditional values contains duplicate values.",
+    "`constraints[0].values` contains duplicate values.",
+    "`constraints[0]` references unknown conditional parameter `child`. `conditional` must define a child parameter with `values` and a parent gate. For exclusions or requirements between existing parameters, use `invalid_pair`, `higher_order`, `forward_dep`, or `bidirectional`; run `lattice agent instructions` for the full schema reference."
+  ]
+}

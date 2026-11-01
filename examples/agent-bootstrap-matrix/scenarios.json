@@ -15,27 +15,27 @@
     },
     {
       "scenario": 2,
-      "cumulative_pct": 29.6
+      "cumulative_pct": 37.0
     },
     {
       "scenario": 3,
-      "cumulative_pct": 46.9
+      "cumulative_pct": 53.1
     },
     {
       "scenario": 4,
-      "cumulative_pct": 61.7
+      "cumulative_pct": 65.4
     },
     {
       "scenario": 5,
-      "cumulative_pct": 71.6
+      "cumulative_pct": 77.8
     },
     {
       "scenario": 6,
-      "cumulative_pct": 79.0
+      "cumulative_pct": 85.2
     },
     {
       "scenario": 7,
-      "cumulative_pct": 87.7
+      "cumulative_pct": 91.4
     },
     {
       "scenario": 8,
@@ -65,12 +65,12 @@
     {
       "id": 2,
       "values": {
-        "codex_detection": "unavailable",
+        "codex_detection": "available",
         "claude_detection": "unavailable",
-        "codex_directive": "default",
-        "claude_directive": "default",
+        "codex_directive": "force",
+        "claude_directive": "force",
         "target_mode": "default",
-        "output_format": "json"
+        "output_format": "text"
       }
     },
     {
@@ -87,22 +87,22 @@
     {
       "id": 4,
       "values": {
-        "codex_detection": "available",
-        "claude_detection": "unavailable",
+        "codex_detection": "unavailable",
+        "claude_detection": "available",
         "codex_directive": "force",
-        "claude_directive": "force",
-        "target_mode": "explicit",
-        "output_format": "text"
+        "claude_directive": "skip",
+        "target_mode": "default",
+        "output_format": "json"
       }
     },
     {
       "id": 5,
       "values": {
-        "codex_detection": "available",
-        "claude_detection": "available",
-        "codex_directive": "default",
+        "codex_detection": "unavailable",
+        "claude_detection": "unavailable",
+        "codex_directive": "skip",
         "claude_directive": "force",
-        "target_mode": "default",
+        "target_mode": "explicit",
         "output_format": "json"
       }
     },
@@ -110,11 +110,11 @@
       "id": 6,
       "values": {
         "codex_detection": "available",
-        "claude_detection": "available",
-        "codex_directive": "force",
+        "claude_detection": "unavailable",
+        "codex_directive": "skip",
         "claude_directive": "default",
         "target_mode": "default",
-        "output_format": "text"
+        "output_format": "json"
       }
     },
     {
@@ -122,28 +122,6 @@
       "values": {
         "codex_detection": "unavailable",
         "claude_detection": "unavailable",
-        "codex_directive": "force",
-        "claude_directive": "skip",
-        "target_mode": "default",
-        "output_format": "json"
-      }
-    },
-    {
-      "id": 8,
-      "values": {
-        "codex_detection": "unavailable",
-        "claude_detection": "unavailable",
-        "codex_directive": "skip",
-        "claude_directive": "force",
-        "target_mode": "default",
-        "output_format": "json"
-      }
-    },
-    {
-      "id": 9,
-      "values": {
-        "codex_detection": "unavailable",
-        "claude_detection": "available",
         "codex_directive": "default",
         "claude_directive": "skip",
         "target_mode": "explicit",
@@ -151,13 +129,35 @@
       }
     },
     {
-      "id": 10,
+      "id": 8,
       "values": {
         "codex_detection": "available",
         "claude_detection": "available",
-        "codex_directive": "skip",
+        "codex_directive": "default",
+        "claude_directive": "force",
+        "target_mode": "explicit",
+        "output_format": "text"
+      }
+    },
+    {
+      "id": 9,
+      "values": {
+        "codex_detection": "available",
+        "claude_detection": "unavailable",
+        "codex_directive": "force",
         "claude_directive": "default",
         "target_mode": "explicit",
+        "output_format": "text"
+      }
+    },
+    {
+      "id": 10,
+      "values": {
+        "codex_detection": "unavailable",
+        "claude_detection": "unavailable",
+        "codex_directive": "default",
+        "claude_directive": "default",
+        "target_mode": "default",
         "output_format": "json"
       }
     }

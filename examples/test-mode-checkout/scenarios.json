@@ -2,9 +2,9 @@
   "meta": {
     "model_name": "payments",
     "strength": 2,
-    "test_count": 9,
+    "test_count": 8,
     "exhaustive_count": 288,
-    "reduction": "32x",
+    "reduction": "36x",
     "coverage": "100.0%",
     "seed": 42
   },
@@ -23,11 +23,11 @@
     },
     {
       "scenario": 4,
-      "cumulative_pct": 73.2
+      "cumulative_pct": 77.3
     },
     {
       "scenario": 5,
-      "cumulative_pct": 83.5
+      "cumulative_pct": 85.6
     },
     {
       "scenario": 6,
@@ -35,14 +35,10 @@
     },
     {
       "scenario": 7,
-      "cumulative_pct": 93.8
+      "cumulative_pct": 96.9
     },
     {
       "scenario": 8,
-      "cumulative_pct": 94.8
-    },
-    {
-      "scenario": 9,
       "cumulative_pct": 100.0
     }
   ],
@@ -86,13 +82,13 @@
     {
       "id": 4,
       "values": {
-        "payment_method": "credit_card",
+        "payment_method": "paypal",
         "region": "UK",
-        "currency": "GBP",
+        "currency": "USD",
         "os": "windows",
         "browser": "chrome",
         "loyalty": "none",
-        "card_type": "mastercard"
+        "card_type": "N/A"
       }
     },
     {
@@ -100,9 +96,9 @@
       "values": {
         "payment_method": "paypal",
         "region": "US",
-        "currency": "USD",
-        "os": "windows",
-        "browser": "chrome",
+        "currency": "GBP",
+        "os": "macos",
+        "browser": "safari",
         "loyalty": "none",
         "card_type": "N/A"
       }
@@ -110,33 +106,9 @@
     {
       "id": 6,
       "values": {
-        "payment_method": "paypal",
-        "region": "UK",
-        "currency": "GBP",
-        "os": "macos",
-        "browser": "safari",
-        "loyalty": "none",
-        "card_type": "N/A"
-      }
-    },
-    {
-      "id": 7,
-      "values": {
-        "payment_method": "apple_pay",
-        "region": "UK",
-        "currency": "GBP",
-        "os": "macos",
-        "browser": "safari",
-        "loyalty": "none",
-        "card_type": "N/A"
-      }
-    },
-    {
-      "id": 8,
-      "values": {
         "payment_method": "credit_card",
         "region": "US",
-        "currency": "USD",
+        "currency": "GBP",
         "os": "windows",
         "browser": "chrome",
         "loyalty": "none",
@@ -144,7 +116,7 @@
       }
     },
     {
-      "id": 9,
+      "id": 7,
       "values": {
         "payment_method": "credit_card",
         "region": "UK",
@@ -153,6 +125,18 @@
         "browser": "safari",
         "loyalty": "none",
         "card_type": "visa"
+      }
+    },
+    {
+      "id": 8,
+      "values": {
+        "payment_method": "apple_pay",
+        "region": "UK",
+        "currency": "GBP",
+        "os": "macos",
+        "browser": "safari",
+        "loyalty": "none",
+        "card_type": "N/A"
       }
     }
   ]

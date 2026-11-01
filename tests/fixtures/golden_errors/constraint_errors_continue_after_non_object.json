@@ -1,0 +1,8 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`constraints[0]` must be an object.",
+    "`constraints[1].if` references unknown parameter `zz`."
+  ]
+}

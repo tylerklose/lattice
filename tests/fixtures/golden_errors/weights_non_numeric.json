@@ -1,0 +1,7 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`weights` for parameter `a` must be numeric."
+  ]
+}

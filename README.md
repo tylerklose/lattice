@@ -50,7 +50,7 @@ Lattice is split into three small modules on purpose:
 
 - `parser.py`: the schema contract between a harness and the engine
 - `constraints.py`: deterministic feasibility and constraint reasoning
-- `ipog.py`: covering-array generation and coverage accounting
+- `ipog.py`: compiles the model for the Rust engine (`rust/`, built on the `lattice-engine` crate) and turns its rows into the coverage curve
 
 That keeps the math isolated from OpenClaw, Hermes, Codex, xAI-backed agents, Claude Code, or any other harness wrapper.
 
@@ -150,21 +150,34 @@ Every value in a schema (the model name, parameter names and values, and constra
 
 Changed in 0.3.0: earlier versions converted unquoted numbers and dates, so `0x1F` became `31`, `1.10` became `1.1`, and some values (`.inf`, timestamps) came out differently in the Ruby and Python implementations.
 
-## Solver Notes
+## Performance
 
-The current engine is deterministic and self-contained. If `ortools` is installed via the `solver` extra, Lattice can use CP-SAT feasibility checks for partial assignments; otherwise it falls back to the built-in backtracking solver.
+Generation runs in a Rust engine (the `lattice-engine` crate, shared with the Ruby gem), in two phases:
 
-Install from PyPI with the optional solver backend:
+1. **Build.** Rows are added greedily. Each row is the best of several candidates (`--pool-size`, default 16), and each candidate picks, value by value, whatever covers the most combinations still uncovered.
+2. **Shrink.** A row is removed and the gaps are repaired with tabu search, which changes values in the remaining rows without breaking any constraint or forced combination. This repeats while repairs succeed within a fixed step budget.
 
-```bash
-pipx install "lattice-cli[solver]"
-```
+The budget is a number of steps, not a time limit, so the same schema and seed give the same rows on every machine. The rows come out ordered so each adds the most new coverage, which is why `--max-rows` and `--stop-after-coverage` cut the set short with as much coverage as possible.
 
-Or in editable mode while developing:
+Scenario counts against [PICT](https://github.com/microsoft/pict) 3.7, with default settings for both:
 
-```bash
-python3 -m pip install -e "/path/to/lattice[solver]"
-```
+| Model | PICT | Lattice 0.4 | Lattice 0.3 |
+|---|---|---|---|
+| 13 parameters × 3 values | 20 | **15** (best known) | 22 |
+| 100 × 2 | 16 | **10** (optimal) | over 60 s |
+| 61 mixed (4^15 3^17 2^29) | 40 | **30** | over 60 s |
+| 12 × 6 | 70 | **60** | 88 (32 s) |
+| 30 × 5 | 66 | **55** | over 60 s |
+| 20 × 10 | 218 | **192** | over 60 s |
+| Strength 3, 10 × 4 | 158 | **140** | 176 (27 s) |
+
+Each Lattice 0.4 run above takes 0.04–1.2 s on an Apple M-series laptop. PICT is faster (about 0.02 s) because it stops after the build phase.
+
+Changed in 0.4.0: rows differ from 0.3.x for the same seed, and every example needs the same number of scenarios or fewer. `--pool-size` now sets the candidates per row; its default went from 50 to 16.
+
+### Platforms
+
+Wheels include the compiled engine for macOS (Apple Silicon and Intel), Linux (x86-64 and ARM64, glibc and musl) and Windows (x86-64), one wheel per platform for every Python from 3.11. Other platforms build from the source distribution, which needs a Rust toolchain. Python running in the browser (Pyodide) isn't supported.
 
 ## Using In Other Projects
 
@@ -235,3 +248,14 @@ The `examples/` directory contains eight end-to-end examples:
 - `schema-guidance-matrix`: Lattice generates a matrix for testing Lattice's schema discoverability guidance
 - `component-variant-matrix`: component/rendering surface -> schema -> generated visual review variants
 - `httpx-query-param-merge`: OSS audit example for a real HTTPX query-parameter interaction issue
+
+## Development
+
+Building from a checkout needs a Rust toolchain (`rustup`); the engine comes from crates.io (`lattice-engine`).
+
+```bash
+python3 -m venv .venv && . .venv/bin/activate
+pip install maturin pytest
+maturin develop --release      # builds lattice._engine into the checkout
+python -m pytest tests
+```

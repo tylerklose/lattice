@@ -15,7 +15,7 @@ from lattice.parser import parse_model_data
 
 
 def load_fixture(name: str):
-    return parse_model_data(json.loads((ROOT / "tests" / "fixtures" / name).read_text()))
+    return parse_model_data(json.loads((ROOT / "tests" / "fixtures" / name).read_text(encoding="utf-8")))
 
 
 def verify_coverage(model, rows, strength: int) -> None:

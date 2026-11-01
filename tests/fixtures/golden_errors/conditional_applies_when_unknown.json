@@ -1,0 +1,7 @@
+{
+  "status": "error",
+  "code": "validation_error",
+  "errors": [
+    "`constraints[0]` applies_when contains unknown values for `a`: zz."
+  ]
+}
