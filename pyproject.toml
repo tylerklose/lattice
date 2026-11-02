@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "lattice-cli"
-version = "0.4.0"
+version = "0.4.1"
 description = "Deterministic combinatorial coverage for agent workflows and constrained variant surfaces."
 readme = "README.md"
 requires-python = ">=3.11"

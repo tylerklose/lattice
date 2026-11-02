@@ -12,8 +12,8 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from lattice.formatters import format_json
 from lattice.ipog import generate_covering_array
-from lattice.parser import ValidationError, load_model, parse_model_data
-from lattice.schema_text import SchemaSyntaxError, load_json, load_yaml
+from lattice.parser import ModelIOError, ValidationError, _deserialize_model, load_model, parse_model_data
+from lattice.schema_text import SchemaSyntaxError, SchemaTooLarge, load_json, load_yaml
 
 
 def values(model):
@@ -178,6 +178,43 @@ class SchemaTextTests(unittest.TestCase):
         for strength in ("2.0", "0x2", "1_0", "two", True, math.inf, [2]):
             with self.subTest(strength=strength):
                 self.assertEqual(self.strength_result(strength), ["`strength` must be an integer."])
+
+
+    # Issue #5: aliases count once per place they expand to, capped at 100,000
+    # values. test/schema_text_test.rb in latticerb pins the same boundaries.
+    def test_yaml_value_limit_counts_every_value(self) -> None:
+        def flat(n: int) -> str:
+            return "[" + ", ".join(["x"] * n) + "]"
+
+        self.assertEqual(99_999, len(load_yaml(flat(99_999))))
+        with self.assertRaises(SchemaTooLarge) as raised:
+            load_yaml(flat(100_000))
+        self.assertEqual("schema expands to more than 100000 values (check YAML aliases)", str(raised.exception))
+
+    def test_yaml_value_limit_counts_aliases_by_what_they_expand_to(self) -> None:
+        # 1 (outer list) + 11 (anchored list of ten) + 11 per alias.
+        def aliased(n: int) -> str:
+            return "[&a [" + ", ".join(["x"] * 10) + "], " + ", ".join(["*a"] * n) + "]"
+
+        self.assertEqual(9090, len(load_yaml(aliased(9089))))
+        with self.assertRaises(SchemaTooLarge):
+            load_yaml(aliased(9090))
+
+    def test_aliases_are_independent_copies(self) -> None:
+        data = load_yaml("a: &a [x, y]\nb: *a\n")
+        data["a"].append("z")
+        self.assertEqual(["x", "y"], data["b"])
+
+    def test_yaml_alias_bomb_fails_fast_with_a_clear_error(self) -> None:
+        bomb = str(FIXTURES / "yaml_alias_bomb.yaml")
+        message = "schema expands to more than 100000 values (check YAML aliases)"
+        with self.assertRaises(ModelIOError) as raised:
+            load_model(bomb)
+        self.assertEqual(f"Unable to parse model from `{bomb}`: {message}", str(raised.exception))
+        # Read without an extension, the JSON parser's complaint is left out.
+        with self.assertRaises(ModelIOError) as raised:
+            _deserialize_model(Path(bomb).read_text(encoding="utf-8"), "stdin", None)
+        self.assertEqual(f"Unable to parse model from `stdin`: {message}", str(raised.exception))
 
 
 if __name__ == "__main__":

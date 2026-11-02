@@ -16,7 +16,7 @@ checksum = "b686b7e557fb3f0246835e631958e8faaa44687e9afc2356ccd85438a952be92"
 
 [[package]]
 name = "lattice-py"
-version = "0.4.0"
+version = "0.4.1"
 dependencies = [
  "lattice-engine",
  "pyo3",

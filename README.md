@@ -146,7 +146,7 @@ Every value in a schema (the model name, parameter names and values, and constra
 - Unquoted `yes`, `no`, `on`, `off`, `true` and `false` (lowercase, Capitalized or UPPERCASE) become `true` / `false`, and an empty value, `~` or `null` becomes `null`. Quote them (`"yes"`) to keep the word.
 - JSON integers are written in plain decimal form (`-0` becomes `0`).
 
-`strength` must be a whole number, and `weights` decimal numbers such as `0.7` or `1e-3`. Anchors, aliases and `<<` merge keys work; a key written twice, more than one YAML document, or a tag other than YAML's standard ones is an error.
+`strength` must be a whole number, and `weights` decimal numbers such as `0.7` or `1e-3`. Anchors, aliases and `<<` merge keys work, up to 100,000 values once aliases are expanded; a key written twice, more than one YAML document, or a tag other than YAML's standard ones is an error.
 
 Changed in 0.3.0: earlier versions converted unquoted numbers and dates, so `0x1F` became `31`, `1.10` became `1.1`, and some values (`.inf`, timestamps) came out differently in the Ruby and Python implementations.
 
