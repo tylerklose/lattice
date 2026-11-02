@@ -20,7 +20,7 @@ from lattice.model import (
     normalize_scalar,
     NA_VALUE,
 )
-from lattice.schema_text import load_json, load_yaml
+from lattice.schema_text import SchemaTooLarge, load_json, load_yaml
 
 
 class ModelIOError(Exception):
@@ -98,6 +98,11 @@ def _deserialize_model(text: str, source_name: str, extension: str | None) -> An
     for loader in loaders:
         try:
             return loader(text)
+        except SchemaTooLarge as exc:
+            # Not a syntax error, so the other loader's complaint would only mislead.
+            raise ModelIOError(f"Unable to parse model from `{source_name}`: {exc}") from None
+        except MemoryError:
+            raise
         except Exception as exc:  # pragma: no cover - exact parser error text varies
             errors.append(str(exc))
 

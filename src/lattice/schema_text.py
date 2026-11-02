@@ -15,6 +15,7 @@ tests/fixtures/scalar_text.* pins the result for both.
 
 from __future__ import annotations
 
+import copy
 import json
 from typing import Any
 
@@ -39,6 +40,31 @@ MAPPING_TAG = YAML_TAG_PREFIX + "map"
 
 class SchemaSyntaxError(ValueError):
     """Raised when schema text uses YAML or JSON the schema format doesn't accept."""
+
+
+MAX_VALUES = 100_000
+TOO_LARGE = f"schema expands to more than {MAX_VALUES} values (check YAML aliases)"
+
+
+class SchemaTooLarge(ValueError):
+    """Raised when YAML aliases would expand the schema past MAX_VALUES values
+    (the "billion laughs" pattern). Every value counts once per place it appears
+    after expansion, so the limit holds however the aliases nest."""
+
+
+class _Expansion:
+    """Nodes being built (to catch recursive aliases), finished anchored nodes
+    as id -> (value, size), and the running count of expanded values."""
+
+    def __init__(self) -> None:
+        self.building: set[int] = set()
+        self.built: dict[int, tuple[Any, int]] = {}
+        self.count = 0
+
+    def add(self, values: int) -> None:
+        self.count += values
+        if self.count > MAX_VALUES:
+            raise SchemaTooLarge(TOO_LARGE)
 
 
 class _Loader(yaml.SafeLoader):
@@ -69,7 +95,7 @@ def load_yaml(text: str) -> Any:
     root = yaml.compose(text, Loader=_Loader)
     if root is None:
         return None
-    return _yaml_value(root, set())
+    return _yaml_value(root, _Expansion())
 
 
 def _reject_constant(name: str) -> Any:
@@ -85,23 +111,33 @@ def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
-def _yaml_value(node: Node, building: set[int]) -> Any:
+def _yaml_value(node: Node, expansion: _Expansion) -> Any:
     # yaml.compose resolves aliases to the anchored node itself, so a node met
-    # again while it is still being built is a recursive alias.
-    if id(node) in building:
+    # again while it is still being built is a recursive alias, and one met
+    # again after it was built is an alias to copy.
+    if id(node) in expansion.building:
         raise SchemaSyntaxError("recursive alias")
-    building.add(id(node))
+    if id(node) in expansion.built:
+        value, size = expansion.built[id(node)]
+        expansion.add(size)
+        return copy.deepcopy(value)
+    start = expansion.count
+    expansion.add(1)
+    expansion.building.add(id(node))
     try:
         if isinstance(node, ScalarNode):
-            return _yaml_scalar(node)
-        if isinstance(node, SequenceNode):
+            value = _yaml_scalar(node)
+        elif isinstance(node, SequenceNode):
             _check_tag(node.tag, {SEQUENCE_TAG})
-            return [_yaml_value(child, building) for child in node.value]
-        if isinstance(node, MappingNode):
-            return _yaml_mapping(node, building)
-        raise SchemaSyntaxError(f"unsupported YAML node `{type(node).__name__}`")
+            value = [_yaml_value(child, expansion) for child in node.value]
+        elif isinstance(node, MappingNode):
+            value = _yaml_mapping(node, expansion)
+        else:
+            raise SchemaSyntaxError(f"unsupported YAML node `{type(node).__name__}`")
     finally:
-        building.discard(id(node))
+        expansion.building.discard(id(node))
+    expansion.built[id(node)] = (value, expansion.count - start)
+    return value
 
 
 def _yaml_scalar(node: ScalarNode) -> Any:
@@ -117,7 +153,7 @@ def _yaml_scalar(node: ScalarNode) -> Any:
     return node.value
 
 
-def _yaml_mapping(node: MappingNode, building: set[int]) -> dict[Any, Any]:
+def _yaml_mapping(node: MappingNode, expansion: _Expansion) -> dict[Any, Any]:
     """Keys from `<<` merges come first, earlier sources winning; the mapping's
     own keys then override them. A key written twice is an error."""
     _check_tag(node.tag, {MAPPING_TAG})
@@ -125,7 +161,7 @@ def _yaml_mapping(node: MappingNode, building: set[int]) -> dict[Any, Any]:
     own: dict[Any, Any] = {}
     seen_merge = False
     for key_node, value_node in node.value:
-        key = _yaml_value(key_node, building)
+        key = _yaml_value(key_node, expansion)
         if isinstance(key, (dict, list)):
             raise SchemaSyntaxError("mapping keys must be scalars")
 
@@ -133,7 +169,7 @@ def _yaml_mapping(node: MappingNode, building: set[int]) -> dict[Any, Any]:
             if seen_merge:
                 raise SchemaSyntaxError("duplicate key `<<`")
             seen_merge = True
-            for source in _merge_sources(_yaml_value(value_node, building)):
+            for source in _merge_sources(_yaml_value(value_node, expansion)):
                 for merged_key, merged_value in source.items():
                     if merged_key not in merged:
                         merged[merged_key] = merged_value
@@ -141,7 +177,7 @@ def _yaml_mapping(node: MappingNode, building: set[int]) -> dict[Any, Any]:
 
         if key in own:
             raise SchemaSyntaxError(f"duplicate key `{normalize_scalar(key)}`")
-        own[key] = _yaml_value(value_node, building)
+        own[key] = _yaml_value(value_node, expansion)
 
     result = dict(merged)
     result.update(own)
