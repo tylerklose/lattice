@@ -9,3 +9,4 @@ rust/target/
 .venv-dev/
 src/lattice/*.so
 src/lattice/*.pyd
+target-wheels/
