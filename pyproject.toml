@@ -42,6 +42,7 @@ dependencies = [
 Homepage = "https://github.com/tylerklose/lattice"
 Repository = "https://github.com/tylerklose/lattice"
 Issues = "https://github.com/tylerklose/lattice/issues"
+Playground = "https://lattice.nolook.ai"
 
 [project.scripts]
 lattice = "lattice.cli:main"
